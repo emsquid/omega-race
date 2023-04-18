@@ -31,9 +31,9 @@ class Object:
         self.dx = dx
         self.dy = dy
 
-    def set_image(self, name: str = None, surface: pygame.Surface = None):
-        if not name is None:
-            pass
+    def set_image(self, filename: str = None, surface: pygame.Surface = None):
+        if not filename is None:
+            self.image = pygame.image.load(f"assets/{filename}")
         elif not surface is None:
             self.image = surface
         else:
