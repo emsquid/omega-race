@@ -41,7 +41,7 @@ class Object:
         self.y += self.dy*dt
 
     def collide(self, other) -> bool:
-        return (self.x <= other.x+other.width 
+        return (self.x <= other.x+other.width
                 and other.x <= self.x+self.width
-                and self.y <= other.y+other.height 
+                and self.y <= other.y+other.height
                 and other.y <= self.y+self.height)
