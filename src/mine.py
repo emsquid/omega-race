@@ -17,7 +17,7 @@ class Mine(Object):
         """
         initialisation
         """
-        super.__init__(width, height, x, y)
+        super().__init__(width, height, x, y)
         self.points = points
 
 
@@ -31,7 +31,7 @@ class Photon_Mine(Mine):
         """
         initialisation
         """
-        super.__init__(self, 10, 5, x, y, 350)
+        super().__init__(self, 10, 5, x, y, 350)
 
 
 class Vapor_Mine(Mine):
@@ -44,4 +44,4 @@ class Vapor_Mine(Mine):
         """
         initialisation
         """
-        super.__init__(self, 10, 10, x, y, 500)
+        super().__init__(self, 10, 10, x, y, 500)

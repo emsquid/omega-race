@@ -16,4 +16,4 @@ class Ship(Object):
         """
         initilisation
         """
-        super.__init__(width, height, x, y, dx, dy)
+        super().__init__(width, height, x, y, dx, dy)
