@@ -1,7 +1,7 @@
 import pygame
+from src.base import Object
 
-
-class Ship():
+class Ship(Object):
     """
     class Ship:
 
@@ -12,19 +12,12 @@ class Ship():
 
     """
 
-    def __init__(self, hight: int, width: int,
+    def __init__(self, width: int, height: int
                  x: int, y: int, dx: int, dy: int):
         """
         initilisation
         """
-
-        self.hight = hight
-        self.width = width
-        self.x = x
-        self.y = y
-        self.dx = dx
-        self.dy = dy
-        self.status = True
+        super.__init__(width, height,  x, y, dx, dy)
 
     def bounceX(self):
         self.dx = -self.dx
