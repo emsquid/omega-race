@@ -1,7 +1,7 @@
 import pygame
 from threading import Timer
 from random import randrange, random
-from src.const import SCREEN_WIDTH, SCREEN_HEIGHT, BLACK, WHITE, RED
+from src.const import WIN_WIDTH, WIN_HEIGHT, BLACK, WHITE, RED
 
 
 class Object:
@@ -58,11 +58,11 @@ class Object:
 
 class Background:
     def __init__(self):
-        self.image = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.image = pygame.Surface((WIN_WIDTH, WIN_HEIGHT))
         self.stars = [
             [
-                randrange(SCREEN_WIDTH),
-                randrange(SCREEN_HEIGHT),
+                randrange(WIN_WIDTH),
+                randrange(WIN_HEIGHT),
                 random() / 20,
             ]
             for i in range(100)
@@ -74,60 +74,60 @@ class Background:
             pygame.draw.line(self.image, WHITE, (star[0], star[1]), (star[0], star[1]))
             star[1] -= star[2] * dt
             if star[1] < 0:
-                star[0] = randrange(SCREEN_WIDTH)
-                star[1] = SCREEN_HEIGHT
+                star[0] = randrange(WIN_WIDTH)
+                star[1] = WIN_HEIGHT
 
 
 class Force_Field:
     def __init__(self):
-        self.borders = {
-            "x": [
-                Object(3, 380, 980, 20),
-                Object(3, 380, 980, 400),
-                Object(3, 380, 20, 400),
-                Object(3, 380, 20, 20),
-            ],
-            "y": [
-                Object(480, 3, 20, 20),
-                Object(480, 3, 500, 20),
-                Object(480, 3, 500, 780),
-                Object(480, 3, 20, 780),
-            ],
-        }
-        # mettre le vecteur de changement de direction
-        self.panel = {
-            "x": [Object(3, 200, 300, 300), Object(3, 200, 700, 300)],
-            "y": [Object(400, 3, 300, 300), Object(400, 3, 300, 500)],
-        }
+        self.borders = [
+            # Left and right borders
+            (Object(3, 383, 20, 20), (-1, 1)),
+            (Object(3, 383, 20, 400), (-1, 1)),
+            (Object(3, 383, 980, 20), (-1, 1)),
+            (Object(3, 383, 980, 400), (-1, 1)),
+            # Top and bottom borders
+            (Object(483, 3, 20, 20), (1, -1)),
+            (Object(483, 3, 500, 20), (1, -1)),
+            (Object(483, 3, 500, 780), (1, -1)),
+            (Object(483, 3, 20, 780), (1, -1)),
+        ]
+
+        self.panel = [
+            (Object(3, 203, 300, 300), (-1, 1)),
+            (Object(3, 203, 700, 300), (-1, 1)),
+            (Object(403, 3, 300, 300), (1, -1)),
+            (Object(403, 3, 300, 500), (1, -1)),
+        ]
+
+        for field, _ in self.borders + self.panel:
+            self.reset(field)
 
     def draw(self, surface: pygame.Surface):
-        for obj in self.borders["x"]:
-            obj.draw(surface)
-        for obj in self.borders["y"]:
-            obj.draw(surface)
-        for obj in self.panel["x"]:
-            obj.draw(surface)
-        for obj in self.panel["y"]:
-            obj.draw(surface)
+        for field, _ in self.borders + self.panel:
+            field.draw(surface)
 
     def bounce(self, object: Object):
-        for border in self.borders["x"]:
-            if object.collide(border):
-                self.activate(border)
-                object.dx *= -1
-        for border in self.borders["y"]:
-            if object.collide(border):
-                self.activate(border)
-                object.dy *= -1
+        for field, vector in self.borders + self.panel:
+            if object.collide(field):
+                self.activate(field)
+                object.dx *= vector[0]
+                object.dy *= vector[1]
 
-    def activate(self, border: Object):
-        image = pygame.Surface((self.width, self.height))
-        image.fill(WHITE)
-        border.set_image(surface=image)
-        Timer(1, self.reset, border).run()
+    def activate(self, field: Object):
+        if any(field == border for border, _ in self.borders):
+            image = pygame.Surface((field.width, field.height))
+            image.fill(WHITE)
+            field.set_image(surface=image)
+            Timer(0.15, self.reset, [field]).start()
 
-    def reset(self, border: Object):
-        image = pygame.Surface((border.width, border.height))
-        image.fill(WHITE, (0, 0, 3, 3))
-        image.fill(WHITE, (border.width - 3, border.width - 3, 3, 3))
-        border.set_image(surface=image)
+    def reset(self, field: Object):
+        if any(field == border for border, _ in self.borders):
+            image = pygame.Surface((field.width, field.height))
+            image.fill(WHITE, (0, 0, 3, 3))
+            image.fill(WHITE, (field.width - 3, field.height - 3, 3, 3))
+            field.set_image(surface=image)
+        else:
+            image = pygame.Surface((field.width, field.height))
+            image.fill(WHITE)
+            field.set_image(surface=image)
