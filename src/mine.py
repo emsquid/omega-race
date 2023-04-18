@@ -1,21 +1,23 @@
 import pygame
 
 
-class Mine():
+class Mine:
     """
     class Mine:
 
-    -location (in px): x,y (type -> int)
-    -shape (in px) : hight,wigth (type -> int)
-    -status (alive/destroyed)  : status (type -> bool)
+    - location (in px): x,y (type -> int)
+    - shape (in px) : hight,wigth (type -> int)
+    - status (alive/destroyed)  : status (type -> bool)
 
     """
 
-    def __init__(self, hight: int, width: int, x: int, y: int):
+    def __init__(
+        self, height: int = None, width: int = None, x: int = None, y: int = None
+    ):
         """
         initialisation
         """
-        self.hight = hight
+        self.height = height
         self.width = width
         self.x = x
         self.y = y
