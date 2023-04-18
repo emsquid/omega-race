@@ -33,7 +33,7 @@ class Object:
 
     def set_image(self, filename: str = None, surface: pygame.Surface = None):
         if not filename is None:
-            self.image = pygame.image.load(f"assets/{filename}")
+            self.image = pygame.image.load(f"src/assets/{filename}")
         elif not surface is None:
             self.image = surface
         else:

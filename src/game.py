@@ -35,6 +35,7 @@ class Game:
 
     def run(self):
         ship = Ship(20, 20, 40, 40, 0.1, 0.2)
+        ship.set_image(filename="logo.ico")
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
