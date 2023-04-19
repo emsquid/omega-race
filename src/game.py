@@ -2,7 +2,7 @@ import sys
 import pygame
 from src.base import Object, Background
 from src.force_field import ForceField                       
-from src.ship import Ship, CommandShip,DeathShip,DroidShip
+from src.ship import CommandShip,DeathShip,DroidShip
 from src.mine import PhotonMine, VaporMine
 from src.const import WIN_WIDTH, WIN_HEIGHT
 
@@ -36,7 +36,7 @@ class Game:
         self.background.move(dt)
 
     def run(self):
-        ship = CommandShip(120,90)
+        ship = CommandShip(50, 40)
         mine = VaporMine(100,100)
         while True:
             for event in pygame.event.get():
