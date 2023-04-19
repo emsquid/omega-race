@@ -6,7 +6,7 @@ from src.const import WHITE
 
 class Border(Object):
     """
-    A border draw the boundaries of the game field
+    A Border draws the boundaries of the game field
     It will bounce objects on collision
     """
 

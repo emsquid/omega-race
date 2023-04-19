@@ -2,7 +2,7 @@ import sys
 import pygame
 from src.base import Object, Background
 from src.force_field import ForceField
-from src.ship import Ship
+from src.ship import DroidShip, CommandShip
 from src.const import WIN_WIDTH, WIN_HEIGHT
 
 
@@ -35,8 +35,7 @@ class Game:
         self.background.move(dt)
 
     def run(self):
-        ship = Ship(32, 32, 500, 600, 0.05, -0.15)
-        ship.set_image(filename="DroidShip.png")
+        ship = CommandShip(50, 40)
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
