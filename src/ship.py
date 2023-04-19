@@ -57,7 +57,7 @@ class CommandShip(Ship):
 
     def __init__(self, x: int = 0, y: int = 0):
         super().__init__(x, y, 1, 1)
-        self.set_image("CommandShip.png")
+        self.set_image("CommandShip2.png")
         self.speed = 0.1
 
     def drop_mine(self, enemies: list):

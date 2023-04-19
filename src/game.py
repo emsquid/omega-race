@@ -1,8 +1,9 @@
 import sys
 import pygame
 from src.base import Object, Background
-from src.force_field import ForceField
-from src.ship import Ship
+from src.force_field import ForceField                       
+from src.ship import Ship, CommandShip,DeathShip,DroidShip
+from src.mine import PhotonMine, VaporMine
 from src.const import WIN_WIDTH, WIN_HEIGHT
 
 
@@ -35,8 +36,8 @@ class Game:
         self.background.move(dt)
 
     def run(self):
-        ship = Ship(32, 32, 500, 600, 0.05, -0.15)
-        ship.set_image(filename="DroidShip.png")
+        ship = CommandShip(120,90)
+        mine = VaporMine(100,100)
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -45,7 +46,7 @@ class Game:
             dt = self.clock.tick(60)
 
             self.update(dt, ship)
-            self.draw(self.force_field, ship)
+            self.draw(self.force_field, ship, mine)
             pygame.display.update()
 
     def exit(self):
