@@ -1,6 +1,6 @@
 from src.base import Object
 import pygame
-
+from src.mine import PhotonMine,VaporMine
 
 class Ship(Object):
     """
@@ -59,6 +59,10 @@ class CommandShip(Ship):
         super().__init__(x, y, 1, 1)
         self.set_image("CommandShip.png")
         self.speed = 0.1
+
+    def drop_mine(self, enemies: list):
+        mine = PhotonMine()
+
 
 
 class DeathShip(Ship):

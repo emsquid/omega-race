@@ -21,7 +21,7 @@ class Mine(Object):
         self.points = points
 
 
-class Photon_Mine(Mine):
+class PhotonMine(Mine):
     """
     class Photon_Mine:
 
@@ -31,10 +31,11 @@ class Photon_Mine(Mine):
         """
         initialisation
         """
-        super().__init__(self, 10, 5, x, y, 350)
+        super().__init__(16, 16, x, y, 350)
+        self.set_image("PhotonMine.png")
 
 
-class Vapor_Mine(Mine):
+class VaporMine(Mine):
     """
     class Vapor_Mine:
 
@@ -44,4 +45,5 @@ class Vapor_Mine(Mine):
         """
         initialisation
         """
-        super().__init__(self, 10, 10, x, y, 500)
+        super().__init__(24, 24, x, y, 500)
+        self.set_image("VaporMine2.png")
