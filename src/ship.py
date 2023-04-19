@@ -8,10 +8,11 @@ class Ship(Object):
     Ships are the enemies in the games, they will try to kill the player
     """
 
-    def __init__(self, x: int, y: int, dx: int, dy: int):
+    def __init__(self, x: int, y: int, dx: int, dy: int, points: int):
         super().__init__(32, 32, x, y, dx, dy)
         self.rotation = 0
         self.speed = 0
+        self.points = points
 
     def draw(self, surface: pygame.Surface):
         """
@@ -47,7 +48,7 @@ class DroidShip(Ship):
     """
 
     def __init__(self, x: int, y: int):
-        super().__init__(x, y, 1, 0)
+        super().__init__(x, y, 1, 0, 1000)
         self.set_image("DroidShip.png")
         self.speed = 0.01
 
@@ -58,7 +59,7 @@ class CommandShip(Ship):
     """
 
     def __init__(self, x: int, y: int):
-        super().__init__(x, y, 1, 0)
+        super().__init__(x, y, 1, 0, 1500)
         self.set_image("CommandShip.png")
         self.speed = 0.1
 
@@ -76,7 +77,7 @@ class DeathShip(Ship):
     """
 
     def __init__(self, x: int = 0, y: int = 0):
-        super().__init__(x, y, 1, 1)
+        super().__init__(x, y, 1, 0, 2000)
         self.set_image("DeathShip.png")
         self.speed = 0.3
 
