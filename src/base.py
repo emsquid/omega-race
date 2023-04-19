@@ -1,5 +1,4 @@
 import pygame
-from threading import Timer
 from random import randrange, random
 from src.const import WIN_WIDTH, WIN_HEIGHT, BLACK, WHITE, RED
 
@@ -76,58 +75,3 @@ class Background:
             if star[1] < 0:
                 star[0] = randrange(WIN_WIDTH)
                 star[1] = WIN_HEIGHT
-
-
-class Force_Field:
-    def __init__(self):
-        self.borders = [
-            # Left and right borders
-            (Object(3, 383, 20, 20), (-1, 1)),
-            (Object(3, 383, 20, 400), (-1, 1)),
-            (Object(3, 383, 980, 20), (-1, 1)),
-            (Object(3, 383, 980, 400), (-1, 1)),
-            # Top and bottom borders
-            (Object(483, 3, 20, 20), (1, -1)),
-            (Object(483, 3, 500, 20), (1, -1)),
-            (Object(483, 3, 500, 780), (1, -1)),
-            (Object(483, 3, 20, 780), (1, -1)),
-        ]
-
-        self.panel = [
-            (Object(3, 203, 300, 300), (-1, 1)),
-            (Object(3, 203, 700, 300), (-1, 1)),
-            (Object(403, 3, 300, 300), (1, -1)),
-            (Object(403, 3, 300, 500), (1, -1)),
-        ]
-
-        for field, _ in self.borders + self.panel:
-            self.reset(field)
-
-    def draw(self, surface: pygame.Surface):
-        for field, _ in self.borders + self.panel:
-            field.draw(surface)
-
-    def bounce(self, object: Object):
-        for field, vector in self.borders + self.panel:
-            if object.collide(field):
-                self.activate(field)
-                object.dx *= vector[0]
-                object.dy *= vector[1]
-
-    def activate(self, field: Object):
-        if any(field == border for border, _ in self.borders):
-            image = pygame.Surface((field.width, field.height))
-            image.fill(WHITE)
-            field.set_image(surface=image)
-            Timer(0.15, self.reset, [field]).start()
-
-    def reset(self, field: Object):
-        if any(field == border for border, _ in self.borders):
-            image = pygame.Surface((field.width, field.height))
-            image.fill(WHITE, (0, 0, 3, 3))
-            image.fill(WHITE, (field.width - 3, field.height - 3, 3, 3))
-            field.set_image(surface=image)
-        else:
-            image = pygame.Surface((field.width, field.height))
-            image.fill(WHITE)
-            field.set_image(surface=image)

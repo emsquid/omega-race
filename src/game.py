@@ -1,6 +1,7 @@
 import sys
 import pygame
-from src.base import Object, Background, Force_Field
+from src.base import Object, Background
+from src.force_field import ForceField
 from src.ship import Ship
 from src.const import WIN_WIDTH, WIN_HEIGHT
 
@@ -19,7 +20,7 @@ class Game:
         self.screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT), pygame.RESIZABLE)
         self.clock = pygame.time.Clock()
         self.background = Background()
-        self.force_field = Force_Field()
+        self.force_field = ForceField()
 
     def draw(self, *objects: list[Object]):
         for obj in objects:
@@ -34,8 +35,8 @@ class Game:
         self.background.move(dt)
 
     def run(self):
-        ship = Ship(20, 20, 40, 40, 0.1, 0.2)
-        ship.set_image(filename="logo.ico")
+        ship = Ship(32, 32, 500, 600, 0.05, -0.15)
+        ship.set_image(filename="DroidShip.png")
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
