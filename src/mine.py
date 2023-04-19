@@ -31,8 +31,8 @@ class PhotonMine(Mine):
         """
         initialisation
         """
-        super().__init__(16, 16, x, y, 350)
-        self.set_image("PhotonMine.png")
+        super().__init__(15, 15, x, y, 350)
+        self.set_image("PhotonMine2.png")
 
 
 class VaporMine(Mine):
@@ -45,5 +45,5 @@ class VaporMine(Mine):
         """
         initialisation
         """
-        super().__init__(24, 24, x, y, 500)
+        super().__init__(25, 25, x, y, 500)
         self.set_image("VaporMine2.png")
