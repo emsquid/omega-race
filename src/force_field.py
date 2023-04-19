@@ -5,6 +5,11 @@ from src.const import WHITE
 
 
 class Border(Object):
+    """
+    A border draw the boundaries of the game field
+    It will bounce objects on collision
+    """
+
     def __init__(
         self, width: int, height: int, x: int, y: int, normal: (int, int), visible: bool
     ):
@@ -13,43 +18,60 @@ class Border(Object):
         self.visible = visible
 
     def draw(self, surface):
+        """
+        Draw a border on the surface,
+        The image differs if the border is visible
+        """
+        image = pygame.Surface((self.width, self.height))
         if self.visible:
-            image = pygame.Surface((self.width, self.height))
             image.fill(WHITE)
         else:
-            image = pygame.Surface((self.width, self.height))
             image.fill(WHITE, (0, 0, 3, 3))
             image.fill(WHITE, (self.width - 3, self.height - 3, 3, 3))
         surface.blit(image, (self.x, self.y))
 
-    def collide(self, other: Object) -> bool:
-        return (
-            self.x <= other.x + other.width
-            and other.x <= self.x + self.width
-            and self.y <= other.y + other.height
-            and other.y <= self.y + self.height
-        )
-
     def bounce(self, other: Object):
+        """
+        Bounce objects that collide with this border
+        The object should be a ship or the player
+        """
+        # We use dot product to know if the object should bounce on the collided border
         dot = self.normal[0] * other.dx + self.normal[1] * other.dy
         if self.collide(other) and dot < 0:
-            if self.normal[0] == 0:
-                other.dy *= -1
-            else:
+            if self.normal[0] != 0:
                 other.dx *= -1
-            if not self.visible:
-                self.blink()
+            else:
+                other.dy *= -1
+            self.blink()
 
-    def reset(self):
+    def show(self):
+        """
+        Make the border visible
+        """
+        self.visible = True
+
+    def hide(self):
+        """
+        Make the border invisible
+        """
         self.visible = False
 
     def blink(self):
-        self.visible = True
-        Timer(0.15, self.reset).start()
+        """
+        Make the border blink, it will show and hide after 0.15s
+        """
+        if not self.visible:
+            self.show()
+            Timer(0.15, self.hide).start()
 
 
 class ForceField:
+    """
+    The Force Field handles all borders simultaneously
+    """
+
     def __init__(self):
+        # Border for the boundaries of the game field
         self.borders = [
             # Left and right borders
             Border(3, 383, 20, 20, (1, 0), False),
@@ -63,6 +85,7 @@ class ForceField:
             Border(483, 3, 20, 780, (0, -1), False),
         ]
 
+        # Border for the display panel
         self.panel = [
             Border(3, 203, 300, 300, (-1, 0), True),
             Border(3, 203, 700, 300, (1, 0), True),
@@ -71,9 +94,15 @@ class ForceField:
         ]
 
     def draw(self, surface: pygame.Surface):
+        """
+        Draw all borders on the surface
+        """
         for border in self.borders + self.panel:
             border.draw(surface)
 
     def bounce(self, object: Object):
+        """
+        Check if the object should bounce on any border
+        """
         for border in self.borders + self.panel:
             border.bounce(object)
