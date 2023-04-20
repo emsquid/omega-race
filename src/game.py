@@ -1,7 +1,7 @@
 import sys
 import pygame
 from src.base import Object, Background
-from src.graphics import ForceField, Explosion
+from src.graphics import ForceField
 from src.sprite import Player, PhotonMine, VaporMine, DroidShip, CommandShip, DeathShip
 from src.const import WIN_WIDTH, WIN_HEIGHT
 from threading import Timer
