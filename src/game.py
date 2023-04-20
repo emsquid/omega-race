@@ -25,7 +25,7 @@ class Game:
         pygame.init()
 
         pygame.display.set_icon(pygame.image.load("src/assets/logo.ico"))
-        pygame.display.set_caption("Space Invaders")
+        pygame.display.set_caption("Omega Race")
 
         self.screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT), pygame.RESIZABLE)
         self.clock = pygame.time.Clock()
