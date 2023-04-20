@@ -3,6 +3,7 @@ import pygame
 from threading import Timer
 from random import randrange, random
 from src.base import Object
+from src.sprites import Laser
 from src.const import WIN_WIDTH, WIN_HEIGHT, BLACK, WHITE
 
 
@@ -140,3 +141,11 @@ class ForceField:
         """
         for border in self.borders + self.panel:
             border.bounce(object)
+
+    def crash(self, lasers: list[Laser]):
+        for laser in lasers:
+            for border in self.borders + self.panel:
+                if laser.collide(border):
+                    lasers.remove(laser)
+                    border.blink()
+                    break

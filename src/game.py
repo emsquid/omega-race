@@ -1,9 +1,8 @@
 import os
 import pygame
-from threading import Timer
 from src.base import Object
 from src.graphics import Background, ForceField
-from src.sprite import (
+from src.sprites import (
     Player,
     Mine,
     PhotonMine,
@@ -33,15 +32,23 @@ class Game:
         self.background = Background()
         self.force_field = ForceField()
 
-    def handle_events(self, player: Player):
+        self.player = Player()
+        self.enemies = [DroidShip(500, 650), CommandShip(100, 100), DeathShip(700, 600)]
+        self.mines = []
+        self.player_lasers = []
+        self.enemies_lasers = []
+
+        self.running = False
+
+    def handle_events(self):
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
                 self.exit()
             else:
-                player.handle_event(event)
+                self.player.handle_event(event)
 
-    def draw(self, *objects: list[Object]):
+    def draw(self, *objects: tuple[Object]):
         """
         Draw the objects on top of the background and display it
         """
@@ -50,50 +57,66 @@ class Game:
         game = pygame.transform.scale(self.background.image, self.screen.get_size())
         self.screen.blit(game, (0, 0))
 
-    def update(self, *objects: tuple[Object]):
+    def update(self):
         """
         Update the situation of all objects
         """
-        player = [obj for obj in objects if isinstance(obj, Player)][0]
-        mines = [obj for obj in objects if isinstance(obj, Mine)]
-        ships = [obj for obj in objects if isinstance(obj, Ship)]
-
-        # for obj in objects:
-        # if obj.state == "Dead":
-        # del obj
-
         dt = self.clock.tick(60)
-        for obj in objects:
-            obj.move(dt)
-            self.force_field.bounce(obj)
-        self.background.move(dt)
 
-        for obj in mines + ships:
-            if player.collide(obj):
-                obj.explode()
+        self.player.move(dt)
+        self.force_field.bounce(self.player)
+
+        for enemy in self.enemies:
+            enemy.move(dt)
+            self.force_field.bounce(enemy)
+            if self.player.collide(enemy):
+                enemy.explode()
+                self.enemies.remove(enemy)
+            if isinstance(enemy, CommandShip) and enemy.can_shoot():
+                enemy.shoot(self.player, self.enemies_lasers)
+            if isinstance(enemy, (CommandShip, DeathShip)) and enemy.can_drop():
+                enemy.drop_mine(self.mines)
+
+        for mine in self.mines:
+            if self.player.collide(mine):
+                mine.explode()
+                self.mines.remove(mine)
+
+        self.force_field.crash(self.player_lasers)
+        for laser in self.player_lasers:
+            laser.move(dt)
+            for enemy in self.enemies + self.mines:
+                if laser.collide(enemy):
+                    enemy.explode()
+                    self.enemies.remove(enemy)
+                    self.player_lasers.remove(laser)
+                    break
+
+        self.force_field.crash(self.enemies_lasers)
+        for laser in self.enemies_lasers:
+            laser.move(dt)
+            if laser.collide(self.player):
+                laser.explode()
+                self.enemies_lasers.remove(laser)
+
+        self.background.move(dt)
 
     def run(self):
         """
         Run the game instance to make it playable
         """
-        player = Player()
-        enemies = [
-            PhotonMine(800, 200),
-            VaporMine(100, 100),
-            DroidShip(500, 600),
-            CommandShip(170, 265),
-            DeathShip(50, 600),
-        ]
-        for enemy in enemies:
-            if type(enemy) == DeathShip or type(enemy) == CommandShip:
-                Timer(5.0, enemy.drop_mine, [enemies]).start()
-                            
-        Timer(5.0, enemies[0].explode).start()
-        Timer(4.0, enemies[3].shoot, [player,enemies]).start()   
-        while True:
-            self.handle_events(player)
-            self.update(player, *enemies)
-            self.draw(self.force_field, player, *enemies)
+        self.running = True
+        while self.running:
+            self.handle_events()
+            self.update()
+            self.draw(
+                self.force_field,
+                self.player,
+                *self.enemies,
+                *self.mines,
+                *self.player_lasers,
+                *self.enemies_lasers
+            )
             pygame.display.update()
 
     def exit(self):

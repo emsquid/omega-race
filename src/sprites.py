@@ -1,10 +1,10 @@
 import math
 import pygame
-import random
-import numpy as np
+from time import time
+from threading import Timer
+from random import randrange, random
 from src.base import Object
 from src.const import WHITE
-from threading import Timer
 
 
 class Player(Object):
@@ -16,15 +16,6 @@ class Player(Object):
         # left or right
         self.rotating = ""
         self.accelerate()
-
-    def draw(self, surface: pygame.Surface):
-        # Create the rotated image and center it properly
-        angle = -360 * (self.direction + math.pi / 2) / (2 * math.pi)
-        rotated_image = pygame.transform.rotate(self.image, angle)
-        rect = rotated_image.get_rect(
-            center=self.image.get_rect(topleft=(self.x, self.y)).center
-        ).topleft
-        surface.blit(rotated_image, rect)
 
     def move(self, dt):
         self.rotate(dt)
@@ -59,7 +50,7 @@ class Mine(Object):
     """
 
     def __init__(self, width: int, height: int, x: int, y: int, points: int):
-        super().__init__(width, height, x, y, 0, 0)
+        super().__init__(width, height, x, y, -math.pi / 2, 0)
         self.points = points
 
 
@@ -109,7 +100,7 @@ class Ship(Object):
         rotated_image = pygame.transform.rotate(self.image, self.rotation)
         rect = rotated_image.get_rect(
             center=self.image.get_rect(topleft=(self.x, self.y)).center
-        ).topleft
+        )
         surface.blit(rotated_image, rect)
 
     def level_up(self):
@@ -137,26 +128,28 @@ class CommandShip(Ship):
     def __init__(self, x: int, y: int):
         super().__init__(x, y, 0, 0.1, 1500)
         self.set_image("CommandShip.png")
+        self.last_drop = time()
+        self.last_shoot = time()
+
+    def can_drop(self) -> bool:
+        return time() - self.last_drop >= 15
+
+    def can_shoot(self) -> bool:
+        return time() - self.last_shoot >= 5
 
     def drop_mine(self, enemies: list):
         """
         Drop a Photon Mine at the ship's position
         """
-        mine = PhotonMine(self.x, self.y)
-        enemies.insert(0, mine)
-        Timer(random.randint(15, 30), self.drop_mine, [enemies]).start()
+        enemies.insert(0, PhotonMine(self.x, self.y))
+        self.last_drop = time()
 
-    def shoot(self, player: Player, enemies):
-        v1 = np.array([player.x - self.x, player.y - self.y])
-        v1 = v1 / np.linalg.norm(v1)
-        v2 = np.array([1, 0])
-        if self.y < player.y:
-            direction = np.arccos(np.dot(v2, v1))
-        else:
-            direction = -np.arccos(np.dot(v2, v1))
-        laser = Laser(self.x, self.y, direction)
-        enemies.append(laser)  # c'est nul il sont meme pas dans leurs liste
-        Timer(5.0, self.shoot, [player, enemies]).start()
+    def shoot(self, player: Player, lasers: list):
+        dx = player.x - self.x
+        dy = player.y - self.y
+        direction = math.atan2(dy, dx)
+        lasers.append(Laser(self.x, self.y, direction))
+        self.last_shoot = time()
 
 
 class DeathShip(Ship):
@@ -165,20 +158,23 @@ class DeathShip(Ship):
     """
 
     def __init__(self, x: int = 0, y: int = 0):
-        super().__init__(x, y, random.random() * math.pi * 2, 0.3, 2000)
+        super().__init__(x, y, random() * math.pi * 2, 0.3, 2000)
         self.set_image("DeathShip.png")
+        self.last_drop = time()
+
+    def can_drop(self) -> bool:
+        return time() - self.last_drop >= 15
 
     def drop_mine(self, enemies: list):
         """
         Drop a Vapor Mine at the ship's position
         """
-        mine_type = random.randint(0, 1)
+        mine_type = randrange(0, 2)
         if mine_type == 1:
-            mine = VaporMine(self.x, self.y)
+            enemies.insert(0, VaporMine(self.x, self.y))
         else:
-            mine = PhotonMine(self.x, self.y)
-        enemies.insert(0, mine)
-        Timer(random.randint(5, 15), self.drop_mine, [enemies]).start()
+            enemies.insert(0, PhotonMine(self.x, self.y))
+        self.last_drop = time()
 
 
 class Laser(Object):
@@ -188,4 +184,5 @@ class Laser(Object):
         super().__init__(2, 10, x, y, direction, 0.2)
         image = pygame.Surface((2, 15))
         image.fill(WHITE)
-        self.set_image(surface=image)
+        # Copy image for proper rotation
+        self.set_image(surface=image.copy())

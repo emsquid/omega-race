@@ -63,7 +63,13 @@ class Object:
         """
         Draw the object on the surface
         """
-        surface.blit(self.image, (self.x, self.y))
+        # Create the rotated image and center it properly
+        angle = -360 * (self.direction + math.pi / 2) / (2 * math.pi)
+        rotated_image = pygame.transform.rotate(self.image, angle)
+        rect = rotated_image.get_rect(
+            center=self.image.get_rect(topleft=(self.x, self.y)).center
+        )
+        surface.blit(rotated_image, rect)
 
     def move(self, dt: float):
         """
