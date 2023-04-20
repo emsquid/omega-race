@@ -1,6 +1,7 @@
 import math
 import pygame
 import random
+import numpy as np
 from src.base import Object
 from src.const import WHITE
 from threading import Timer
@@ -145,6 +146,18 @@ class CommandShip(Ship):
         enemies.insert(0, mine)
         Timer(random.randint(15, 30), self.drop_mine, [enemies]).start()
 
+    def shoot(self, player: Player, enemies):
+        v1 = np.array([player.x - self.x, player.y - self.y])
+        v1 = v1 / np.linalg.norm(v1)
+        v2 = np.array([1, 0])
+        if self.y < player.y:
+            direction = np.arccos(np.dot(v2, v1))
+        else:
+            direction = -np.arccos(np.dot(v2, v1))
+        laser = Laser(self.x, self.y, direction)
+        enemies.append(laser)  # c'est nul il sont meme pas dans leurs liste
+        Timer(5.0, self.shoot, [player, enemies]).start()
+
 
 class DeathShip(Ship):
     """
@@ -171,8 +184,8 @@ class DeathShip(Ship):
 class Laser(Object):
     """ """
 
-    def __init__(self, x: int, y: int, dx: int, dy: int):
-        super().__init__(2, 5, x, y, dx, dy)
-        image = pygame.Surface((2, 5))
+    def __init__(self, x: int, y: int, direction: float):
+        super().__init__(2, 10, x, y, direction, 0.2)
+        image = pygame.Surface((2, 15))
         image.fill(WHITE)
         self.set_image(surface=image)

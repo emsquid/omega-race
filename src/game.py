@@ -2,7 +2,7 @@ import os
 import pygame
 from src.base import Object
 from src.graphics import Background, ForceField
-from src.sprite import Player, PhotonMine, VaporMine, DroidShip, CommandShip, DeathShip
+from src.sprite import Player, PhotonMine, VaporMine, DroidShip, CommandShip, DeathShip, Laser
 from src.const import WIN_WIDTH, WIN_HEIGHT
 from threading import Timer
 
@@ -60,14 +60,15 @@ class Game:
             PhotonMine(800, 200),
             VaporMine(100, 100),
             DroidShip(500, 600),
-            CommandShip(700, 650),
+            CommandShip(170, 265),
             DeathShip(50, 600),
         ]
         for enemy in enemies:
             if type(enemy) == DeathShip or type(enemy) == CommandShip:
                 Timer(5.0, enemy.drop_mine, [enemies]).start()
-
+                            
         Timer(5.0, enemies[0].explode).start()
+        Timer(4.0, enemies[3].shoot, [player,enemies]).start()   
         while True:
             self.handle_events(player)
             self.update(player, *enemies)
