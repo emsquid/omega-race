@@ -2,6 +2,7 @@ import math
 import pygame
 import random
 from src.base import Object
+from src.const import WHITE
 from threading import Timer
 
 
@@ -165,3 +166,13 @@ class DeathShip(Ship):
             mine = PhotonMine(self.x, self.y)
         enemies.insert(0, mine)
         Timer(random.randint(5, 15), self.drop_mine, [enemies]).start()
+
+
+class Laser(Object):
+    """ """
+
+    def __init__(self, x: int, y: int, dx: int, dy: int):
+        super().__init__(2, 5, x, y, dx, dy)
+        image = pygame.Surface((2, 5))
+        image.fill(WHITE)
+        self.set_image(surface=image)
