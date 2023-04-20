@@ -1,5 +1,6 @@
 import math
 import pygame
+import random
 from src.base import Object
 
 
@@ -117,5 +118,9 @@ class DeathShip(Ship):
         """
         Drop a Vapor Mine at the ship's position
         """
-        mine = VaporMine(self.x, self.y)
+        mine_type = random.randint(0, 1)
+        if mine_type ==1 :
+            mine = VaporMine(self.x, self.y)
+        else:
+            mine = PhotonMine(self.x, self.y)
         enemies.insert(0, mine)
