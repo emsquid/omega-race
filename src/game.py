@@ -2,8 +2,7 @@ import sys
 import pygame
 from src.base import Object, Background
 from src.force_field import ForceField
-from src.ship import CommandShip, DeathShip, DroidShip
-from src.mine import PhotonMine, VaporMine
+from src.sprite import Player, CommandShip, VaporMine
 from src.const import WIN_WIDTH, WIN_HEIGHT
 
 
