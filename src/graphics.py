@@ -1,9 +1,9 @@
+import math
 import pygame
 from threading import Timer
 from src.base import Object
-from src.const import WHITE
 from random import randrange, random
-from src.const import WIN_WIDTH, WIN_HEIGHT, BLACK, WHITE, RED
+from src.const import WIN_WIDTH, WIN_HEIGHT, BLACK, WHITE
 
 
 class Background:
@@ -43,9 +43,9 @@ class Border(Object):
     """
 
     def __init__(
-        self, width: int, height: int, x: int, y: int, normal: (int, int), visible: bool
+        self, width: int, height: int, x: int, y: int, normal: float, visible: bool
     ):
-        super().__init__(width, height, x, y, 0, 0)
+        super().__init__(width, height, x, y, normal, 0)
         self.normal = normal
         self.visible = visible
 
@@ -68,12 +68,14 @@ class Border(Object):
         The object should be a ship or the player
         """
         # We use dot product to know if the object should bounce on the collided border
-        dot = self.normal[0] * other.dx + self.normal[1] * other.dy
+        dot = math.cos(self.normal) * math.cos(other.direction) + math.sin(
+            self.normal
+        ) * math.sin(other.direction)
         if self.collide(other) and dot < 0:
-            if self.normal[0] != 0:
-                other.dx *= -1
+            if math.cos(self.normal) != 0:
+                other.direction = math.pi - other.direction
             else:
-                other.dy *= -1
+                other.direction = -other.direction
             self.blink()
 
     def show(self):
@@ -106,23 +108,23 @@ class ForceField:
         # Border for the boundaries of the game field
         self.borders = [
             # Left and right borders
-            Border(3, 383, 20, 20, (1, 0), False),
-            Border(3, 383, 20, 400, (1, 0), False),
-            Border(3, 383, 980, 20, (-1, 0), False),
-            Border(3, 383, 980, 400, (-1, 0), False),
+            Border(3, 383, 20, 20, 0, False),
+            Border(3, 383, 20, 400, 0, False),
+            Border(3, 383, 980, 20, math.pi, False),
+            Border(3, 383, 980, 400, math.pi, False),
             # Top and bottom borders
-            Border(483, 3, 20, 20, (0, 1), False),
-            Border(483, 3, 500, 20, (0, 1), False),
-            Border(483, 3, 20, 780, (0, -1), False),
-            Border(483, 3, 500, 780, (0, -1), False),
+            Border(483, 3, 20, 20, -math.pi / 2, False),
+            Border(483, 3, 500, 20, -math.pi / 2, False),
+            Border(483, 3, 20, 780, math.pi / 2, False),
+            Border(483, 3, 500, 780, math.pi / 2, False),
         ]
 
         # Border for the display panel
         self.panel = [
-            Border(3, 203, 300, 300, (-1, 0), True),
-            Border(3, 203, 700, 300, (1, 0), True),
-            Border(403, 3, 300, 300, (0, -1), True),
-            Border(403, 3, 300, 500, (0, 1), True),
+            Border(3, 203, 700, 300, 0, True),
+            Border(3, 203, 300, 300, math.pi, True),
+            Border(403, 3, 300, 500, -math.pi / 2, True),
+            Border(403, 3, 300, 300, math.pi / 2, True),
         ]
 
     def draw(self, surface: pygame.Surface):
@@ -138,11 +140,7 @@ class ForceField:
         """
         for border in self.borders + self.panel:
             border.bounce(object)
-        
+
 
 class Explosion:
     pass
-
-
-
-
