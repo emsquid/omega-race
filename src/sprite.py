@@ -1,4 +1,4 @@
-from base import Object
+from src.base import Object
 import pygame
 
 
@@ -124,7 +124,7 @@ class DeathShip(Ship):
     """
 
     def __init__(self, x: int = 0, y: int = 0):
-        super().__init__(x, y, 1, 0, 2000)
+        super().__init__(x, y, -1, 0, 2000)
         self.set_image("DeathShip.png")
         self.speed = 0.3
 

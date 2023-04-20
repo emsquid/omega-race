@@ -77,12 +77,12 @@ class ForceField:
             Border(3, 383, 20, 20, (1, 0), False),
             Border(3, 383, 20, 400, (1, 0), False),
             Border(3, 383, 980, 20, (-1, 0), False),
-            Border(3, 383, 20, 400, (-1, 0), False),
+            Border(3, 383, 980, 400, (-1, 0), False),
             # Top and bottom borders
             Border(483, 3, 20, 20, (0, 1), False),
             Border(483, 3, 500, 20, (0, 1), False),
-            Border(483, 3, 500, 780, (0, -1), False),
             Border(483, 3, 20, 780, (0, -1), False),
+            Border(483, 3, 500, 780, (0, -1), False),
         ]
 
         # Border for the display panel

@@ -2,7 +2,7 @@ import sys
 import pygame
 from src.base import Object, Background
 from src.force_field import ForceField
-from src.sprite import Player, CommandShip, VaporMine
+from src.sprite import Player, CommandShip, VaporMine, DeathShip
 from src.const import WIN_WIDTH, WIN_HEIGHT
 
 
@@ -46,7 +46,7 @@ class Game:
         """
         Run the game instance to make it playable
         """
-        ship = CommandShip(50, 40)
+        ship = DeathShip(50, 600)
         mine = VaporMine(100, 100)
         enemies = [ship, mine]
         while True:
