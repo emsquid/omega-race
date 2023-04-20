@@ -101,7 +101,7 @@ class CommandShip(Ship):
         Drop a Photon Mine at the ship's position
         """
         mine = PhotonMine(self.x, self.y)
-        enemies.append(mine)
+        enemies.insert(0, mine)
 
 
 class DeathShip(Ship):
@@ -118,4 +118,4 @@ class DeathShip(Ship):
         Drop a Vapor Mine at the ship's position
         """
         mine = VaporMine(self.x, self.y)
-        enemies.append(mine)
+        enemies.insert(0, mine)

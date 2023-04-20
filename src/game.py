@@ -4,6 +4,7 @@ from src.base import Object, Background
 from src.force_field import ForceField
 from src.sprite import Player, PhotonMine, VaporMine, DroidShip, CommandShip, DeathShip
 from src.const import WIN_WIDTH, WIN_HEIGHT
+from threading import Timer
 
 
 class Game:
@@ -54,6 +55,7 @@ class Game:
             CommandShip(700, 650),
             DeathShip(50, 600),
         ]
+        Timer(5.0, enemies[3].drop_mine, [enemies]).start()
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
