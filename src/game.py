@@ -63,7 +63,11 @@ class Game:
             CommandShip(700, 650),
             DeathShip(50, 600),
         ]
-        Timer(5.0, enemies[3].drop_mine, [enemies]).start()
+        for enemy in enemies:
+            if type(enemy) == DeathShip or type(enemy) == CommandShip:
+                Timer(5.0, enemy.drop_mine, [enemies]).start()
+
+        Timer(5.0, enemies[0].explode).start()
         while True:
             self.handle_events(player)
             self.update(player, *enemies)

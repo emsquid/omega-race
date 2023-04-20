@@ -2,6 +2,7 @@ import math
 import pygame
 import random
 from src.base import Object
+from threading import Timer
 
 
 class Player(Object):
@@ -9,7 +10,7 @@ class Player(Object):
 
     def __init__(self):
         super().__init__(32, 32, 500, 200, -math.pi / 2, 0)
-        self.set_image("player.png")
+        self.set_image("Player.png")
         # left or right
         self.rotating = ""
         self.accelerate()
@@ -141,6 +142,7 @@ class CommandShip(Ship):
         """
         mine = PhotonMine(self.x, self.y)
         enemies.insert(0, mine)
+        Timer(random.randint(15, 30), self.drop_mine, [enemies]).start()
 
 
 class DeathShip(Ship):
@@ -162,3 +164,4 @@ class DeathShip(Ship):
         else:
             mine = PhotonMine(self.x, self.y)
         enemies.insert(0, mine)
+        Timer(random.randint(5, 15), self.drop_mine, [enemies]).start()

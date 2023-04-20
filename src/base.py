@@ -2,6 +2,7 @@ import math
 import pygame
 from random import randrange, random
 from src.const import WIN_WIDTH, WIN_HEIGHT, BLACK, WHITE, RED
+from threading import Timer
 
 
 class Object:
@@ -83,6 +84,11 @@ class Object:
             and self.y <= other.y + other.height
             and other.y <= self.y + self.height
         )
+
+    def explode(self, step: int = 1):
+        if step <= 6:
+            self.set_image(f"Explosion{step}.png")
+            Timer(0.1, self.explode, [step + 1]).start()
 
 
 class Background:
