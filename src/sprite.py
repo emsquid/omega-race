@@ -34,7 +34,7 @@ class PhotonMine(Mine):
         initialisation
         """
         super().__init__(15, 15, x, y, 350)
-        self.set_image("PhotonMine2.png")
+        self.set_image("PhotonMine.png")
 
 
 class VaporMine(Mine):
@@ -47,7 +47,7 @@ class VaporMine(Mine):
         initialisation
         """
         super().__init__(25, 25, x, y, 500)
-        self.set_image("VaporMine2.png")
+        self.set_image("VaporMine.png")
 
 
 class Ship(Object):
@@ -107,7 +107,7 @@ class CommandShip(Ship):
 
     def __init__(self, x: int, y: int):
         super().__init__(x, y, 1, 0, 1500)
-        self.set_image("CommandShip2.png")
+        self.set_image("CommandShip.png")
         self.speed = 0.1
 
     def drop_mine(self, enemies: list):
@@ -115,7 +115,7 @@ class CommandShip(Ship):
         Drop a Photon Mine at the ship's position
         """
         mine = PhotonMine(self.x, self.y)
-        enemies.append(mine)
+        enemies.insert(0,mine)
 
 
 class DeathShip(Ship):
@@ -133,4 +133,5 @@ class DeathShip(Ship):
         Drop a Vapor Mine at the ship's position
         """
         mine = VaporMine(self.x, self.y)
-        enemies.append(mine)
+        enemies.insert(0,mine)
+

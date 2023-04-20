@@ -15,8 +15,8 @@ class Object:
         height: int,
         x: int,
         y: int,
-        dx: int,
-        dy: int,
+        dx: int = 0,
+        dy: int = 0,
     ):
         self.set_size(width, height)
         self.set_position(x, y)
