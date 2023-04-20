@@ -72,10 +72,10 @@ class Border(Object):
             self.normal
         ) * math.sin(other.direction)
         if self.collide(other) and dot < 0:
-            if math.cos(self.normal) != 0:
-                other.direction = math.pi - other.direction
+            if round(math.cos(self.normal), 5) != 0:
+                other.set_direction(math.pi - other.direction)
             else:
-                other.direction = -other.direction
+                other.set_direction(-other.direction)
             self.blink()
 
     def show(self):
@@ -113,18 +113,18 @@ class ForceField:
             Border(3, 383, 980, 20, math.pi, False),
             Border(3, 383, 980, 400, math.pi, False),
             # Top and bottom borders
-            Border(483, 3, 20, 20, -math.pi / 2, False),
-            Border(483, 3, 500, 20, -math.pi / 2, False),
-            Border(483, 3, 20, 780, math.pi / 2, False),
-            Border(483, 3, 500, 780, math.pi / 2, False),
+            Border(483, 3, 20, 20, math.pi / 2, False),
+            Border(483, 3, 500, 20, math.pi / 2, False),
+            Border(483, 3, 20, 780, -math.pi / 2, False),
+            Border(483, 3, 500, 780, -math.pi / 2, False),
         ]
 
         # Border for the display panel
         self.panel = [
             Border(3, 203, 700, 300, 0, True),
             Border(3, 203, 300, 300, math.pi, True),
-            Border(403, 3, 300, 500, -math.pi / 2, True),
-            Border(403, 3, 300, 300, math.pi / 2, True),
+            Border(403, 3, 300, 500, math.pi / 2, True),
+            Border(403, 3, 300, 300, -math.pi / 2, True),
         ]
 
     def draw(self, surface: pygame.Surface):
