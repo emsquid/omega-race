@@ -1,10 +1,19 @@
 import os
 import pygame
+from threading import Timer
 from src.base import Object
 from src.graphics import Background, ForceField
-from src.sprite import Player, PhotonMine, VaporMine, DroidShip, CommandShip, DeathShip, Laser
+from src.sprite import (
+    Player,
+    Mine,
+    PhotonMine,
+    VaporMine,
+    Ship,
+    DroidShip,
+    CommandShip,
+    DeathShip,
+)
 from src.const import WIN_WIDTH, WIN_HEIGHT
-from threading import Timer
 
 
 class Game:
@@ -41,15 +50,27 @@ class Game:
         game = pygame.transform.scale(self.background.image, self.screen.get_size())
         self.screen.blit(game, (0, 0))
 
-    def update(self, *objects: list[Object]):
+    def update(self, *objects: tuple[Object]):
         """
         Update the situation of all objects
         """
+        player = [obj for obj in objects if isinstance(obj, Player)][0]
+        mines = [obj for obj in objects if isinstance(obj, Mine)]
+        ships = [obj for obj in objects if isinstance(obj, Ship)]
+
+        # for obj in objects:
+        # if obj.state == "Dead":
+        # del obj
+
         dt = self.clock.tick(60)
         for obj in objects:
             obj.move(dt)
             self.force_field.bounce(obj)
         self.background.move(dt)
+
+        for obj in mines + ships:
+            if player.collide(obj):
+                obj.explode()
 
     def run(self):
         """

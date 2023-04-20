@@ -165,7 +165,7 @@ class DeathShip(Ship):
     """
 
     def __init__(self, x: int = 0, y: int = 0):
-        super().__init__(x, y, 0, 0.3, 2000)
+        super().__init__(x, y, random.random() * math.pi * 2, 0.3, 2000)
         self.set_image("DeathShip.png")
 
     def drop_mine(self, enemies: list):

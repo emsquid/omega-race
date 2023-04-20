@@ -1,8 +1,7 @@
 import math
 import pygame
-from random import randrange, random
-from src.const import WIN_WIDTH, WIN_HEIGHT, BLACK, WHITE, RED
 from threading import Timer
+from src.const import RED
 
 
 class Object:
@@ -86,36 +85,7 @@ class Object:
         )
 
     def explode(self, step: int = 1):
+        # TODO
         if step <= 6:
             self.set_image(f"Explosion{step}.png")
             Timer(0.1, self.explode, [step + 1]).start()
-
-
-class Background:
-    """
-    The Background of the game, every other object will be displayed over it
-    There are stars moving, so beautiful
-    """
-
-    def __init__(self):
-        self.image = pygame.Surface((WIN_WIDTH, WIN_HEIGHT))
-        self.stars = [
-            [
-                randrange(WIN_WIDTH),
-                randrange(WIN_HEIGHT),
-                random() / 20,
-            ]
-            for i in range(100)
-        ]
-
-    def move(self, dt: int):
-        """
-        Move stars on the background
-        """
-        self.image.fill(BLACK)
-        for star in self.stars:
-            pygame.draw.line(self.image, WHITE, (star[0], star[1]), (star[0], star[1]))
-            star[1] -= star[2] * dt
-            if star[1] < 0:
-                star[0] = randrange(WIN_WIDTH)
-                star[1] = WIN_HEIGHT
