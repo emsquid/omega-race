@@ -8,8 +8,46 @@ class Player(Object):
     """ """
 
     def __init__(self):
-        super().__init__(32, 32, 500, 200, 0, 0)
+        super().__init__(32, 32, 500, 200, -math.pi / 2, 0)
         self.set_image("player.png")
+        # left or right
+        self.rotating = ""
+        self.accelerate()
+
+    def draw(self, surface: pygame.Surface):
+        # Create the rotated image and center it properly
+        angle = -360 * (self.direction + math.pi / 2) / (2 * math.pi)
+        rotated_image = pygame.transform.rotate(self.image, angle)
+        rect = rotated_image.get_rect(
+            center=self.image.get_rect(topleft=(self.x, self.y)).center
+        ).topleft
+        surface.blit(rotated_image, rect)
+
+    def move(self, dt):
+        self.rotate(dt)
+        self.x += math.cos(self.direction) * self.speed * dt
+        self.y += math.sin(self.direction) * self.speed * dt
+
+    def accelerate(self):
+        self.speed += 0.1
+
+    def rotate(self, dt: int):
+        if self.rotating == "left":
+            self.direction -= dt * math.pi / 1000
+        elif self.rotating == "right":
+            self.direction += dt * math.pi / 1000
+
+    def handle_event(self, event: pygame.event.Event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                self.rotating = "left"
+            elif event.key == pygame.K_RIGHT:
+                self.rotating = "right"
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT and self.rotating == "left":
+                self.rotating = ""
+            elif event.key == pygame.K_RIGHT and self.rotating == "right":
+                self.rotating = ""
 
 
 class Mine(Object):
@@ -119,7 +157,7 @@ class DeathShip(Ship):
         Drop a Vapor Mine at the ship's position
         """
         mine_type = random.randint(0, 1)
-        if mine_type ==1 :
+        if mine_type == 1:
             mine = VaporMine(self.x, self.y)
         else:
             mine = PhotonMine(self.x, self.y)

@@ -1,7 +1,7 @@
-import sys
+import os
 import pygame
-from src.base import Object, Background
-from src.force_field import ForceField
+from src.base import Object
+from src.graphics import Background, ForceField
 from src.sprite import Player, PhotonMine, VaporMine, DroidShip, CommandShip, DeathShip
 from src.const import WIN_WIDTH, WIN_HEIGHT
 from threading import Timer
@@ -23,6 +23,14 @@ class Game:
         self.clock = pygame.time.Clock()
         self.background = Background()
         self.force_field = ForceField()
+
+    def handle_events(self, player: Player):
+        events = pygame.event.get()
+        for event in events:
+            if event.type == pygame.QUIT:
+                self.exit()
+            else:
+                player.handle_event(event)
 
     def draw(self, *objects: list[Object]):
         """
@@ -57,10 +65,7 @@ class Game:
         ]
         Timer(5.0, enemies[3].drop_mine, [enemies]).start()
         while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.exit()
-
+            self.handle_events(player)
             self.update(player, *enemies)
             self.draw(self.force_field, player, *enemies)
             pygame.display.update()
@@ -70,4 +75,4 @@ class Game:
         Close the window and exit the program
         """
         pygame.quit()
-        sys.exit(0)
+        os._exit(0)
