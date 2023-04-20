@@ -1,3 +1,4 @@
+import math
 import pygame
 from random import randrange, random
 from src.const import WIN_WIDTH, WIN_HEIGHT, BLACK, WHITE, RED
@@ -10,17 +11,12 @@ class Object:
     """
 
     def __init__(
-        self,
-        width: int,
-        height: int,
-        x: int,
-        y: int,
-        dx: int = 0,
-        dy: int = 0,
+        self, width: int, height: int, x: int, y: int, direction: float, speed: int
     ):
         self.set_size(width, height)
         self.set_position(x, y)
-        self.set_direction(dx, dy)
+        self.set_direction(direction)
+        self.set_speed(speed)
         self.set_image()
 
     def set_size(self, width: int, height: int):
@@ -37,12 +33,17 @@ class Object:
         self.x = x
         self.y = y
 
-    def set_direction(self, dx: int, dy: int):
+    def set_direction(self, direction: float):
         """
         Set the direction of the object
         """
-        self.dx = dx
-        self.dy = dy
+        self.direction = direction
+
+    def set_speed(self, speed: int):
+        """
+        Set the speed of the object
+        """
+        self.speed = speed
 
     def set_image(self, filename: str = None, surface: pygame.Surface = None):
         """
@@ -69,8 +70,8 @@ class Object:
         Move the object
         We use dt to make the object move at the same speed on any computer
         """
-        self.x += self.dx * dt
-        self.y += self.dy * dt
+        self.x += math.cos(self.direction) * self.speed * dt
+        self.y += math.sin(self.direction) * self.speed * dt
 
     def collide(self, other) -> bool:
         """
