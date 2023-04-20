@@ -1,8 +1,8 @@
 import math
 import pygame
 from threading import Timer
-from src.base import Object
 from random import randrange, random
+from src.base import Object
 from src.const import WIN_WIDTH, WIN_HEIGHT, BLACK, WHITE
 
 
@@ -140,5 +140,3 @@ class ForceField:
         """
         for border in self.borders + self.panel:
             border.bounce(object)
-
-
