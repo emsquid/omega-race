@@ -1,17 +1,14 @@
-from src.base import Object
+import math
 import pygame
+from src.base import Object
 
 
 class Player(Object):
-    """
-    class Player:
-
-    -
-    -
-    """
+    """ """
 
     def __init__(self):
-        super().__init__(32, 32, 500, 200, 1, 1)
+        super().__init__(32, 32, 500, 200, 0, 0)
+        self.set_image("player.png")
 
 
 class Mine(Object):
@@ -34,7 +31,7 @@ class PhotonMine(Mine):
         initialisation
         """
         super().__init__(15, 15, x, y, 350)
-        self.set_image("PhotonMine2.png")
+        self.set_image("PhotonMine.png")
 
 
 class VaporMine(Mine):
@@ -47,7 +44,7 @@ class VaporMine(Mine):
         initialisation
         """
         super().__init__(25, 25, x, y, 500)
-        self.set_image("VaporMine2.png")
+        self.set_image("VaporMine.png")
 
 
 class Ship(Object):
@@ -55,10 +52,9 @@ class Ship(Object):
     Ships are the enemies in the games, they will try to kill the player
     """
 
-    def __init__(self, x: int, y: int, dx: int, dy: int, points: int):
-        super().__init__(32, 32, x, y, dx, dy)
+    def __init__(self, x: int, y: int, direction: float, speed: float, points: int):
+        super().__init__(32, 32, x, y, direction, speed)
         self.rotation = 0
-        self.speed = 0
         self.points = points
 
     def draw(self, surface: pygame.Surface):
@@ -74,14 +70,6 @@ class Ship(Object):
         ).topleft
         surface.blit(rotated_image, rect)
 
-    def move(self, dt: float):
-        """
-        Move the ship
-        The ship movements are also affected by its speed
-        """
-        self.x += self.dx * dt * self.speed
-        self.y += self.dy * dt * self.speed
-
     def level_up(self):
         """
         Level up the ship, increasing its speed
@@ -95,9 +83,8 @@ class DroidShip(Ship):
     """
 
     def __init__(self, x: int, y: int):
-        super().__init__(x, y, 1, 0, 1000)
+        super().__init__(x, y, 0, 0.01, 1000)
         self.set_image("DroidShip.png")
-        self.speed = 0.01
 
 
 class CommandShip(Ship):
@@ -106,9 +93,8 @@ class CommandShip(Ship):
     """
 
     def __init__(self, x: int, y: int):
-        super().__init__(x, y, 1, 0, 1500)
-        self.set_image("CommandShip2.png")
-        self.speed = 0.1
+        super().__init__(x, y, 0, 0.1, 1500)
+        self.set_image("CommandShip.png")
 
     def drop_mine(self, enemies: list):
         """
@@ -124,9 +110,8 @@ class DeathShip(Ship):
     """
 
     def __init__(self, x: int = 0, y: int = 0):
-        super().__init__(x, y, -1, 0, 2000)
+        super().__init__(x, y, 0, 0.3, 2000)
         self.set_image("DeathShip.png")
-        self.speed = 0.3
 
     def drop_mine(self, enemies: list):
         """

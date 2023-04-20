@@ -2,7 +2,7 @@ import sys
 import pygame
 from src.base import Object, Background
 from src.force_field import ForceField
-from src.sprite import Player, CommandShip, VaporMine, DeathShip
+from src.sprite import Player, PhotonMine, VaporMine, DroidShip, CommandShip, DeathShip
 from src.const import WIN_WIDTH, WIN_HEIGHT
 
 
@@ -46,16 +46,21 @@ class Game:
         """
         Run the game instance to make it playable
         """
-        ship = DeathShip(50, 600)
-        mine = VaporMine(100, 100)
-        enemies = [ship, mine]
+        player = Player()
+        enemies = [
+            PhotonMine(800, 200),
+            VaporMine(100, 100),
+            DroidShip(500, 600),
+            CommandShip(700, 650),
+            DeathShip(50, 600),
+        ]
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.exit()
 
-            self.update(*enemies)
-            self.draw(self.force_field, *enemies)
+            self.update(player, *enemies)
+            self.draw(self.force_field, player, *enemies)
             pygame.display.update()
 
     def exit(self):
