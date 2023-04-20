@@ -142,5 +142,3 @@ class ForceField:
             border.bounce(object)
 
 
-class Explosion:
-    pass
