@@ -3,7 +3,7 @@ import pygame
 from threading import Timer
 from random import randrange, random
 from src.base import Object
-from src.sprites import Laser
+from src.sprites import Player, Laser
 from src.const import WIN_WIDTH, WIN_HEIGHT, BLACK, WHITE
 
 
@@ -46,7 +46,7 @@ class Border(Object):
     def __init__(
         self, width: int, height: int, x: int, y: int, normal: float, visible: bool
     ):
-        super().__init__(width, height, x, y, normal, 0)
+        super().__init__(width, height, x, y, normal, normal, 0)
         self.normal = normal
         self.visible = visible
 
@@ -77,6 +77,8 @@ class Border(Object):
                 other.set_direction(math.pi - other.direction)
             else:
                 other.set_direction(-other.direction)
+            if isinstance(other, Player):
+                other.set_speed(other.speed * 0.75)
             self.blink()
 
     def show(self):

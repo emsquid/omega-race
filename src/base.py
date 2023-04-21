@@ -11,11 +11,19 @@ class Object:
     """
 
     def __init__(
-        self, width: int, height: int, x: int, y: int, direction: float, speed: int
+        self,
+        width: int,
+        height: int,
+        x: int,
+        y: int,
+        direction: float,
+        rotation: float,
+        speed: int,
     ):
         self.set_size(width, height)
         self.set_position(x, y)
         self.set_direction(direction)
+        self.set_rotation(rotation)
         self.set_speed(speed)
         self.set_image()
 
@@ -38,6 +46,9 @@ class Object:
         Set the direction of the object
         """
         self.direction = direction
+
+    def set_rotation(self, rotation: float):
+        self.rotation = rotation
 
     def set_speed(self, speed: int):
         """
@@ -64,7 +75,7 @@ class Object:
         Draw the object on the surface
         """
         # Create the rotated image and center it properly
-        angle = -360 * (self.direction + math.pi / 2) / (2 * math.pi)
+        angle = -360 * (self.rotation + math.pi / 2) / (2 * math.pi)
         rotated_image = pygame.transform.rotate(self.image, angle)
         rect = rotated_image.get_rect(
             center=self.image.get_rect(topleft=(self.x, self.y)).center

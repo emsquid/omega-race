@@ -1,7 +1,6 @@
 import math
 import pygame
 from time import time
-from threading import Timer
 from random import randrange, random
 from src.base import Object
 from src.const import WHITE
@@ -11,25 +10,30 @@ class Player(Object):
     """ """
 
     def __init__(self):
-        super().__init__(32, 32, 500, 200, -math.pi / 2, 0)
+        super().__init__(32, 32, 500, 200, -math.pi / 2, -math.pi / 2, 0)
         self.set_image("Player.png")
         # left or right
         self.rotating = ""
-        self.accelerate()
+        self.last_thrust = 0
+
+    def can_thrust(self) -> bool:
+        return time() - self.last_thrust >= 1
 
     def move(self, dt):
         self.rotate(dt)
         self.x += math.cos(self.direction) * self.speed * dt
         self.y += math.sin(self.direction) * self.speed * dt
 
-    def accelerate(self):
-        self.speed += 0.1
+    def thrust(self):
+        self.speed = 0.2
+        self.direction = self.rotation
+        self.last_thrust = time()
 
     def rotate(self, dt: int):
         if self.rotating == "left":
-            self.direction -= dt * math.pi / 1000
+            self.rotation -= dt * math.pi / 1000
         elif self.rotating == "right":
-            self.direction += dt * math.pi / 1000
+            self.rotation += dt * math.pi / 1000
 
     def handle_event(self, event: pygame.event.Event):
         if event.type == pygame.KEYDOWN:
@@ -37,6 +41,8 @@ class Player(Object):
                 self.rotating = "left"
             elif event.key == pygame.K_RIGHT:
                 self.rotating = "right"
+            elif event.key == pygame.K_UP and self.can_thrust():
+                self.thrust()
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT and self.rotating == "left":
                 self.rotating = ""
@@ -50,7 +56,7 @@ class Mine(Object):
     """
 
     def __init__(self, width: int, height: int, x: int, y: int, points: int):
-        super().__init__(width, height, x, y, -math.pi / 2, 0)
+        super().__init__(width, height, x, y, -math.pi / 2, -math.pi / 2, 0)
         self.points = points
 
 
@@ -86,22 +92,13 @@ class Ship(Object):
     """
 
     def __init__(self, x: int, y: int, direction: float, speed: float, points: int):
-        super().__init__(32, 32, x, y, direction, speed)
-        self.rotation = 0
+        super().__init__(32, 32, x, y, direction, direction, speed)
         self.points = points
 
-    def draw(self, surface: pygame.Surface):
-        """
-        Draw the ship on the surface
-        The ship also rotates
-        """
-        self.rotation += 1
-        # Create the rotated image and center it properly
-        rotated_image = pygame.transform.rotate(self.image, self.rotation)
-        rect = rotated_image.get_rect(
-            center=self.image.get_rect(topleft=(self.x, self.y)).center
-        )
-        surface.blit(rotated_image, rect)
+    def move(self, dt: int):
+        self.rotation += 2 * math.pi / 360
+        self.x += math.cos(self.direction) * self.speed * dt
+        self.y += math.sin(self.direction) * self.speed * dt
 
     def level_up(self):
         """
@@ -181,7 +178,7 @@ class Laser(Object):
     """ """
 
     def __init__(self, x: int, y: int, direction: float):
-        super().__init__(2, 10, x, y, direction, 0.2)
+        super().__init__(2, 10, x, y, direction, direction, 0.2)
         image = pygame.Surface((2, 15))
         image.fill(WHITE)
         # Copy image for proper rotation
