@@ -65,7 +65,7 @@ class Object:
         it can be retrieved from a file or given directly as a surface
         """
         if not filename is None:
-            self.image = pygame.image.load(f"src/assets/{filename}")
+            self.image = pygame.image.load(f"assets/{filename}")
         elif not surface is None:
             self.image = surface
         else:

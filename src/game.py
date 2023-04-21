@@ -1,13 +1,10 @@
 import os
 import pygame
+from random import randrange
 from src.base import Object
 from src.graphics import Background, ForceField
 from src.sprites import (
     Player,
-    Mine,
-    PhotonMine,
-    VaporMine,
-    Ship,
     DroidShip,
     CommandShip,
     DeathShip,
@@ -24,7 +21,7 @@ class Game:
     def __init__(self):
         pygame.init()
 
-        pygame.display.set_icon(pygame.image.load("src/assets/logo.ico"))
+        pygame.display.set_icon(pygame.image.load("assets/Icon.png"))
         pygame.display.set_caption("Omega Race")
 
         self.screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT), pygame.RESIZABLE)
@@ -33,7 +30,11 @@ class Game:
         self.force_field = ForceField()
 
         self.player = Player()
-        self.enemies = [DroidShip(500, 650), CommandShip(100, 100), DeathShip(700, 600)]
+        self.enemies = (
+            [DroidShip(randrange(200, 800), randrange(550, 750)) for i in range(4)]
+            + [CommandShip(randrange(200, 800), randrange(550, 750)) for i in range(2)]
+            + [DeathShip(randrange(200, 800), randrange(550, 750)) for i in range(1)]
+        )
         self.mines = []
         self.player_lasers = []
         self.enemies_lasers = []
@@ -100,7 +101,10 @@ class Game:
             for enemy in self.enemies + self.mines:
                 if laser.collide(enemy):
                     enemy.explode()
-                    self.enemies.remove(enemy)
+                    if enemy in self.enemies:
+                        self.enemies.remove(enemy)
+                    else:
+                        self.mines.remove(enemy)
                     self.player_lasers.remove(laser)
                     break
 

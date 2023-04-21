@@ -7,7 +7,9 @@ from src.const import WHITE
 
 
 class Player(Object):
-    """ """
+    """
+    It's you, you can move, rotate, thrust and shoot, good luck
+    """
 
     def __init__(self):
         super().__init__(32, 32, 500, 200, -math.pi / 2, -math.pi / 2, 0)
@@ -18,47 +20,49 @@ class Player(Object):
         self.rotating = ""
 
     def can_thrust(self) -> bool:
+        """
+        Whether you can thrust or not
+        """
         return time() - self.last_thrust >= 1
 
     def can_shoot(self) -> bool:
+        """
+        Whether you can shoot or not
+        """
         return time() - self.last_shoot >= 1
 
     def move(self, dt):
+        """
+        Move and rotate if needed
+        """
         self.rotate(dt)
         self.x += math.cos(self.direction) * self.speed * dt
         self.y += math.sin(self.direction) * self.speed * dt
 
     def thrust(self):
+        """
+        Thrust in the direction the player is pointing
+        """
         self.speed = 0.2
         self.direction = self.rotation
         self.last_thrust = time()
 
     def shoot(self, lasers: list[Object]):
+        """
+        Shoot a laser
+        """
         x, y = self.image.get_rect(topleft=(self.x, self.y)).center
         lasers.append(Laser(x, y, self.rotation))
         self.last_shoot = time()
 
     def rotate(self, dt: int):
+        """
+        Rotate the player
+        """
         if self.rotating == "left":
             self.rotation -= dt * math.pi / 1000
         elif self.rotating == "right":
             self.rotation += dt * math.pi / 1000
-
-    def handle_event(self, event: pygame.event.Event):
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                self.rotating = "left"
-            elif event.key == pygame.K_RIGHT:
-                self.rotating = "right"
-            elif event.key == pygame.K_UP and self.can_thrust():
-                self.thrust()
-            elif event.key == pygame.K_SPACE and self.can_shoot():
-                self.shoot()
-        elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT and self.rotating == "left":
-                self.rotating = ""
-            elif event.key == pygame.K_RIGHT and self.rotating == "right":
-                self.rotating = ""
 
 
 class Mine(Object):
@@ -107,6 +111,9 @@ class Ship(Object):
         self.points = points
 
     def move(self, dt: int):
+        """
+        Move and also rotate
+        """
         self.rotation += 2 * math.pi / 360
         self.x += math.cos(self.direction) * self.speed * dt
         self.y += math.sin(self.direction) * self.speed * dt
@@ -140,9 +147,15 @@ class CommandShip(Ship):
         self.last_shoot = time()
 
     def can_drop(self) -> bool:
+        """
+        Whether the ship can drop a mine or not
+        """
         return time() - self.last_drop >= 15
 
     def can_shoot(self) -> bool:
+        """
+        Whether the ship can shoot or not
+        """
         return time() - self.last_shoot >= 5
 
     def drop_mine(self, enemies: list):
@@ -153,10 +166,11 @@ class CommandShip(Ship):
         self.last_drop = time()
 
     def shoot(self, player: Player, lasers: list):
+        """
+        Shoot a laser towards the player
+        """
         x, y = self.image.get_rect(topleft=(self.x, self.y)).center
-        dx = player.x - self.x
-        dy = player.y - self.y
-        direction = math.atan2(dy, dx)
+        direction = math.atan2(player.y - self.y, player.x - self.x)
         lasers.append(Laser(x, y, direction))
         self.last_shoot = time()
 
@@ -172,11 +186,14 @@ class DeathShip(Ship):
         self.last_drop = time()
 
     def can_drop(self) -> bool:
+        """
+        Whether the ship can drop a mine or not
+        """
         return time() - self.last_drop >= 15
 
     def drop_mine(self, enemies: list):
         """
-        Drop a Vapor Mine at the ship's position
+        Drop a Photon or Vapor Mine at the ship's position
         """
         mine_type = randrange(0, 2)
         if mine_type == 1:
