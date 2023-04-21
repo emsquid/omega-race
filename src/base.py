@@ -48,6 +48,9 @@ class Object:
         self.direction = direction
 
     def set_rotation(self, rotation: float):
+        """
+        Set the rotation of the object
+        """
         self.rotation = rotation
 
     def set_speed(self, speed: int):

@@ -45,8 +45,20 @@ class Game:
         for event in events:
             if event.type == pygame.QUIT:
                 self.exit()
-            else:
-                self.player.handle_event(event)
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    self.player.rotating = "left"
+                elif event.key == pygame.K_RIGHT:
+                    self.player.rotating = "right"
+                elif event.key == pygame.K_UP and self.player.can_thrust():
+                    self.player.thrust()
+                elif event.key == pygame.K_SPACE and self.player.can_shoot():
+                    self.player.shoot(self.player_lasers)
+            elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_LEFT and self.player.rotating == "left":
+                    self.player.rotating = ""
+                elif event.key == pygame.K_RIGHT and self.player.rotating == "right":
+                    self.player.rotating = ""
 
     def draw(self, *objects: tuple[Object]):
         """

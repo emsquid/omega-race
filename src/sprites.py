@@ -12,12 +12,16 @@ class Player(Object):
     def __init__(self):
         super().__init__(32, 32, 500, 200, -math.pi / 2, -math.pi / 2, 0)
         self.set_image("Player.png")
+        self.last_thrust = time() - 1
+        self.last_shoot = time() - 1
         # left or right
         self.rotating = ""
-        self.last_thrust = 0
 
     def can_thrust(self) -> bool:
         return time() - self.last_thrust >= 1
+
+    def can_shoot(self) -> bool:
+        return time() - self.last_shoot >= 1
 
     def move(self, dt):
         self.rotate(dt)
@@ -28,6 +32,11 @@ class Player(Object):
         self.speed = 0.2
         self.direction = self.rotation
         self.last_thrust = time()
+
+    def shoot(self, lasers: list[Object]):
+        x, y = self.image.get_rect(topleft=(self.x, self.y)).center
+        lasers.append(Laser(x, y, self.rotation))
+        self.last_shoot = time()
 
     def rotate(self, dt: int):
         if self.rotating == "left":
@@ -43,6 +52,8 @@ class Player(Object):
                 self.rotating = "right"
             elif event.key == pygame.K_UP and self.can_thrust():
                 self.thrust()
+            elif event.key == pygame.K_SPACE and self.can_shoot():
+                self.shoot()
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT and self.rotating == "left":
                 self.rotating = ""
@@ -142,10 +153,11 @@ class CommandShip(Ship):
         self.last_drop = time()
 
     def shoot(self, player: Player, lasers: list):
+        x, y = self.image.get_rect(topleft=(self.x, self.y)).center
         dx = player.x - self.x
         dy = player.y - self.y
         direction = math.atan2(dy, dx)
-        lasers.append(Laser(self.x, self.y, direction))
+        lasers.append(Laser(x, y, direction))
         self.last_shoot = time()
 
 
@@ -178,7 +190,7 @@ class Laser(Object):
     """ """
 
     def __init__(self, x: int, y: int, direction: float):
-        super().__init__(2, 10, x, y, direction, direction, 0.2)
+        super().__init__(2, 10, x, y, direction, direction, 0.3)
         image = pygame.Surface((2, 15))
         image.fill(WHITE)
         # Copy image for proper rotation
