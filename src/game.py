@@ -9,7 +9,7 @@ from src.sprites import (
     CommandShip,
     DeathShip,
 )
-from src.const import WIN_WIDTH, WIN_HEIGHT
+from src.const import WIN_WIDTH, WIN_HEIGHT, WHITE
 
 
 class Game:
@@ -83,6 +83,7 @@ class Game:
             enemy.move(dt)
             self.force_field.bounce(enemy)
             if self.player.collide(enemy):
+                self.player.killed()
                 enemy.explode()
                 self.enemies.remove(enemy)
             if isinstance(enemy, CommandShip) and enemy.can_shoot():
@@ -100,6 +101,7 @@ class Game:
             laser.move(dt)
             for enemy in self.enemies + self.mines:
                 if laser.collide(enemy):
+                    self.player.kill(enemy)
                     enemy.explode()
                     if enemy in self.enemies:
                         self.enemies.remove(enemy)
@@ -117,6 +119,12 @@ class Game:
 
         self.background.move(dt)
 
+        font = pygame.font.Font('assets/font1.ttf', 25)
+        score_text = font.render("Score", True, WHITE)
+        score = font.render(f'{self.player.score}',True,WHITE)
+        self.background.image.blit(score_text, (330, 320))
+        self.background.image.blit(score, (330,350))
+
     def run(self):
         """
         Run the game instance to make it playable
@@ -131,7 +139,7 @@ class Game:
                 *self.enemies,
                 *self.mines,
                 *self.player_lasers,
-                *self.enemies_lasers
+                *self.enemies_lasers,
             )
             pygame.display.update()
 

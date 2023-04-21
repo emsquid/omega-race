@@ -18,6 +18,8 @@ class Player(Object):
         self.last_shoot = time() - 1
         # left or right
         self.rotating = ""
+        self.score = 0
+        self.lives = 3
 
     def can_thrust(self) -> bool:
         """
@@ -63,6 +65,13 @@ class Player(Object):
             self.rotation -= dt * math.pi / 1000
         elif self.rotating == "right":
             self.rotation += dt * math.pi / 1000
+
+    def kill(self, enemy):
+        self.score += enemy.points
+
+    def killed(self):
+        self.lives -= 1
+        print(self.lives)
 
 
 class Mine(Object):
