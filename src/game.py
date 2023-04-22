@@ -39,8 +39,11 @@ class Game:
         Handle user inputs
         """
         events = pygame.event.get()
-        if self.running:
-            self.engine.handle_events(events)
+        for event in events:
+            if event.type == pygame.QUIT:
+                self.exit()
+            elif self.running:
+                self.engine.handle_event(event)
 
     def update(self):
         """

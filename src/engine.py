@@ -35,24 +35,21 @@ class Engine:
             score,
         ]
 
-    def handle_events(self, events: list[pygame.event.Event]):
-        for event in events:
-            if event.type == pygame.QUIT:
-                self.exit()
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
-                    self.player.rotating = "left"
-                elif event.key == pygame.K_RIGHT:
-                    self.player.rotating = "right"
-                elif event.key == pygame.K_UP and self.player.can_thrust():
-                    self.player.thrust()
-                elif event.key == pygame.K_SPACE and self.player.can_shoot():
-                    self.player.shoot(self.player_lasers)
-            elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_LEFT and self.player.rotating == "left":
-                    self.player.rotating = ""
-                elif event.key == pygame.K_RIGHT and self.player.rotating == "right":
-                    self.player.rotating = ""
+    def handle_event(self, event: pygame.event.Event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                self.player.rotating = "left"
+            elif event.key == pygame.K_RIGHT:
+                self.player.rotating = "right"
+            elif event.key == pygame.K_UP and self.player.can_thrust():
+                self.player.thrust()
+            elif event.key == pygame.K_SPACE and self.player.can_shoot():
+                self.player.shoot(self.player_lasers)
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT and self.player.rotating == "left":
+                self.player.rotating = ""
+            elif event.key == pygame.K_RIGHT and self.player.rotating == "right":
+                self.player.rotating = ""
 
     def update(self, dt: int):
         # TODO: Improve that

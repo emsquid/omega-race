@@ -1,6 +1,7 @@
 import math
 import pygame
 from time import time
+from threading import Timer
 from random import randrange, random
 from src.base import Sprite
 from src.const import WHITE
@@ -13,7 +14,7 @@ class Player(Sprite):
 
     def __init__(self):
         super().__init__(32, 32, 500, 200, -math.pi / 2, -math.pi / 2, 0)
-        self.set_image("Player.png")
+        self.set_image("Player1.png")
         self.last_thrust = time() - 1
         self.last_shoot = time() - 1
         # left or right
@@ -48,6 +49,8 @@ class Player(Sprite):
         self.speed = 0.2
         self.direction = self.rotation
         self.last_thrust = time()
+        self.set_image("Player2.png")
+        Timer(0.2, self.set_image, ["Player1.png"]).start()
 
     def shoot(self, lasers: list[Sprite]):
         """
