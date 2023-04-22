@@ -6,6 +6,10 @@ from src.sprites import Player, DroidShip, CommandShip, DeathShip
 
 
 class Engine:
+    """
+    The Engine handles the game logic and interactions
+    """
+
     def __init__(self):
         self.player = Player()
         self.enemies = (
@@ -21,6 +25,10 @@ class Engine:
         self.force_field = ForceField()
 
     def get_objects(self) -> list[Object]:
+        """
+        Return a list with every object handled by the engine
+        """
+        # TODO: Add lives
         score_text = Text("SCORE", 330, 330)
         score = Text(str(self.player.score), 330, 350)
         return [
@@ -36,6 +44,9 @@ class Engine:
         ]
 
     def handle_event(self, event: pygame.event.Event):
+        """
+        Handle user inputs in the game
+        """
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 self.player.rotating = "left"
@@ -51,51 +62,74 @@ class Engine:
             elif event.key == pygame.K_RIGHT and self.player.rotating == "right":
                 self.player.rotating = ""
 
-    def update(self, dt: int):
-        # TODO: Improve that
-        self.player.move(dt)
-
+    def update_enemies(self, dt: int):
+        """
+        Update enemies situations
+        """
         for enemy in self.enemies:
             enemy.move(dt)
             if self.player.collide(enemy):
-                self.player.killed()
-                self.explosions.append(Explosion(enemy.x, enemy.y))
+                self.player.die()
                 self.enemies.remove(enemy)
+                self.explosions.append(Explosion(enemy.x, enemy.y))
             if isinstance(enemy, CommandShip) and enemy.can_shoot():
                 enemy.shoot(self.player, self.enemies_lasers)
             if isinstance(enemy, (CommandShip, DeathShip)) and enemy.can_drop():
                 enemy.drop_mine(self.mines)
 
+    def update_mines(self, dt: int):
+        """
+        Update mines situations
+        """
         for mine in self.mines:
             if self.player.collide(mine):
-                self.player.killed()
-                self.explosions.append(Explosion(mine.x, mine.y))
+                self.player.die()
                 self.mines.remove(mine)
+                self.explosions.append(Explosion(mine.x, mine.y))
 
+    def update_lasers(self, dt: int):
+        """
+        Update lasers situations
+        """
         for laser in self.player_lasers:
             laser.move(dt)
             for enemy in self.enemies + self.mines:
-                if laser.collide(enemy):
+                if enemy.collide(laser):
                     self.player.kill(enemy)
-                    self.explosions.append(Explosion(enemy.x, enemy.y))
                     if enemy in self.enemies:
                         self.enemies.remove(enemy)
                     else:
                         self.mines.remove(enemy)
                     self.player_lasers.remove(laser)
+                    self.explosions.append(Explosion(enemy.x, enemy.y))
                     break
 
         for laser in self.enemies_lasers:
             laser.move(dt)
-            if laser.collide(self.player):
-                self.player.killed()
-                self.explosions.append(Explosion(self.player.x, self.player.y))
+            if self.player.collide(laser):
+                self.player.die()
                 self.enemies_lasers.remove(laser)
+                self.explosions.append(Explosion(self.player.x, self.player.y))
 
+    def update_explosions(self, dt: int):
+        """
+        Update explosions situations
+        """
         for explosion in self.explosions:
             if explosion.done:
                 self.explosions.remove(explosion)
 
+    def update(self, dt: int):
+        """
+        Update the game instance
+        """
+        # TODO: Clean all updaters
+        self.update_enemies(dt)
+        self.update_mines(dt)
+        self.update_lasers(dt)
+        self.update_explosions(dt)
+
+        self.player.move(dt)
         self.force_field.bounce([self.player, *self.enemies])
         self.force_field.crash(self.player_lasers)
         self.force_field.crash(self.enemies_lasers)

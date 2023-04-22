@@ -17,10 +17,10 @@ class Player(Entity):
         self.set_image("Player1.png")
         self.last_thrust = time() - 1
         self.last_shoot = time() - 1
+        self.lives = 3
+        self.score = 0
         # left or right
         self.rotating = ""
-        self.score = 0
-        self.lives = 3
 
     def can_thrust(self) -> bool:
         """
@@ -69,12 +69,17 @@ class Player(Entity):
         elif self.rotating == "right":
             self.rotation += dt * math.pi / 1000
 
-    def kill(self, enemy):
+    def kill(self, enemy: Entity):
+        """
+        Kill the enemy and get its points
+        """
         self.score += enemy.points
 
-    def killed(self):
+    def die(self):
+        """
+        The player dies and loses a life
+        """
         self.lives -= 1
-        print(self.lives)
 
 
 class Mine(Entity):
@@ -93,9 +98,6 @@ class PhotonMine(Mine):
     """
 
     def __init__(self, x: int, y: int):
-        """
-        initialisation
-        """
         super().__init__(15, 15, x, y, 350)
         self.set_image("PhotonMine.png")
 
@@ -106,9 +108,6 @@ class VaporMine(Mine):
     """
 
     def __init__(self, x: int, y: int):
-        """
-        initialisation
-        """
         super().__init__(25, 25, x, y, 500)
         self.set_image("VaporMine.png")
 
@@ -216,11 +215,12 @@ class DeathShip(Ship):
 
 
 class Laser(Entity):
-    """ """
+    """
+    Lasers are the main source of danger here
+    """
 
     def __init__(self, x: int, y: int, direction: float):
         super().__init__(2, 10, x, y, direction, direction, 0.3)
         image = pygame.Surface((2, 15))
         image.fill(WHITE)
-        # Copy image for proper rotation
         self.set_image(surface=image.copy())

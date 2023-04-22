@@ -95,7 +95,7 @@ class Border(Object):
 
     def blink(self):
         """
-        Make the border blink, it will show and hide after 0.15s
+        Make the border blink, it will show then hide after 0.15s
         """
         if not self.visible:
             self.show()
@@ -146,9 +146,12 @@ class ForceField:
                 border.bounce(obj)
 
     def crash(self, lasers: list[Laser]):
+        """
+        Check if the lasers should crash on any border
+        """
         for laser in lasers:
             for border in self.borders + self.panel:
                 if laser.collide(border):
-                    lasers.remove(laser)
                     border.blink()
+                    lasers.remove(laser)
                     break

@@ -4,6 +4,7 @@ from threading import Timer
 from src.const import WHITE, RED
 
 
+# TODO: Test using pygame.sprite.Sprite/Group
 class Object:
     """
     The most basic class, an Object represents anything in pygame
@@ -126,12 +127,15 @@ class Explosion(Object):
     def __init__(self, x: int, y: int):
         super().__init__(35, 35, x, y)
         self.done = False
-        self.start()
+        self.play()
 
-    def start(self, step: int = 1):
+    def play(self, step: int = 1):
+        """
+        Play each step of the explosion
+        """
         if step <= 6:
             self.set_image(f"Explosion{step}.png")
-            Timer(0.1, self.start, [step + 1]).start()
+            Timer(0.1, self.play, [step + 1]).start()
         else:
             self.done = True
 
@@ -144,11 +148,20 @@ class Text(Object):
         self.set_color(color)
 
     def set_content(self, content: str):
+        """
+        Set the text content
+        """
         self.content = content
 
     def set_color(self, color: tuple):
+        """
+        Set the text color
+        """
         self.color = color
 
     def draw(self, surface: pygame.Surface):
+        """
+        Draw the text on the surface
+        """
         text = self.font.render(self.content, True, self.color)
         surface.blit(text, (self.x, self.y))

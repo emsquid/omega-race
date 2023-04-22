@@ -1,15 +1,14 @@
 import os
 import pygame
-from src.base import Object, Text
-from src.graphics import Background
+from src.base import Object
 from src.engine import Engine
+from src.graphics import Background
 from src.const import WIN_WIDTH, WIN_HEIGHT
 
 
 class Game:
     """
-    The main game instance,
-    it handles all objects and interactions
+    The main game instance
     """
 
     def __init__(self):
