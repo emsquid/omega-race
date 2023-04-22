@@ -33,12 +33,12 @@ class Engine:
         score = Text(str(self.player.score), 330, 350)
         return [
             self.player,
+            self.force_field,
             *self.enemies,
             *self.mines,
             *self.player_lasers,
             *self.enemies_lasers,
             *self.explosions,
-            self.force_field,
             score_text,
             score,
         ]

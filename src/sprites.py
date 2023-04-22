@@ -7,6 +7,18 @@ from src.base import Entity
 from src.const import WHITE
 
 
+class Laser(Entity):
+    """
+    Lasers are the main source of danger here
+    """
+
+    def __init__(self, x: int, y: int, direction: float):
+        super().__init__(2, 10, x, y, direction, direction, 0.3)
+        image = pygame.Surface((2, 15))
+        image.fill(WHITE)
+        self.set_image(surface=image.copy())
+
+
 class Player(Entity):
     """
     It's you, you can move, rotate, thrust and shoot, good luck
@@ -15,18 +27,18 @@ class Player(Entity):
     def __init__(self):
         super().__init__(32, 32, 500, 200, -math.pi / 2, -math.pi / 2, 0)
         self.set_image("Player1.png")
-        self.last_thrust = time() - 1
-        self.last_shoot = time() - 1
         self.lives = 3
         self.score = 0
         # left or right
         self.rotating = ""
+        self.last_thrust = time() - 0.5
+        self.last_shoot = time() - 1
 
     def can_thrust(self) -> bool:
         """
         Whether you can thrust or not
         """
-        return time() - self.last_thrust >= 1
+        return time() - self.last_thrust >= 0.5
 
     def can_shoot(self) -> bool:
         """
@@ -46,13 +58,14 @@ class Player(Entity):
         """
         Thrust in the direction the player is pointing
         """
-        self.speed = 0.2
+        # TODO: Rework image change, will depend on Sprite usage
+        self.speed = 0.25
         self.direction = self.rotation
         self.last_thrust = time()
         self.set_image("Player2.png")
         Timer(0.2, self.set_image, ["Player1.png"]).start()
 
-    def shoot(self, lasers: list[Entity]):
+    def shoot(self, lasers: list[Laser]):
         """
         Shoot a laser
         """
@@ -176,7 +189,7 @@ class CommandShip(Ship):
         enemies.insert(0, PhotonMine(self.x, self.y))
         self.last_drop = time()
 
-    def shoot(self, player: Player, lasers: list):
+    def shoot(self, player: Player, lasers: list[Laser]):
         """
         Shoot a laser towards the player
         """
@@ -212,15 +225,3 @@ class DeathShip(Ship):
         else:
             enemies.insert(0, PhotonMine(self.x, self.y))
         self.last_drop = time()
-
-
-class Laser(Entity):
-    """
-    Lasers are the main source of danger here
-    """
-
-    def __init__(self, x: int, y: int, direction: float):
-        super().__init__(2, 10, x, y, direction, direction, 0.3)
-        image = pygame.Surface((2, 15))
-        image.fill(WHITE)
-        self.set_image(surface=image.copy())
