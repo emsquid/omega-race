@@ -67,7 +67,7 @@ class Object:
         )
 
 
-class Sprite(Object):
+class Entity(Object):
     def __init__(
         self,
         width: int,

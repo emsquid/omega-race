@@ -3,11 +3,11 @@ import pygame
 from time import time
 from threading import Timer
 from random import randrange, random
-from src.base import Sprite
+from src.base import Entity
 from src.const import WHITE
 
 
-class Player(Sprite):
+class Player(Entity):
     """
     It's you, you can move, rotate, thrust and shoot, good luck
     """
@@ -52,7 +52,7 @@ class Player(Sprite):
         self.set_image("Player2.png")
         Timer(0.2, self.set_image, ["Player1.png"]).start()
 
-    def shoot(self, lasers: list[Sprite]):
+    def shoot(self, lasers: list[Entity]):
         """
         Shoot a laser
         """
@@ -77,7 +77,7 @@ class Player(Sprite):
         print(self.lives)
 
 
-class Mine(Sprite):
+class Mine(Entity):
     """
     Mines doesn't move, but they still kill the player
     """
@@ -113,7 +113,7 @@ class VaporMine(Mine):
         self.set_image("VaporMine.png")
 
 
-class Ship(Sprite):
+class Ship(Entity):
     """
     Ships are the enemies in the games, they will try to kill the player
     """
@@ -215,7 +215,7 @@ class DeathShip(Ship):
         self.last_drop = time()
 
 
-class Laser(Sprite):
+class Laser(Entity):
     """ """
 
     def __init__(self, x: int, y: int, direction: float):

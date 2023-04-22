@@ -2,7 +2,7 @@ import math
 import pygame
 from threading import Timer
 from random import randrange, random
-from src.base import Object, Sprite
+from src.base import Object, Entity
 from src.sprites import Player, Laser
 from src.const import WIN_WIDTH, WIN_HEIGHT, BLACK, WHITE
 
@@ -63,7 +63,7 @@ class Border(Object):
             image.fill(WHITE, (self.width - 3, self.height - 3, 3, 3))
         surface.blit(image, (self.x, self.y))
 
-    def bounce(self, sprite: Sprite):
+    def bounce(self, sprite: Entity):
         """
         Bounce objects that collide with this border
         The object should be a ship or the player
@@ -137,7 +137,7 @@ class ForceField:
         for border in self.borders + self.panel:
             border.draw(surface)
 
-    def bounce(self, sprites: list[Sprite]):
+    def bounce(self, sprites: list[Entity]):
         """
         Check if the objects should bounce on any border
         """
