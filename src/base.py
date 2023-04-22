@@ -1,13 +1,13 @@
 import math
 import pygame
 from threading import Timer
-from src.const import RED
+from src.const import WHITE, RED
 
 
 class Object:
     """
     The most basic class, an Object represents anything in pygame
-    It can move, and draw itself on the game
+    It can draw itself on the game
     """
 
     def __init__(
@@ -16,15 +16,9 @@ class Object:
         height: int,
         x: int,
         y: int,
-        direction: float,
-        rotation: float,
-        speed: int,
     ):
         self.set_size(width, height)
         self.set_position(x, y)
-        self.set_direction(direction)
-        self.set_rotation(rotation)
-        self.set_speed(speed)
         self.set_image()
 
     def set_size(self, width: int, height: int):
@@ -40,24 +34,6 @@ class Object:
         """
         self.x = x
         self.y = y
-
-    def set_direction(self, direction: float):
-        """
-        Set the direction of the object
-        """
-        self.direction = direction
-
-    def set_rotation(self, rotation: float):
-        """
-        Set the rotation of the object
-        """
-        self.rotation = rotation
-
-    def set_speed(self, speed: int):
-        """
-        Set the speed of the object
-        """
-        self.speed = speed
 
     def set_image(self, filename: str = None, surface: pygame.Surface = None):
         """
@@ -77,6 +53,58 @@ class Object:
         """
         Draw the object on the surface
         """
+        surface.blit(self.image, (self.x, self.y))
+
+    def collide(self, other) -> bool:
+        """
+        Check for collision with any other object
+        """
+        return (
+            self.x <= other.x + other.width
+            and other.x <= self.x + self.width
+            and self.y <= other.y + other.height
+            and other.y <= self.y + self.height
+        )
+
+
+class Sprite(Object):
+    def __init__(
+        self,
+        width: int,
+        height: int,
+        x: int,
+        y: int,
+        direction: float,
+        rotation: float,
+        speed: int,
+    ):
+        super().__init__(width, height, x, y)
+        self.set_direction(direction)
+        self.set_rotation(rotation)
+        self.set_speed(speed)
+
+    def set_direction(self, direction: float):
+        """
+        Set the direction of the sprite
+        """
+        self.direction = direction
+
+    def set_rotation(self, rotation: float):
+        """
+        Set the rotation of the sprite
+        """
+        self.rotation = rotation
+
+    def set_speed(self, speed: int):
+        """
+        Set the speed of the sprite
+        """
+        self.speed = speed
+
+    def draw(self, surface: pygame.Surface):
+        """
+        Draw the sprite on the surface
+        """
         # Create the rotated image and center it properly
         angle = -360 * (self.rotation + math.pi / 2) / (2 * math.pi)
         rotated_image = pygame.transform.rotate(self.image, angle)
@@ -93,19 +121,34 @@ class Object:
         self.x += math.cos(self.direction) * self.speed * dt
         self.y += math.sin(self.direction) * self.speed * dt
 
-    def collide(self, other) -> bool:
-        """
-        Check for collision with any other object
-        """
-        return (
-            self.x <= other.x + other.width
-            and other.x <= self.x + self.width
-            and self.y <= other.y + other.height
-            and other.y <= self.y + self.height
-        )
 
-    def explode(self, step: int = 1):
-        # TODO
+class Explosion(Object):
+    def __init__(self, x: int, y: int):
+        super().__init__(35, 35, x, y)
+        self.done = False
+        self.start()
+
+    def start(self, step: int = 1):
         if step <= 6:
             self.set_image(f"Explosion{step}.png")
-            Timer(0.1, self.explode, [step + 1]).start()
+            Timer(0.1, self.start, [step + 1]).start()
+        else:
+            self.done = True
+
+
+class Text(Object):
+    def __init__(self, content: str, x: int, y: int, color: tuple = WHITE):
+        super().__init__(0, 0, x, y)
+        self.font = pygame.font.Font("assets/font1.ttf", 25)
+        self.set_content(content)
+        self.set_color(color)
+
+    def set_content(self, content: str):
+        self.content = content
+
+    def set_color(self, color: tuple):
+        self.color = color
+
+    def draw(self, surface: pygame.Surface):
+        text = self.font.render(self.content, True, self.color)
+        surface.blit(text, (self.x, self.y))

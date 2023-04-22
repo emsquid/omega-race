@@ -2,7 +2,7 @@ import math
 import pygame
 from threading import Timer
 from random import randrange, random
-from src.base import Object
+from src.base import Object, Sprite
 from src.sprites import Player, Laser
 from src.const import WIN_WIDTH, WIN_HEIGHT, BLACK, WHITE
 
@@ -24,7 +24,7 @@ class Background:
             for i in range(100)
         ]
 
-    def move(self, dt: int):
+    def update(self, dt: int):
         """
         Move stars on the background
         """
@@ -46,7 +46,7 @@ class Border(Object):
     def __init__(
         self, width: int, height: int, x: int, y: int, normal: float, visible: bool
     ):
-        super().__init__(width, height, x, y, normal, normal, 0)
+        super().__init__(width, height, x, y)
         self.normal = normal
         self.visible = visible
 
@@ -63,22 +63,22 @@ class Border(Object):
             image.fill(WHITE, (self.width - 3, self.height - 3, 3, 3))
         surface.blit(image, (self.x, self.y))
 
-    def bounce(self, other: Object):
+    def bounce(self, sprite: Sprite):
         """
         Bounce objects that collide with this border
         The object should be a ship or the player
         """
         # We use dot product to know if the object should bounce on the collided border
-        dot = math.cos(self.normal) * math.cos(other.direction) + math.sin(
+        dot = math.cos(self.normal) * math.cos(sprite.direction) + math.sin(
             self.normal
-        ) * math.sin(other.direction)
-        if self.collide(other) and dot < 0:
+        ) * math.sin(sprite.direction)
+        if self.collide(sprite) and dot < 0:
             if round(math.cos(self.normal), 5) != 0:
-                other.set_direction(math.pi - other.direction)
+                sprite.set_direction(math.pi - sprite.direction)
             else:
-                other.set_direction(-other.direction)
-            if isinstance(other, Player):
-                other.set_speed(other.speed * 0.75)
+                sprite.set_direction(-sprite.direction)
+            if isinstance(sprite, Player):
+                sprite.set_speed(sprite.speed * 0.75)
             self.blink()
 
     def show(self):
@@ -137,12 +137,13 @@ class ForceField:
         for border in self.borders + self.panel:
             border.draw(surface)
 
-    def bounce(self, object: Object):
+    def bounce(self, sprites: list[Sprite]):
         """
-        Check if the object should bounce on any border
+        Check if the objects should bounce on any border
         """
-        for border in self.borders + self.panel:
-            border.bounce(object)
+        for obj in sprites:
+            for border in self.borders + self.panel:
+                border.bounce(obj)
 
     def crash(self, lasers: list[Laser]):
         for laser in lasers:
