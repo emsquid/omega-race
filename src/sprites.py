@@ -13,7 +13,7 @@ class Laser(Entity):
     """
 
     def __init__(self, x: int, y: int, direction: float):
-        super().__init__(2, 10, x, y, direction, direction, 0.3)
+        super().__init__(2, 10, x, y - 4, direction, direction, 0.3)
         image = pygame.Surface((2, 15), pygame.SRCALPHA)
         image.fill(WHITE)
         self.set_image(surface=image)
@@ -44,7 +44,7 @@ class Player(Entity):
         """
         Whether you can shoot or not
         """
-        return time() - self.last_shoot >= 1
+        return time() - self.last_shoot >= 0.4
 
     def move(self, dt):
         """
@@ -78,9 +78,9 @@ class Player(Entity):
         Rotate the player
         """
         if self.rotating == "left":
-            self.rotation -= dt * math.pi / 1000
+            self.rotation -= dt * math.pi / 725
         elif self.rotating == "right":
-            self.rotation += dt * math.pi / 1000
+            self.rotation += dt * math.pi / 725
 
     def kill(self, enemy: Entity):
         """
