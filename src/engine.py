@@ -79,16 +79,18 @@ class Engine:
         Update enemies situations
         """
         for enemy in self.enemies:
-            enemy.move(dt)
             if self.player.collide(enemy):
                 self.player.die()
                 self.transform(enemy)
                 self.enemies.remove(enemy)
                 self.explosions.append(Explosion(enemy.x, enemy.y))
+            if isinstance(enemy, (DroidShip, CommandShip)):
+                enemy.rotate()
             if isinstance(enemy, CommandShip) and enemy.can_shoot():
                 enemy.shoot(self.player, self.enemies_lasers)
             if isinstance(enemy, (CommandShip, DeathShip)) and enemy.can_drop():
                 enemy.drop_mine(self.mines)
+            enemy.move(dt)
 
     def update_mines(self, dt: int):
         """
@@ -105,7 +107,6 @@ class Engine:
         Update lasers situations
         """
         for laser in self.player_lasers:
-            laser.move(dt)
             for enemy in self.enemies + self.mines:
                 if enemy.collide(laser):
                     self.player.kill(enemy)
@@ -117,13 +118,14 @@ class Engine:
                     self.player_lasers.remove(laser)
                     self.explosions.append(Explosion(enemy.x, enemy.y))
                     break
+            laser.move(dt)
 
         for laser in self.enemies_lasers:
-            laser.move(dt)
             if self.player.collide(laser):
                 self.player.die()
                 self.enemies_lasers.remove(laser)
                 self.explosions.append(Explosion(self.player.x, self.player.y))
+            laser.move(dt)
 
     def update_explosions(self, dt: int):
         """
