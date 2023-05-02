@@ -1,8 +1,8 @@
 import pygame
 from random import randrange
-from src.base import Object, Explosion, Text
-from src.graphics import ForceField, Panel, Life
-from src.sprites import Player, DroidShip, CommandShip, DeathShip
+from src.base import Object, Explosion
+from src.graphics import ForceField, Panel
+from src.sprites import Player, Ship, DroidShip, CommandShip, DeathShip
 
 
 class Engine:
@@ -29,7 +29,6 @@ class Engine:
         """
         Return a list with every object handled by the engine
         """
-        # TODO: Add lives
         return [
             self.player,
             self.panel,
@@ -60,6 +59,21 @@ class Engine:
             elif event.key == pygame.K_RIGHT and self.player.rotating == "right":
                 self.player.rotating = ""
 
+    def transform(self, ship: Ship):
+        """ """
+        if isinstance(ship, CommandShip):
+            for enemy in self.enemies:
+                if isinstance(enemy, DroidShip):
+                    self.enemies.remove(enemy)
+                    self.enemies.append(CommandShip(enemy.x, enemy.y))
+                    break
+        elif isinstance(ship, DeathShip):
+            for enemy in self.enemies:
+                if isinstance(enemy, CommandShip):
+                    self.enemies.remove(enemy)
+                    self.enemies.append(DeathShip(enemy.x, enemy.y))
+                    break
+
     def update_enemies(self, dt: int):
         """
         Update enemies situations
@@ -68,6 +82,7 @@ class Engine:
             enemy.move(dt)
             if self.player.collide(enemy):
                 self.player.die()
+                self.transform(enemy)
                 self.enemies.remove(enemy)
                 self.explosions.append(Explosion(enemy.x, enemy.y))
             if isinstance(enemy, CommandShip) and enemy.can_shoot():
@@ -95,6 +110,7 @@ class Engine:
                 if enemy.collide(laser):
                     self.player.kill(enemy)
                     if enemy in self.enemies:
+                        self.transform(enemy)
                         self.enemies.remove(enemy)
                     else:
                         self.mines.remove(enemy)

@@ -170,7 +170,7 @@ class Panel:
 
     def __init__(self):
         self.score_text = Text("SCORE", 330, 330)
-        self.score = Text(str(0), 330, 350)
+        self.score = Text(str(0), 330, 360)
         self.lives = 3
 
     def draw(self, surface: pygame.Surface):
@@ -181,5 +181,5 @@ class Panel:
             life.draw(surface)
 
     def update(self, player: Player):
-        self.score = Text(str(player.score), 330, 350)
+        self.score = Text(str(player.score), 330, 360)
         self.lives = player.lives
