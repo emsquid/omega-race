@@ -1,4 +1,5 @@
 import pygame
+import math
 from random import randrange
 from src.base import Object, Explosion
 from src.graphics import ForceField, Panel
@@ -12,6 +13,14 @@ class Engine:
 
     def __init__(self):
         self.player = Player()
+        self.restart()
+
+    def restart(self):
+        self.player.set_position(500, 200)
+        self.player.set_direction(-math.pi / 2)
+        self.player.set_rotation(-math.pi / 2)
+        self.player.set_speed(0)
+
         self.enemies = (
             [DroidShip(randrange(200, 800), randrange(550, 750)) for i in range(4)]
             + [CommandShip(randrange(200, 800), randrange(550, 750)) for i in range(2)]
@@ -78,12 +87,12 @@ class Engine:
         """
         Update enemies situations
         """
+        # TODO: player death
         for enemy in self.enemies:
             if self.player.collide(enemy):
                 self.player.die()
-                self.transform(enemy)
-                self.enemies.remove(enemy)
-                self.explosions.append(Explosion(enemy.x, enemy.y))
+                # self.explosions.append(Explosion(enemy.x, enemy.y))
+                self.restart()
             if isinstance(enemy, (DroidShip, CommandShip)):
                 enemy.rotate()
             if isinstance(enemy, CommandShip) and enemy.can_shoot():
@@ -99,8 +108,8 @@ class Engine:
         for mine in self.mines:
             if self.player.collide(mine):
                 self.player.die()
-                self.mines.remove(mine)
-                self.explosions.append(Explosion(mine.x, mine.y))
+                #self.explosions.append(Explosion(mine.x, mine.y))
+                self.restart()
 
     def update_lasers(self, dt: int):
         """
@@ -123,8 +132,8 @@ class Engine:
         for laser in self.enemies_lasers:
             if self.player.collide(laser):
                 self.player.die()
-                self.enemies_lasers.remove(laser)
-                self.explosions.append(Explosion(self.player.x, self.player.y))
+                #self.explosions.append(Explosion(self.player.x, self.player.y))
+                self.restart()
             laser.move(dt)
 
     def update_explosions(self, dt: int):
