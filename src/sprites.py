@@ -14,9 +14,9 @@ class Laser(Entity):
 
     def __init__(self, x: int, y: int, direction: float):
         super().__init__(2, 10, x, y, direction, direction, 0.3)
-        image = pygame.Surface((2, 15))
-        pygame.draw.line(image, WHITE, (0, 0), (2, 15), 3)
-        self.set_image(surface=image.copy())
+        image = pygame.Surface((2, 15), pygame.SRCALPHA)
+        image.fill(WHITE)
+        self.set_image(surface=image)
 
 
 class Player(Entity):
