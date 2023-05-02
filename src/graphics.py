@@ -2,7 +2,7 @@ import math
 import pygame
 from threading import Timer
 from random import randrange, random
-from src.base import Object, Entity
+from src.base import Object, Entity, Text
 from src.sprites import Player, Laser
 from src.const import WIN_WIDTH, WIN_HEIGHT, BLACK, WHITE
 
@@ -155,3 +155,31 @@ class ForceField:
                     border.blink()
                     lasers.remove(laser)
                     break
+
+
+class Life(Object):
+    """ """
+
+    def __init__(self, x, y):
+        super().__init__(32, 32, x, y)
+        self.set_image("Player2.png")
+
+
+class Panel:
+    """ """
+
+    def __init__(self):
+        self.score_text = Text("SCORE", 330, 330)
+        self.score = Text(str(0), 330, 350)
+        self.lives = 3
+
+    def draw(self, surface: pygame.Surface):
+        self.score_text.draw(surface)
+        self.score.draw(surface)
+        for i in range(self.lives):
+            life = Life(640, 330 + i * 50)
+            life.draw(surface)
+
+    def update(self, player: Player):
+        self.score = Text(str(player.score), 330, 350)
+        self.lives = player.lives

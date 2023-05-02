@@ -1,7 +1,7 @@
 import pygame
 from random import randrange
 from src.base import Object, Explosion, Text
-from src.graphics import ForceField
+from src.graphics import ForceField, Panel, Life
 from src.sprites import Player, DroidShip, CommandShip, DeathShip
 
 
@@ -22,6 +22,7 @@ class Engine:
         self.enemies_lasers = []
         self.explosions = []
 
+        self.panel = Panel()
         self.force_field = ForceField()
 
     def get_objects(self) -> list[Object]:
@@ -29,18 +30,15 @@ class Engine:
         Return a list with every object handled by the engine
         """
         # TODO: Add lives
-        score_text = Text("SCORE", 330, 330)
-        score = Text(str(self.player.score), 330, 350)
         return [
             self.player,
+            self.panel,
             self.force_field,
             *self.enemies,
             *self.mines,
             *self.player_lasers,
             *self.enemies_lasers,
             *self.explosions,
-            score_text,
-            score,
         ]
 
     def handle_event(self, event: pygame.event.Event):
@@ -132,6 +130,7 @@ class Engine:
         self.update_explosions(dt)
 
         self.player.move(dt)
+        self.panel.update(self.player)
         self.force_field.bounce([self.player, *self.enemies])
         self.force_field.crash(self.player_lasers)
         self.force_field.crash(self.enemies_lasers)
