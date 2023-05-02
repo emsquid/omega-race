@@ -157,6 +157,16 @@ class DroidShip(Ship):
     def __init__(self, x: int, y: int):
         super().__init__(x, y, 0, 0.01, 1000)
         self.set_image("DroidShip.png")
+        self.last_rotate = time() - 1
+        self.distance = randrange(450, 500)
+
+    def rotate(self):
+        if (
+            time() - self.last_rotate > 1
+            and math.sqrt((self.x - 500) ** 2 + (self.y - 400) ** 2) > self.distance
+        ):
+            self.direction -= math.pi / 2
+            self.last_rotate = time()
 
 
 class CommandShip(Ship):
@@ -169,6 +179,8 @@ class CommandShip(Ship):
         self.set_image("CommandShip.png")
         self.last_drop = time()
         self.last_shoot = time()
+        self.last_rotate = time() - 1
+        self.distance = randrange(450, 500)
 
     def can_drop(self) -> bool:
         """
@@ -188,6 +200,14 @@ class CommandShip(Ship):
         """
         enemies.insert(0, PhotonMine(self.x, self.y))
         self.last_drop = time()
+
+    def rotate(self):
+        if (
+            time() - self.last_rotate > 1
+            and math.sqrt((self.x - 500) ** 2 + (self.y - 400) ** 2) > self.distance
+        ):
+            self.direction -= math.pi / 2
+            self.last_rotate = time()
 
     def shoot(self, player: Player, lasers: list[Laser]):
         """
