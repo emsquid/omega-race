@@ -141,9 +141,11 @@ class Explosion(Object):
 
 
 class Text(Object):
-    def __init__(self, content: str, x: int, y: int, color: tuple = WHITE):
+    def __init__(
+        self, content: str, x: int, y: int, color: tuple = WHITE, size: int = 25
+    ):
         super().__init__(0, 0, x, y)
-        self.font = pygame.font.Font("assets/font1.ttf", 25)
+        self.font = pygame.font.Font("assets/font1.ttf", size)
         self.set_content(content)
         self.set_color(color)
 

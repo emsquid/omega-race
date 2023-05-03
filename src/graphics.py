@@ -183,3 +183,5 @@ class Panel:
     def update(self, player: Player):
         self.score = Text(str(player.score), 330, 360)
         self.lives = player.lives
+
+
