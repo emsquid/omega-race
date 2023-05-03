@@ -99,7 +99,7 @@ class Engine:
         """
         for enemy in self.enemies:
             if self.player.collide(enemy):
-                self.player_death(enemy)
+                self.player_death()
                 self.score += enemy.points
                 # self.explosions.append(Explosion(enemy.x, enemy.y))
             if isinstance(enemy, (DroidShip, CommandShip)):
@@ -116,7 +116,7 @@ class Engine:
         """
         for mine in self.mines:
             if self.player.collide(mine):
-                self.player_death(mine)
+                self.player_death()
                 self.score += mine.points
                 # self.explosions.append(Explosion(mine.x, mine.y))
 
