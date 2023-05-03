@@ -36,22 +36,24 @@ class Game:
         game = pygame.transform.scale(self.background.image, self.screen.get_size())
         self.screen.blit(game, (0, 0))
 
-    def handle_events(self):
+    def handle_inputs(self):
         """
-        Handle user inputs
+        Handle user events and keypresses
         """
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
                 self.exit()
-            elif self.is_home:
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_RETURN and self.home.selection == 0:
-                        self.play()
-                    else:
-                        self.home.handle_event(event)
-            elif self.is_playing:
-                self.engine.handle_event(event)
+
+        keys = pygame.key.get_pressed()
+        if self.is_home:
+            if keys[pygame.K_RETURN]:
+                if self.home.selection == 0:
+                    self.play()
+            else:
+                self.home.handle_keys(keys)
+        elif self.is_playing:
+            self.engine.handle_keys(keys)
 
     def update(self):
         """
@@ -71,7 +73,7 @@ class Game:
         self.is_home = True
         self.is_playing = False
         while self.is_home:
-            self.handle_events()
+            self.handle_inputs()
             self.update()
             self.draw(*self.home.get_objects())
             pygame.display.update()
@@ -83,7 +85,7 @@ class Game:
         self.is_home = False
         self.is_playing = True
         while self.is_playing:
-            self.handle_events()
+            self.handle_inputs()
             self.update()
             self.draw(*self.engine.get_objects())
             pygame.display.update()

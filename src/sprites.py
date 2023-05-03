@@ -1,7 +1,6 @@
 import math
 import pygame
 from time import time
-from threading import Timer
 from random import randrange, random
 from src.base import Entity
 from src.const import WHITE
@@ -29,14 +28,14 @@ class Player(Entity):
         self.set_image("Player1.png")
         # left or right
         self.rotating = ""
-        self.last_thrust = time() - 0.5
-        self.last_shoot = time() - 1
+        self.last_thrust = 0
+        self.last_shoot = 0
 
     def can_thrust(self) -> bool:
         """
         Whether you can thrust or not
         """
-        return time() - self.last_thrust >= 0.5
+        return time() - self.last_thrust >= 0.4
 
     def can_shoot(self) -> bool:
         """
@@ -56,20 +55,18 @@ class Player(Entity):
         """
         Thrust in the direction the player is pointing
         """
-        # TODO: Rework image change, will depend on Sprite usage
-        self.speed = 0.25
-        self.direction = self.rotation
-        self.last_thrust = time()
-        self.set_image("Player2.png")
-        Timer(0.2, self.set_image, ["Player1.png"]).start()
+        if self.can_thrust():
+            self.speed = 0.2
+            self.direction = self.rotation
+            self.last_thrust = time()
 
     def shoot(self, lasers: list[Laser]):
         """
         Shoot a laser
         """
-        x, y = self.image.get_rect(topleft=(self.x, self.y)).center
-        lasers.append(Laser(x, y, self.rotation))
-        self.last_shoot = time()
+        if self.can_shoot():
+            lasers.append(Laser(self.x, self.y + 4, self.rotation))
+            self.last_shoot = time()
 
     def rotate(self, dt: int):
         """
@@ -79,12 +76,6 @@ class Player(Entity):
             self.rotation -= dt * math.pi / 725
         elif self.rotating == "right":
             self.rotation += dt * math.pi / 725
-
-    def die(self):
-        """
-        The player dies and loses a life
-        """
-        self.lives -= 1
 
 
 class Mine(Entity):
@@ -103,7 +94,7 @@ class PhotonMine(Mine):
     """
 
     def __init__(self, x: int, y: int):
-        super().__init__(15, 15, x, y, 350)
+        super().__init__(13, 13, x, y, 350)
         self.set_image("PhotonMine.png")
 
 
@@ -113,7 +104,7 @@ class VaporMine(Mine):
     """
 
     def __init__(self, x: int, y: int):
-        super().__init__(25, 25, x, y, 500)
+        super().__init__(22, 22, x, y, 500)
         self.set_image("VaporMine.png")
 
 
@@ -149,7 +140,7 @@ class DroidShip(Ship):
     def __init__(self, x: int, y: int):
         super().__init__(x, y, 0, 0.01, 1000)
         self.set_image("DroidShip.png")
-        self.last_rotate = time() - 1
+        self.last_rotate = 0
         self.distance = randrange(450, 500)
 
     def rotate(self):
@@ -167,11 +158,11 @@ class CommandShip(Ship):
     """
 
     def __init__(self, x: int, y: int):
-        super().__init__(x, y, 0, 0.1, 1500)
+        super().__init__(x, y, 0, 0.05, 1500)
         self.set_image("CommandShip.png")
         self.last_drop = time()
         self.last_shoot = time()
-        self.last_rotate = time() - 1
+        self.last_rotate = 0
         self.distance = randrange(450, 500)
 
     def can_drop(self) -> bool:
@@ -199,7 +190,7 @@ class CommandShip(Ship):
             and math.sqrt((self.x - 500) ** 2 + (self.y - 400) ** 2) > self.distance
         ):
             self.direction -= math.pi / 2
-            self.last_rotate = time()
+            self.last_rotate = 0
 
     def shoot(self, player: Player, lasers: list[Laser]):
         """
@@ -217,7 +208,7 @@ class DeathShip(Ship):
     """
 
     def __init__(self, x: int = 0, y: int = 0):
-        super().__init__(x, y, random() * math.pi * 2, 0.3, 2000)
+        super().__init__(x, y, random() * math.pi * 2, 0.25, 2000)
         self.set_image("DeathShip.png")
         self.last_drop = time()
 

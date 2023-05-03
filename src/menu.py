@@ -1,4 +1,5 @@
 import pygame
+from time import time
 from src.const import WHITE, RED
 from src.base import Object, Text
 
@@ -13,6 +14,7 @@ class Home:
         -
         """
         self.selection = 0
+        self.last_change = 0
 
     def get_objects(self) -> tuple[Object]:
         title = Text("Omega Race", 500, 100, WHITE, 90)
@@ -21,9 +23,13 @@ class Home:
         settings = Text("Settings", 500, 550, RED if self.selection == 2 else WHITE, 40)
         return (title, play, scores, settings)
 
-    def handle_event(self, event: pygame.event.Event):
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
-                self.selection = (self.selection - 1) % 3
-            elif event.key == pygame.K_DOWN:
-                self.selection = (self.selection + 1) % 3
+    def handle_keys(self, keys: pygame.key.ScancodeWrapper):
+        if keys[pygame.K_UP] and not keys[pygame.K_DOWN] and self.can_change():
+            self.selection = (self.selection - 1) % 3
+            self.last_change = time()
+        if keys[pygame.K_DOWN] and not keys[pygame.K_UP] and self.can_change():
+            self.selection = (self.selection + 1) % 3
+            self.last_change = time()
+
+    def can_change(self) -> bool:
+        return time() - self.last_change > 0.15

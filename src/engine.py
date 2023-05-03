@@ -46,24 +46,23 @@ class Engine:
             *self.explosions,
         )
 
-    def handle_event(self, event: pygame.event.Event):
+    def handle_keys(self, keys: pygame.key.ScancodeWrapper):
         """
         Handle user inputs in the game
         """
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                self.player.rotating = "left"
-            elif event.key == pygame.K_RIGHT:
-                self.player.rotating = "right"
-            elif event.key == pygame.K_UP and self.player.can_thrust():
-                self.player.thrust()
-            elif event.key == pygame.K_SPACE and self.player.can_shoot():
-                self.player.shoot(self.player_lasers)
-        elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT and self.player.rotating == "left":
-                self.player.rotating = ""
-            elif event.key == pygame.K_RIGHT and self.player.rotating == "right":
-                self.player.rotating = ""
+        if keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]:
+            self.player.rotating = "left"
+        elif keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT]:
+            self.player.rotating = "right"
+        else:
+            self.player.rotating = ""
+        if keys[pygame.K_UP]:
+            self.player.thrust()
+            self.player.set_image("Player2.png")
+        else:
+            self.player.set_image("Player1.png")
+        if keys[pygame.K_SPACE]:
+            self.player.shoot(self.player_lasers)
 
     def transform(self, ship: Ship):
         """ """
