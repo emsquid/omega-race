@@ -123,12 +123,19 @@ class Entity(Object):
 
 class Text(Object):
     def __init__(
-        self, content: str, x: int, y: int, color: tuple = WHITE, size: int = 25
+        self,
+        content: str,
+        x: int,
+        y: int,
+        color: tuple = WHITE,
+        size: int = 25,
+        anchor: str = "center",  # topleft, topright, center
     ):
         super().__init__(0, 0, x, y)
         self.font = pygame.font.Font("assets/font1.ttf", size)
         self.set_content(content)
         self.set_color(color)
+        self.anchor = anchor
 
     def set_content(self, content: str):
         """
@@ -147,9 +154,13 @@ class Text(Object):
         Draw the text on the surface
         """
         text = self.font.render(self.content, True, self.color)
-        surface.blit(
-            text, (self.x - text.get_width() / 2, self.y - text.get_height() / 2)
-        )
+        width, height = text.get_size()
+        if self.anchor == "center":
+            surface.blit(text, (self.x - width / 2, self.y - height / 2))
+        elif self.anchor == "topleft":
+            surface.blit(text, (self.x, self.y))
+        elif self.anchor == "topright":
+            surface.blit(text, (self.x - width, self.y))
 
 
 class Explosion(Object):

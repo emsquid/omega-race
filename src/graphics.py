@@ -161,17 +161,17 @@ class Panel:
     """ """
 
     def __init__(self):
-        self.score_text = Text("SCORE", 375, 330)
-        self.score = Text(str(0), 375, 360)
+        self.score_text = Text("SCORE", 330, 325, anchor="topleft")
+        self.score = Text(str(0), 330, 360, anchor="topleft")
+        self.image = pygame.image.load("assets/Player1.png")
         self.lives = 3
 
     def draw(self, surface: pygame.Surface):
         self.score_text.draw(surface)
         self.score.draw(surface)
         for i in range(self.lives):
-            life = pygame.image.load("assets/Player1.png")
-            surface.blit(life, (640, 330 + 50 * i))
+            surface.blit(self.image, (640, 330 + 50 * i))
 
     def update(self, lives: int, score: int):
-        self.score = Text(str(score), 330, 360)
+        self.score.set_content(str(score))
         self.lives = lives

@@ -35,7 +35,7 @@ class Engine:
         """
         Return a list with every object handled by the engine
         """
-        return [
+        return (
             self.player,
             self.panel,
             self.force_field,
@@ -44,7 +44,7 @@ class Engine:
             *self.player_lasers,
             *self.enemies_lasers,
             *self.explosions,
-        ]
+        )
 
     def handle_event(self, event: pygame.event.Event):
         """

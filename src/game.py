@@ -45,7 +45,11 @@ class Game:
             if event.type == pygame.QUIT:
                 self.exit()
             elif self.is_home:
-                self.home.handle_event(event)
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN and self.home.selection == 0:
+                        self.play()
+                    else:
+                        self.home.handle_event(event)
             elif self.is_playing:
                 self.engine.handle_event(event)
 
@@ -69,7 +73,7 @@ class Game:
         while self.is_home:
             self.handle_events()
             self.update()
-            self.draw(self.home)
+            self.draw(*self.home.get_objects())
             pygame.display.update()
 
     def play(self):
