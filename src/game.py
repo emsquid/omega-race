@@ -49,7 +49,7 @@ class Game:
         if self.is_home:
             if keys[pygame.K_RETURN]:
                 if self.home.selection == 0:
-                    self.play()
+                    self.play_screen()
             else:
                 self.home.handle_keys(keys)
         elif self.is_playing:
@@ -67,9 +67,15 @@ class Game:
             self.engine.update(dt)
 
     def run(self):
-        self.menu()
+        """
+        Run the game instance
+        """
+        self.home_screen()
 
-    def menu(self):
+    def home_screen(self):
+        """
+        Home screen can lead you to play, scores and settings
+        """
         self.is_home = True
         self.is_playing = False
         while self.is_home:
@@ -78,9 +84,9 @@ class Game:
             self.draw(*self.home.get_objects())
             pygame.display.update()
 
-    def play(self):
+    def play_screen(self):
         """
-        Run the game instance
+        The war basically
         """
         self.is_home = False
         self.is_playing = True

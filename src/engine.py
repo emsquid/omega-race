@@ -1,5 +1,4 @@
 import pygame
-import math
 from random import randrange
 from src.base import Object, Explosion
 from src.graphics import ForceField, Panel
@@ -17,6 +16,9 @@ class Engine:
         self.score = 0
 
     def restart(self):
+        """
+        Reset the game state, except for score and lives
+        """
         self.player = Player()
         self.enemies = (
             [DroidShip(randrange(200, 800), randrange(550, 750)) for i in range(4)]
@@ -36,13 +38,13 @@ class Engine:
         Return a list with every object handled by the engine
         """
         return (
-            self.player,
             self.panel,
             self.force_field,
-            *self.mines,
-            *self.enemies,
             *self.player_lasers,
             *self.enemies_lasers,
+            *self.mines,
+            *self.enemies,
+            self.player,
             *self.explosions,
         )
 
@@ -64,32 +66,42 @@ class Engine:
         if keys[pygame.K_SPACE]:
             self.player.shoot(self.player_lasers)
 
-    def transform(self, ship: Ship):
-        """ """
+    def ship_death(self, ship: Ship):
+        """
+        Handle ship death
+        Transfrom another ship into a better ship when one dies
+        """
+        self.enemies.remove(ship)
         if isinstance(ship, CommandShip):
-            for enemy in self.enemies:
+            for i in range(len(self.enemies)):
+                enemy = self.enemies[i]
                 if isinstance(enemy, DroidShip):
-                    self.enemies.remove(enemy)
-                    self.enemies.append(CommandShip(enemy.x, enemy.y))
+                    self.enemies[i] = CommandShip(enemy.x, enemy.y)
                     break
         elif isinstance(ship, DeathShip):
-            for enemy in self.enemies:
+            for i in range(len(self.enemies)):
+                enemy = self.enemies[i]
                 if isinstance(enemy, CommandShip):
-                    self.enemies.remove(enemy)
-                    self.enemies.append(DeathShip(enemy.x, enemy.y))
+                    self.enemies[i] = DeathShip(enemy.x, enemy.y)
                     break
+
+    def player_death(self):
+        """
+        Handle player death from the given enemy
+        """
+        # TODO: Handle player final death
+        self.lives -= 1
+        self.restart()
 
     def update_enemies(self, dt: int):
         """
         Update enemies situations
         """
-        # TODO: player death
         for enemy in self.enemies:
             if self.player.collide(enemy):
-                self.lives -= 1
+                self.player_death(enemy)
                 self.score += enemy.points
                 # self.explosions.append(Explosion(enemy.x, enemy.y))
-                self.restart()
             if isinstance(enemy, (DroidShip, CommandShip)):
                 enemy.rotate()
             if isinstance(enemy, CommandShip) and enemy.can_shoot():
@@ -104,10 +116,9 @@ class Engine:
         """
         for mine in self.mines:
             if self.player.collide(mine):
-                self.lives -= 1
+                self.player_death(mine)
                 self.score += mine.points
                 # self.explosions.append(Explosion(mine.x, mine.y))
-                self.restart()
 
     def update_lasers(self, dt: int):
         """
@@ -118,8 +129,7 @@ class Engine:
                 if enemy.collide(laser):
                     self.score += enemy.points
                     if enemy in self.enemies:
-                        self.transform(enemy)
-                        self.enemies.remove(enemy)
+                        self.ship_death(enemy)
                     else:
                         self.mines.remove(enemy)
                     self.player_lasers.remove(laser)
@@ -129,9 +139,8 @@ class Engine:
 
         for laser in self.enemies_lasers:
             if self.player.collide(laser):
-                self.lives -= 1
+                self.player_death()
                 # self.explosions.append(Explosion(self.player.x, self.player.y))
-                self.restart()
             laser.move(dt)
 
     def update_explosions(self, dt: int):

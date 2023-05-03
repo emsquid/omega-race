@@ -4,7 +4,6 @@ from threading import Timer
 from src.const import WHITE, RED
 
 
-# TODO: Test using pygame.sprite.Sprite/Group
 class Object:
     """
     The most basic class, an Object represents anything in pygame
@@ -46,7 +45,7 @@ class Object:
         elif not surface is None:
             self.image = surface
         else:
-            # Default case for development
+            # Default case for development, should throw an error
             self.image = pygame.Surface((self.width, self.height))
             self.image.fill(RED)
 
@@ -104,7 +103,7 @@ class Entity(Object):
 
     def draw(self, surface: pygame.Surface):
         """
-        Draw the sprite on the surface
+        Draw the rotated sprite on the surface
         """
         # Create the rotated image and center it properly
         angle = -360 * (self.rotation + math.pi / 2) / (2 * math.pi)
@@ -114,7 +113,7 @@ class Entity(Object):
 
     def move(self, dt: float):
         """
-        Move the object
+        Move the sprite
         We use dt to make the object move at the same speed on any computer
         """
         self.x += math.cos(self.direction) * self.speed * dt
@@ -132,9 +131,9 @@ class Text(Object):
         anchor: str = "center",  # topleft, topright, center
     ):
         super().__init__(0, 0, x, y)
-        self.font = pygame.font.Font("assets/font1.ttf", size)
         self.set_content(content)
         self.set_color(color)
+        self.font = pygame.font.Font("assets/font1.ttf", size)
         self.anchor = anchor
 
     def set_content(self, content: str):
@@ -163,6 +162,7 @@ class Text(Object):
             surface.blit(text, (self.x - width, self.y))
 
 
+# TODO: Link it properly with other objects
 class Explosion(Object):
     def __init__(self, x: int, y: int):
         super().__init__(35, 35, x, y)

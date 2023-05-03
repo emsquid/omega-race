@@ -108,6 +108,7 @@ class VaporMine(Mine):
         self.set_image("VaporMine.png")
 
 
+# TODO: Think about drop/shoot cooldowns
 class Ship(Entity):
     """
     Ships are the enemies in the games, they will try to kill the player
@@ -121,10 +122,11 @@ class Ship(Entity):
         """
         Move and also rotate
         """
-        self.rotation += 2 * math.pi / 360
+        self.rotation += math.pi * dt / 4096
         self.x += math.cos(self.direction) * self.speed * dt
         self.y += math.sin(self.direction) * self.speed * dt
 
+    # TODO: Think about level ups
     def level_up(self):
         """
         Level up the ship, increasing its speed
@@ -144,6 +146,9 @@ class DroidShip(Ship):
         self.distance = randrange(450, 500)
 
     def rotate(self):
+        """
+        Change ship direction when reaching the right distance
+        """
         if (
             time() - self.last_rotate > 1
             and math.sqrt((self.x - 500) ** 2 + (self.y - 400) ** 2) > self.distance
@@ -185,20 +190,22 @@ class CommandShip(Ship):
         self.last_drop = time()
 
     def rotate(self):
+        """
+        Change ship direction when reaching the right distance
+        """
         if (
             time() - self.last_rotate > 1
             and math.sqrt((self.x - 500) ** 2 + (self.y - 400) ** 2) > self.distance
         ):
             self.direction -= math.pi / 2
-            self.last_rotate = 0
+            self.last_rotate = time()
 
     def shoot(self, player: Player, lasers: list[Laser]):
         """
         Shoot a laser towards the player
         """
-        x, y = self.image.get_rect(topleft=(self.x, self.y)).center
         direction = math.atan2(player.y - self.y, player.x - self.x)
-        lasers.append(Laser(x, y, direction))
+        lasers.append(Laser(self.x, self.y, direction))
         self.last_shoot = time()
 
 

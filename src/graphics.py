@@ -37,6 +37,34 @@ class Background:
                 star[1] = WIN_HEIGHT
 
 
+class Panel:
+    """
+    The Panel is used to display scores and player lives
+    """
+
+    def __init__(self):
+        self.score_text = Text("SCORE", 330, 325, anchor="topleft")
+        self.score = Text("0", 330, 360, anchor="topleft")
+        self.image = pygame.image.load("assets/Player1.png")
+        self.lives = 3
+
+    def draw(self, surface: pygame.Surface):
+        """
+        Draw the panel elements on the surface
+        """
+        self.score_text.draw(surface)
+        self.score.draw(surface)
+        for i in range(self.lives):
+            surface.blit(self.image, (640, 330 + 50 * i))
+
+    def update(self, lives: int, score: int):
+        """
+        Update lives and score
+        """
+        self.score.set_content(str(score))
+        self.lives = lives
+
+
 class Border(Object):
     """
     A Border draws the boundaries of the game field
@@ -155,23 +183,3 @@ class ForceField:
                     border.blink()
                     lasers.remove(laser)
                     break
-
-
-class Panel:
-    """ """
-
-    def __init__(self):
-        self.score_text = Text("SCORE", 330, 325, anchor="topleft")
-        self.score = Text(str(0), 330, 360, anchor="topleft")
-        self.image = pygame.image.load("assets/Player1.png")
-        self.lives = 3
-
-    def draw(self, surface: pygame.Surface):
-        self.score_text.draw(surface)
-        self.score.draw(surface)
-        for i in range(self.lives):
-            surface.blit(self.image, (640, 330 + 50 * i))
-
-    def update(self, lives: int, score: int):
-        self.score.set_content(str(score))
-        self.lives = lives
