@@ -61,7 +61,7 @@ class Border(Object):
         else:
             image.fill(WHITE, (0, 0, 3, 3))
             image.fill(WHITE, (self.width - 3, self.height - 3, 3, 3))
-        surface.blit(image, (self.x, self.y))
+        surface.blit(image, (self.x - self.width / 2, self.y - self.height / 2))
 
     def bounce(self, sprite: Entity):
         """
@@ -111,23 +111,23 @@ class ForceField:
         # Border for the boundaries of the game field
         self.borders = [
             # Left and right borders
-            Border(3, 383, 20, 20, 0, False),
-            Border(3, 383, 20, 400, 0, False),
-            Border(3, 383, 980, 20, math.pi, False),
-            Border(3, 383, 980, 400, math.pi, False),
+            Border(3, 383, 20, 210, 0, False),
+            Border(3, 383, 20, 590, 0, False),
+            Border(3, 383, 980, 210, math.pi, False),
+            Border(3, 383, 980, 590, math.pi, False),
             # Top and bottom borders
-            Border(483, 3, 20, 20, math.pi / 2, False),
-            Border(483, 3, 500, 20, math.pi / 2, False),
-            Border(483, 3, 20, 780, -math.pi / 2, False),
-            Border(483, 3, 500, 780, -math.pi / 2, False),
+            Border(483, 3, 260, 20, math.pi / 2, False),
+            Border(483, 3, 740, 20, math.pi / 2, False),
+            Border(483, 3, 260, 780, -math.pi / 2, False),
+            Border(483, 3, 740, 780, -math.pi / 2, False),
         ]
 
         # Border for the display panel
         self.panel = [
-            Border(3, 203, 700, 300, 0, True),
-            Border(3, 203, 300, 300, math.pi, True),
-            Border(403, 3, 300, 500, math.pi / 2, True),
-            Border(403, 3, 300, 300, -math.pi / 2, True),
+            Border(3, 203, 700, 400, 0, True),
+            Border(3, 203, 300, 400, math.pi, True),
+            Border(403, 3, 500, 500, math.pi / 2, True),
+            Border(403, 3, 500, 300, -math.pi / 2, True),
         ]
 
     def draw(self, surface: pygame.Surface):
@@ -157,29 +157,21 @@ class ForceField:
                     break
 
 
-class Life(Object):
-    """ """
-
-    def __init__(self, x, y):
-        super().__init__(32, 32, x, y)
-        self.set_image("Player2.png")
-
-
 class Panel:
     """ """
 
     def __init__(self):
-        self.score_text = Text("SCORE", 330, 330)
-        self.score = Text(str(0), 330, 360)
+        self.score_text = Text("SCORE", 375, 330)
+        self.score = Text(str(0), 375, 360)
         self.lives = 3
 
     def draw(self, surface: pygame.Surface):
         self.score_text.draw(surface)
         self.score.draw(surface)
         for i in range(self.lives):
-            life = Life(640, 330 + i * 50)
-            life.draw(surface)
+            life = pygame.image.load("assets/Player1.png")
+            surface.blit(life, (640, 330 + 50 * i))
 
-    def update(self, player: Player):
-        self.score = Text(str(player.score), 330, 360)
-        self.lives = player.lives
+    def update(self, lives: int, score: int):
+        self.score = Text(str(score), 330, 360)
+        self.lives = lives

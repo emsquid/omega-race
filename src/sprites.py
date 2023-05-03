@@ -27,8 +27,6 @@ class Player(Entity):
     def __init__(self):
         super().__init__(32, 32, 500, 200, -math.pi / 2, -math.pi / 2, 0)
         self.set_image("Player1.png")
-        self.lives = 3
-        self.score = 0
         # left or right
         self.rotating = ""
         self.last_thrust = time() - 0.5
@@ -81,12 +79,6 @@ class Player(Entity):
             self.rotation -= dt * math.pi / 725
         elif self.rotating == "right":
             self.rotation += dt * math.pi / 725
-
-    def kill(self, enemy: Entity):
-        """
-        Kill the enemy and get its points
-        """
-        self.score += enemy.points
 
     def die(self):
         """

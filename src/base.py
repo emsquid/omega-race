@@ -54,17 +54,17 @@ class Object:
         """
         Draw the object on the surface
         """
-        surface.blit(self.image, (self.x, self.y))
+        surface.blit(self.image, (self.x - self.width / 2, self.y - self.height / 2))
 
     def collide(self, other) -> bool:
         """
         Check for collision with any other object
         """
         return (
-            self.x <= other.x + other.width
-            and other.x <= self.x + self.width
-            and self.y <= other.y + other.height
-            and other.y <= self.y + self.height
+            self.x - self.width / 2 <= other.x + other.width / 2
+            and other.x - other.width / 2 <= self.x + self.width / 2
+            and self.y - self.height / 2 <= other.y + other.height / 2
+            and other.y - other.height / 2 <= self.y + self.height / 2
         )
 
 
@@ -109,9 +109,7 @@ class Entity(Object):
         # Create the rotated image and center it properly
         angle = -360 * (self.rotation + math.pi / 2) / (2 * math.pi)
         rotated_image = pygame.transform.rotate(self.image, angle)
-        rect = rotated_image.get_rect(
-            center=self.image.get_rect(topleft=(self.x, self.y)).center
-        )
+        rect = rotated_image.get_rect(center=(self.x, self.y))
         surface.blit(rotated_image, rect)
 
     def move(self, dt: float):
@@ -121,23 +119,6 @@ class Entity(Object):
         """
         self.x += math.cos(self.direction) * self.speed * dt
         self.y += math.sin(self.direction) * self.speed * dt
-
-
-class Explosion(Object):
-    def __init__(self, x: int, y: int):
-        super().__init__(35, 35, x, y)
-        self.done = False
-        self.play()
-
-    def play(self, step: int = 1):
-        """
-        Play each step of the explosion
-        """
-        if step <= 6:
-            self.set_image(f"Explosion{step}.png")
-            Timer(0.1, self.play, [step + 1]).start()
-        else:
-            self.done = True
 
 
 class Text(Object):
@@ -164,4 +145,23 @@ class Text(Object):
         Draw the text on the surface
         """
         text = self.font.render(self.content, True, self.color)
-        surface.blit(text, (self.x, self.y))
+        surface.blit(
+            text, (self.x - text.get_width() / 2, self.y - text.get_height() / 2)
+        )
+
+
+class Explosion(Object):
+    def __init__(self, x: int, y: int):
+        super().__init__(35, 35, x, y)
+        self.done = False
+        self.play()
+
+    def play(self, step: int = 1):
+        """
+        Play each step of the explosion
+        """
+        if step <= 6:
+            self.set_image(f"Explosion{step}.png")
+            Timer(0.1, self.play, [step + 1]).start()
+        else:
+            self.done = True

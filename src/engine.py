@@ -12,15 +12,12 @@ class Engine:
     """
 
     def __init__(self):
-        self.player = Player()
         self.restart()
+        self.lives = 3
+        self.score = 0
 
     def restart(self):
-        self.player.set_position(500, 200)
-        self.player.set_direction(-math.pi / 2)
-        self.player.set_rotation(-math.pi / 2)
-        self.player.set_speed(0)
-
+        self.player = Player()
         self.enemies = (
             [DroidShip(randrange(200, 800), randrange(550, 750)) for i in range(4)]
             + [CommandShip(randrange(200, 800), randrange(550, 750)) for i in range(2)]
@@ -42,8 +39,8 @@ class Engine:
             self.player,
             self.panel,
             self.force_field,
-            *self.enemies,
             *self.mines,
+            *self.enemies,
             *self.player_lasers,
             *self.enemies_lasers,
             *self.explosions,
@@ -90,7 +87,8 @@ class Engine:
         # TODO: player death
         for enemy in self.enemies:
             if self.player.collide(enemy):
-                self.player.die()
+                self.lives -= 1
+                self.score += enemy.points
                 # self.explosions.append(Explosion(enemy.x, enemy.y))
                 self.restart()
             if isinstance(enemy, (DroidShip, CommandShip)):
@@ -107,8 +105,9 @@ class Engine:
         """
         for mine in self.mines:
             if self.player.collide(mine):
-                self.player.die()
-                #self.explosions.append(Explosion(mine.x, mine.y))
+                self.lives -= 1
+                self.score += mine.points
+                # self.explosions.append(Explosion(mine.x, mine.y))
                 self.restart()
 
     def update_lasers(self, dt: int):
@@ -118,7 +117,7 @@ class Engine:
         for laser in self.player_lasers:
             for enemy in self.enemies + self.mines:
                 if enemy.collide(laser):
-                    self.player.kill(enemy)
+                    self.score += enemy.points
                     if enemy in self.enemies:
                         self.transform(enemy)
                         self.enemies.remove(enemy)
@@ -131,8 +130,8 @@ class Engine:
 
         for laser in self.enemies_lasers:
             if self.player.collide(laser):
-                self.player.die()
-                #self.explosions.append(Explosion(self.player.x, self.player.y))
+                self.lives -= 1
+                # self.explosions.append(Explosion(self.player.x, self.player.y))
                 self.restart()
             laser.move(dt)
 
@@ -155,7 +154,7 @@ class Engine:
         self.update_explosions(dt)
 
         self.player.move(dt)
-        self.panel.update(self.player)
+        self.panel.update(self.lives, self.score)
         self.force_field.bounce([self.player, *self.enemies])
         self.force_field.crash(self.player_lasers)
         self.force_field.crash(self.enemies_lasers)
