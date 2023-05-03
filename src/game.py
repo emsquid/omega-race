@@ -1,6 +1,7 @@
 import os
 import pygame
 from src.base import Object
+from src.menu import Home
 from src.engine import Engine
 from src.graphics import Background
 from src.const import WIN_WIDTH, WIN_HEIGHT
@@ -20,9 +21,11 @@ class Game:
         self.screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT), pygame.RESIZABLE)
         self.clock = pygame.time.Clock()
         self.background = Background()
+        self.home = Home()
         self.engine = Engine()
 
-        self.running = False
+        self.is_home = False
+        self.is_playing = False
 
     def draw(self, *objects: tuple[Object]):
         """
@@ -41,7 +44,9 @@ class Game:
         for event in events:
             if event.type == pygame.QUIT:
                 self.exit()
-            elif self.running:
+            elif self.is_home:
+                self.home.handle_event(event)
+            elif self.is_playing:
                 self.engine.handle_event(event)
 
     def update(self):
@@ -50,15 +55,30 @@ class Game:
         """
         dt = self.clock.tick(60)
         self.background.update(dt)
-        if self.running:
+        if self.is_home:
+            pass
+        if self.is_playing:
             self.engine.update(dt)
 
     def run(self):
+        self.menu()
+
+    def menu(self):
+        self.is_home = True
+        self.is_playing = False
+        while self.is_home:
+            self.handle_events()
+            self.update()
+            self.draw(self.home)
+            pygame.display.update()
+
+    def play(self):
         """
         Run the game instance
         """
-        self.running = True
-        while self.running:
+        self.is_home = False
+        self.is_playing = True
+        while self.is_playing:
             self.handle_events()
             self.update()
             self.draw(*self.engine.get_objects())
