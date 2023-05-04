@@ -126,21 +126,14 @@ class Ship(Entity):
         self.x += math.cos(self.direction) * self.speed * dt
         self.y += math.sin(self.direction) * self.speed * dt
 
-    # TODO: Think about level ups
-    def level_up(self):
-        """
-        Level up the ship, increasing its speed
-        """
-        self.speed = self.speed * 1.25
-
 
 class DroidShip(Ship):
     """
     The Droid Ship doesn't move a lot, but it can transfrom into a CommandShip
     """
 
-    def __init__(self, x: int, y: int):
-        super().__init__(x, y, 0, 0.01, 1000)
+    def __init__(self, x: int, y: int, level: int):
+        super().__init__(x, y, 0, 0.01 * math.sqrt(level + 1), 1000)
         self.set_image("DroidShip.png")
         self.last_rotate = 0
         self.distance = randrange(450, 500)
@@ -162,8 +155,8 @@ class CommandShip(Ship):
     The Command Ship is more dangerous, it moves and fires laser towards the player
     """
 
-    def __init__(self, x: int, y: int):
-        super().__init__(x, y, 0, 0.05, 1500)
+    def __init__(self, x: int, y: int, level: int):
+        super().__init__(x, y, 0, 0.05 * math.sqrt(level + 1), 1500)
         self.set_image("CommandShip.png")
         self.last_drop = time()
         self.last_shoot = time()
@@ -215,8 +208,8 @@ class DeathShip(Ship):
     The Death Ship will bounce at full speed on every border
     """
 
-    def __init__(self, x: int = 0, y: int = 0):
-        super().__init__(x, y, random() * math.pi * 2, 0.25, 2000)
+    def __init__(self, x: int, y: int, level: int):
+        super().__init__(x, y, random() * math.pi * 2, 0.2 * math.sqrt(level + 1), 2000)
         self.set_image("DeathShip.png")
         self.last_drop = time()
 
