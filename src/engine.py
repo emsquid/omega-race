@@ -11,9 +11,10 @@ class Engine:
     """
 
     def __init__(self):
-        self.restart()
+        self.level = 1
         self.lives = 3
         self.score = 0
+        self.restart()
 
     def restart(self):
         """
