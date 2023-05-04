@@ -2,6 +2,7 @@ import pygame
 from time import time
 from src.const import WHITE, RED
 from src.base import Object, Text
+from src.settings import Settings
 
 
 class Home:
@@ -18,11 +19,11 @@ class Home:
         settings = Text("Settings", 500, 550, RED if self.selection == 2 else WHITE, 40)
         return (title, play, scores, settings)
 
-    def handle_keys(self, keys: pygame.key.ScancodeWrapper):
-        if keys[pygame.K_UP] and not keys[pygame.K_DOWN] and self.can_change():
+    def handle_keys(self, keys: pygame.key.ScancodeWrapper, settings: Settings):
+        if keys[settings.keys["UP"]] and not keys[settings.keys["DOWN"]] and self.can_change():
             self.selection = (self.selection - 1) % 3
             self.last_change = time()
-        if keys[pygame.K_DOWN] and not keys[pygame.K_UP] and self.can_change():
+        if keys[settings.keys["DOWN"]] and not keys[settings.keys["UP"]] and self.can_change():
             self.selection = (self.selection + 1) % 3
             self.last_change = time()
 
@@ -43,11 +44,11 @@ class GameOver:
         home = Text("Home", 750, 650, RED if self.selection == 1 else WHITE, 40)
         return (title, play, home)
 
-    def handle_keys(self, keys: pygame.key.ScancodeWrapper):
-        if keys[pygame.K_UP] and not keys[pygame.K_DOWN] and self.can_change():
+    def handle_keys(self, keys: pygame.key.ScancodeWrapper, settings: Settings):
+        if keys[settings.keys["UP"]] and not keys[settings.keys["DOWN"]] and self.can_change():
             self.selection = (self.selection - 1) % 2
             self.last_change = time()
-        if keys[pygame.K_DOWN] and not keys[pygame.K_UP] and self.can_change():
+        if keys[settings.keys["DOWN"]] and not keys[settings.keys["UP"]] and self.can_change():
             self.selection = (self.selection + 1) % 2
             self.last_change = time()
 

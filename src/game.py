@@ -4,6 +4,7 @@ from src.base import Object
 from src.menu import Home, GameOver
 from src.engine import Engine
 from src.graphics import Background
+from src.settings import Settings
 from src.const import WIN_WIDTH, WIN_HEIGHT
 
 
@@ -24,6 +25,7 @@ class Game:
         self.home = Home()
         self.engine = Engine()
         self.gameover = GameOver()
+        self.settings = Settings()
 
         self.is_home = False
         self.is_playing = False
@@ -59,11 +61,11 @@ class Game:
 
         keys = pygame.key.get_pressed()
         if self.is_home:
-            self.home.handle_keys(keys)
+            self.home.handle_keys(keys, self.settings)
         elif self.is_playing:
-            self.engine.handle_keys(keys)
+            self.engine.handle_keys(keys, self.settings)
         elif self.is_gameover:
-            self.gameover.handle_keys(keys)
+            self.gameover.handle_keys(keys, self.settings)
 
     def update(self):
         """
