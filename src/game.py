@@ -40,6 +40,7 @@ class Game:
             obj.draw(self.background.image)
         Text(str(int(self.clock.get_fps())), 55, 40, WHITE).draw(self.background.image)
         game = pygame.transform.scale(self.background.image, self.screen.get_size())
+
         self.screen.blit(game, (0, 0))
 
     def handle_inputs(self):

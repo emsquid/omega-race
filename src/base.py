@@ -41,9 +41,9 @@ class Object:
         it can be retrieved from a file or given directly as a surface
         """
         if not filename is None:
-            self.image = pygame.image.load(f"assets/{filename}")
+            self.image = pygame.image.load(f"assets/{filename}").convert_alpha()
         elif not surface is None:
-            self.image = surface
+            self.image = surface.convert_alpha()
         else:
             # Default case for development, should throw an error
             self.image = pygame.Surface((self.width, self.height))
@@ -160,7 +160,7 @@ class Text(Object):
         """
         Draw the text on the surface
         """
-        text = self.font.render(self.content, True, self.color)
+        text = self.font.render(self.content, True, self.color).convert_alpha()
         width, height = text.get_size()
         if self.anchor == "center":
             surface.blit(text, (self.x - width / 2, self.y - height / 2))

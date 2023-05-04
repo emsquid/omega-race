@@ -108,10 +108,10 @@ class Engine:
         """
         Handle player death
         """
-        # if self.player.alive:
-        # self.lives -= 1
-        # self.player.die()
-        # Timer(0.7, self.reset).start()
+        if self.player.alive:
+            self.lives -= 1
+            self.player.die()
+            Timer(0.7, self.reset).start()
 
     def change_level(self):
         if not self.level_changed:

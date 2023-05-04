@@ -29,7 +29,9 @@ class Background:
         """
         Move stars on the background
         """
-        self.image.fill(BLACK)
+        test = pygame.Surface((WIN_WIDTH, WIN_HEIGHT)).convert_alpha()
+        test.fill((0, 0, 0, 20))
+        self.image.blit(test, (0, 0))
         for star in self.stars:
             pygame.draw.line(self.image, WHITE, (star[0], star[1]), (star[0], star[1]))
             star[1] -= star[2] * dt
