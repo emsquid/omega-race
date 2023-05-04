@@ -49,7 +49,7 @@ class Engine:
 
     def change_level(self):
         self.level += 1
-        self.restart()
+        self.reset()
 
     def get_objects(self) -> list[Object]:
         """
