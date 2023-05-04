@@ -103,6 +103,7 @@ class Game:
         """
         The war basically
         """
+        self.engine.start()
         self.is_playing = True
         self.is_home, self.is_gameover = False, False
         while self.is_playing:

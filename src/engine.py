@@ -11,12 +11,15 @@ class Engine:
     """
 
     def __init__(self):
+        pass
+
+    def start(self):
         self.level = 1
         self.lives = 3
         self.score = 0
-        self.restart()
+        self.reset()
 
-    def restart(self):
+    def reset(self):
         """
         Reset the game state, except for score and lives
         """
@@ -92,7 +95,7 @@ class Engine:
         """
         # TODO: Handle player final death
         self.lives -= 1
-        self.restart()
+        self.reset()
 
     def update_enemies(self, dt: int):
         """
