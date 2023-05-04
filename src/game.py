@@ -74,7 +74,7 @@ class Game:
         if self.is_home:
             pass
         if self.is_playing:
-            if self.engine.lives > -1:
+            if not self.engine.ended():
                 self.engine.update(dt)
             else:
                 self.gameover_screen()
@@ -85,7 +85,8 @@ class Game:
         """
         Run the game instance
         """
-        self.home_screen()
+        # self.home_screen()
+        self.gameover_screen()
 
     def home_screen(self):
         """

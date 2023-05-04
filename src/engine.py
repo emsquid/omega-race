@@ -1,5 +1,6 @@
 import pygame
 from random import randrange
+from threading import Timer
 from src.base import Object, Explosion
 from src.graphics import ForceField, Panel
 from src.sprites import Player, Ship, DroidShip, CommandShip, DeathShip
@@ -24,6 +25,7 @@ class Engine:
         """
         Reset the game state, except for score and lives
         """
+        self.alive = True
         self.player = Player()
         self.enemies = (
             [
@@ -55,16 +57,16 @@ class Engine:
         """
         Return a list with every object handled by the engine
         """
-        return (
+        objects = [
             self.panel,
             self.force_field,
             *self.player_lasers,
             *self.enemies_lasers,
             *self.mines,
             *self.enemies,
-            self.player,
             *self.explosions,
-        )
+        ]
+        return objects + [self.player] if self.alive else objects
 
     def handle_keys(self, keys: pygame.key.ScancodeWrapper):
         """
@@ -107,19 +109,19 @@ class Engine:
         """
         Handle player death from the given enemy
         """
-        # TODO: Handle player final death
         self.lives -= 1
-        self.reset()
+        self.alive = False
+        Timer(0.65, self.reset).start()
 
     def update_enemies(self, dt: int):
         """
         Update enemies situations
         """
         for enemy in self.enemies:
-            if self.player.collide(enemy):
+            if self.player.collide(enemy) and self.alive:
                 self.player_death()
                 self.score += enemy.points
-                # self.explosions.append(Explosion(enemy.x, enemy.y))
+                self.explosions.append(Explosion(self.player.x, self.player.y))
             if isinstance(enemy, (DroidShip, CommandShip)):
                 enemy.rotate()
             if isinstance(enemy, CommandShip) and enemy.can_shoot():
@@ -133,10 +135,10 @@ class Engine:
         Update mines situations
         """
         for mine in self.mines:
-            if self.player.collide(mine):
+            if self.player.collide(mine) and self.alive:
                 self.player_death()
                 self.score += mine.points
-                # self.explosions.append(Explosion(mine.x, mine.y))
+                self.explosions.append(Explosion(self.player.x, self.player.y))
 
     def update_lasers(self, dt: int):
         """
@@ -156,9 +158,10 @@ class Engine:
             laser.move(dt)
 
         for laser in self.enemies_lasers:
-            if self.player.collide(laser):
+            if self.player.collide(laser) and self.alive:
                 self.player_death()
-                # self.explosions.append(Explosion(self.player.x, self.player.y))
+                self.enemies_lasers.remove(laser)
+                self.explosions.append(Explosion(self.player.x, self.player.y))
             laser.move(dt)
 
     def update_explosions(self, dt: int):
@@ -187,3 +190,6 @@ class Engine:
 
         if len(self.enemies) == 0:
             self.change_level()
+
+    def ended(self) -> bool:
+        return self.lives == -1 and self.alive

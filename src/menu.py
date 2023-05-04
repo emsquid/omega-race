@@ -5,14 +5,14 @@ from src.base import Object, Text
 
 
 class Home:
-    """ """
+    """"""
 
     def __init__(self):
         self.selection = 0
         self.last_change = 0
 
     def get_objects(self) -> tuple[Object]:
-        title = Text("Omega Race", 500, 100, WHITE, 90)
+        title = Text("Omega Race", 500, 150, WHITE, 90)
         play = Text("Play", 500, 350, RED if self.selection == 0 else WHITE, 40)
         scores = Text("Scores", 500, 450, RED if self.selection == 1 else WHITE, 40)
         settings = Text("Settings", 500, 550, RED if self.selection == 2 else WHITE, 40)
@@ -38,9 +38,10 @@ class GameOver:
         self.last_change = 0
 
     def get_objects(self) -> tuple[Object]:
-        play = Text("Play Again", 500, 350, RED if self.selection == 0 else WHITE, 40)
-        home = Text("Home", 500, 450, RED if self.selection == 1 else WHITE, 40)
-        return (play, home)
+        title = Text("Game Over", 500, 150, WHITE, 90)
+        play = Text("Play Again", 250, 650, RED if self.selection == 0 else WHITE, 40)
+        home = Text("Home", 750, 650, RED if self.selection == 1 else WHITE, 40)
+        return (title, play, home)
 
     def handle_keys(self, keys: pygame.key.ScancodeWrapper):
         if keys[pygame.K_UP] and not keys[pygame.K_DOWN] and self.can_change():
