@@ -3,6 +3,7 @@ from random import randrange
 from src.base import Object, Explosion
 from src.graphics import ForceField, Panel
 from src.sprites import Player, Ship, DroidShip, CommandShip, DeathShip
+from src.const import ENEMY_NUMBER
 
 
 class Engine:
@@ -11,9 +12,10 @@ class Engine:
     """
 
     def __init__(self):
-        self.restart()
+        self.level = 0
         self.lives = 3
         self.score = 0
+        self.restart()
 
     def restart(self):
         """
@@ -21,9 +23,18 @@ class Engine:
         """
         self.player = Player()
         self.enemies = (
-            [DroidShip(randrange(200, 800), randrange(550, 750)) for i in range(4)]
-            + [CommandShip(randrange(200, 800), randrange(550, 750)) for i in range(2)]
-            + [DeathShip(randrange(200, 800), randrange(550, 750)) for i in range(1)]
+            [
+                DroidShip(randrange(200, 800), randrange(550, 750), self.level)
+                for i in range(ENEMY_NUMBER["DroidShip"][self.level])
+            ]
+            + [
+                CommandShip(randrange(200, 800), randrange(550, 750), self.level)
+                for i in range(ENEMY_NUMBER["CommandShip"][self.level])
+            ]
+            + [
+                DeathShip(randrange(200, 800), randrange(550, 750), self.level)
+                for i in range(ENEMY_NUMBER["DeathShip"][self.level])
+            ]
         )
         self.mines = []
         self.player_lasers = []
@@ -32,6 +43,10 @@ class Engine:
 
         self.panel = Panel()
         self.force_field = ForceField()
+
+    def change_level(self):
+        self.level += 1
+        self.restart()
 
     def get_objects(self) -> list[Object]:
         """
@@ -76,13 +91,13 @@ class Engine:
             for i in range(len(self.enemies)):
                 enemy = self.enemies[i]
                 if isinstance(enemy, DroidShip):
-                    self.enemies[i] = CommandShip(enemy.x, enemy.y)
+                    self.enemies[i] = CommandShip(enemy.x, enemy.y, self.level)
                     break
         elif isinstance(ship, DeathShip):
             for i in range(len(self.enemies)):
                 enemy = self.enemies[i]
                 if isinstance(enemy, CommandShip):
-                    self.enemies[i] = DeathShip(enemy.x, enemy.y)
+                    self.enemies[i] = DeathShip(enemy.x, enemy.y, self.level)
                     break
 
     def player_death(self):
@@ -166,3 +181,6 @@ class Engine:
         self.force_field.bounce([self.player, *self.enemies])
         self.force_field.crash(self.player_lasers)
         self.force_field.crash(self.enemies_lasers)
+
+        if len(self.enemies) == 0:
+            self.change_level()
