@@ -1,6 +1,7 @@
 import math
 import pygame
 from threading import Timer
+from time import time
 from random import randrange, random
 from src.base import Object, Entity, Text
 from src.sprites import Player, Laser
@@ -107,6 +108,7 @@ class Border(Object):
                 sprite.set_direction(-sprite.direction)
             if isinstance(sprite, Player):
                 sprite.set_speed(sprite.speed * 0.75)
+                sprite.last_collision = time()
             self.blink()
 
     def show(self):

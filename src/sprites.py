@@ -28,14 +28,14 @@ class Player(Entity):
         self.set_image("Player1.png")
         # left or right
         self.rotating = ""
-        self.last_thrust = 0
+        self.last_collision = 0
         self.last_shoot = 0
 
     def can_thrust(self) -> bool:
         """
         Whether you can thrust or not
         """
-        return time() - self.last_thrust >= 0.4
+        return time() - self.last_collision >= 0.5
 
     def can_shoot(self) -> bool:
         """
@@ -189,6 +189,7 @@ class CommandShip(Ship):
         enemies.insert(0, PhotonMine(self.x, self.y))
         self.last_drop = time()
 
+    # TODO: Improve that because it's bad asf
     def rotate(self):
         """
         Change ship direction when reaching the right distance
