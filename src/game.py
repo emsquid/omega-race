@@ -1,11 +1,11 @@
 import os
 import pygame
-from src.base import Object
+from src.base import Object, Text
 from src.menu import Home, GameOver
 from src.engine import Engine
-from src.graphics import Background
+from src.graphics import Background, Panel
 from src.settings import Settings
-from src.const import WIN_WIDTH, WIN_HEIGHT
+from src.const import WIN_WIDTH, WIN_HEIGHT, WHITE
 
 
 class Game:
@@ -22,6 +22,7 @@ class Game:
         self.screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT), pygame.RESIZABLE)
         self.clock = pygame.time.Clock()
         self.background = Background()
+        self.panel = Panel()
         self.home = Home()
         self.engine = Engine()
         self.gameover = GameOver()
@@ -37,6 +38,7 @@ class Game:
         """
         for obj in objects:
             obj.draw(self.background.image)
+        Text(str(int(self.clock.get_fps())), 55, 40, WHITE).draw(self.background.image)
         game = pygame.transform.scale(self.background.image, self.screen.get_size())
         self.screen.blit(game, (0, 0))
 
@@ -71,12 +73,18 @@ class Game:
         """
         Update the situation of all objects
         """
-        dt = self.clock.tick(60)
+        dt = self.clock.tick(1000)
         self.background.update(dt)
         if self.is_home:
             pass
         if self.is_playing:
-            if not self.engine.ended():
+            if self.engine.running():
+                self.panel.update(
+                    self.engine.lives,
+                    self.engine.level,
+                    self.engine.score,
+                    0,
+                )
                 self.engine.update(dt)
             else:
                 self.gameover_screen()
@@ -87,8 +95,7 @@ class Game:
         """
         Run the game instance
         """
-        # self.home_screen()
-        self.gameover_screen()
+        self.home_screen()
 
     def home_screen(self):
         """
@@ -112,7 +119,7 @@ class Game:
         while self.is_playing:
             self.handle_inputs()
             self.update()
-            self.draw(*self.engine.get_objects())
+            self.draw(*self.engine.get_objects(), self.panel)
             pygame.display.update()
 
     def gameover_screen(self):
@@ -124,7 +131,7 @@ class Game:
         while self.is_gameover:
             self.handle_inputs()
             self.update()
-            self.draw(*self.gameover.get_objects())
+            self.draw(*self.gameover.get_objects(), self.panel)
             pygame.display.update()
 
     def exit(self):

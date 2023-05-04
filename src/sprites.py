@@ -3,7 +3,7 @@ import pygame
 from time import time
 from random import randrange, random
 from src.base import Entity
-from src.const import WHITE
+from src.const import PAN_X, PAN_Y, PAN_WIDTH, PAN_HEIGHT, WHITE
 
 
 class Laser(Entity):
@@ -35,21 +35,22 @@ class Player(Entity):
         """
         Whether you can thrust or not
         """
-        return time() - self.last_collision >= 0.5
+        return self.alive and time() - self.last_collision >= 0.4
 
     def can_shoot(self) -> bool:
         """
         Whether you can shoot or not
         """
-        return time() - self.last_shoot >= 0.4
+        return self.alive and time() - self.last_shoot >= 0.4
 
     def move(self, dt):
         """
         Move and rotate if needed
         """
-        self.rotate(dt)
-        self.x += math.cos(self.direction) * self.speed * dt
-        self.y += math.sin(self.direction) * self.speed * dt
+        if self.alive:
+            self.rotate(dt)
+            self.x += math.cos(self.direction) * self.speed * dt
+            self.y += math.sin(self.direction) * self.speed * dt
 
     def thrust(self):
         """
@@ -115,8 +116,38 @@ class Ship(Entity):
     """
 
     def __init__(self, x: int, y: int, direction: float, speed: float, points: int):
-        super().__init__(32, 32, x, y, direction, direction, speed)
+        super().__init__(25, 25, x, y, direction, direction, speed)
         self.points = points
+        self.distance = randrange(50, 250)
+
+    def turn(self):
+        """
+        Change ship direction when reaching the right distance
+        """
+        # top left
+        if (
+            self.x + self.distance < PAN_X - PAN_WIDTH / 2
+            and self.y < PAN_Y - PAN_HEIGHT / 2
+        ):
+            self.set_direction(math.pi / 2)
+        # top right
+        if (
+            self.x > PAN_X + PAN_WIDTH / 2
+            and self.y + self.distance < PAN_Y - PAN_HEIGHT / 2
+        ):
+            self.set_direction(-math.pi)
+        # bottom right
+        if (
+            self.x - self.distance > PAN_X + PAN_WIDTH / 2
+            and self.y > PAN_Y + PAN_HEIGHT / 2
+        ):
+            self.set_direction(-math.pi / 2)
+        # bottom left
+        if (
+            self.x < PAN_X - PAN_WIDTH / 2
+            and self.y - self.distance > PAN_Y + PAN_HEIGHT / 2
+        ):
+            self.set_direction(0)
 
     def move(self, dt: int):
         """
@@ -133,21 +164,8 @@ class DroidShip(Ship):
     """
 
     def __init__(self, x: int, y: int, level: int):
-        super().__init__(x, y, 0, 0.01 * math.sqrt(level + 1), 1000)
+        super().__init__(x, y, 0, 0.01 * math.sqrt(level), 1000)
         self.set_image("DroidShip.png")
-        self.last_rotate = 0
-        self.distance = randrange(450, 500)
-
-    def rotate(self):
-        """
-        Change ship direction when reaching the right distance
-        """
-        if (
-            time() - self.last_rotate > 1
-            and math.sqrt((self.x - 500) ** 2 + (self.y - 400) ** 2) > self.distance
-        ):
-            self.direction -= math.pi / 2
-            self.last_rotate = time()
 
 
 class CommandShip(Ship):
@@ -156,24 +174,23 @@ class CommandShip(Ship):
     """
 
     def __init__(self, x: int, y: int, level: int):
-        super().__init__(x, y, 0, 0.05 * math.sqrt(level + 1), 1500)
+        super().__init__(x, y, 0, 0.05 * math.sqrt(level), 1500)
         self.set_image("CommandShip.png")
         self.last_drop = time()
         self.last_shoot = time()
-        self.last_rotate = 0
-        self.distance = randrange(450, 500)
+        self.distance = randrange(50, 250)
 
     def can_drop(self) -> bool:
         """
         Whether the ship can drop a mine or not
         """
-        return time() - self.last_drop >= 15
+        return self.alive and time() - self.last_drop >= 15
 
     def can_shoot(self) -> bool:
         """
         Whether the ship can shoot or not
         """
-        return time() - self.last_shoot >= 5
+        return self.alive and time() - self.last_shoot >= 5
 
     def drop_mine(self, enemies: list):
         """
@@ -181,18 +198,6 @@ class CommandShip(Ship):
         """
         enemies.insert(0, PhotonMine(self.x, self.y))
         self.last_drop = time()
-
-    # TODO: Improve that because it's bad asf
-    def rotate(self):
-        """
-        Change ship direction when reaching the right distance
-        """
-        if (
-            time() - self.last_rotate > 1
-            and math.sqrt((self.x - 500) ** 2 + (self.y - 400) ** 2) > self.distance
-        ):
-            self.direction -= math.pi / 2
-            self.last_rotate = time()
 
     def shoot(self, player: Player, lasers: list[Laser]):
         """
@@ -209,7 +214,7 @@ class DeathShip(Ship):
     """
 
     def __init__(self, x: int, y: int, level: int):
-        super().__init__(x, y, random() * math.pi * 2, 0.2 * math.sqrt(level + 1), 2000)
+        super().__init__(x, y, random() * math.pi * 2, 0.2 * math.sqrt(level), 2000)
         self.set_image("DeathShip.png")
         self.last_drop = time()
 
@@ -217,7 +222,7 @@ class DeathShip(Ship):
         """
         Whether the ship can drop a mine or not
         """
-        return time() - self.last_drop >= 15
+        return self.alive and time() - self.last_drop >= 15
 
     def drop_mine(self, enemies: list):
         """
@@ -229,3 +234,7 @@ class DeathShip(Ship):
         else:
             enemies.insert(0, PhotonMine(self.x, self.y))
         self.last_drop = time()
+
+    def turn(self):
+        # TODO: Follow player ?
+        pass

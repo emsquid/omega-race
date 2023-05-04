@@ -5,7 +5,7 @@ from time import time
 from random import randrange, random
 from src.base import Object, Entity, Text
 from src.sprites import Player, Laser
-from src.const import WIN_WIDTH, WIN_HEIGHT, BLACK, WHITE
+from src.const import WIN_WIDTH, WIN_HEIGHT, BLACK, WHITE, GREEN, YELLOW, ORANGE, RED
 
 
 class Background:
@@ -44,8 +44,11 @@ class Panel:
     """
 
     def __init__(self):
+        self.level = Text("LEVEL 1", 460, 325, GREEN, anchor="topleft")
         self.score_text = Text("SCORE", 330, 325, anchor="topleft")
         self.score = Text("0", 330, 360, anchor="topleft")
+        self.highscore_text = Text("HIGHSCORE", 330, 415, anchor="topleft")
+        self.highscore = Text("0", 330, 445, anchor="topleft")
         self.image = pygame.image.load("assets/Player1.png")
         self.lives = 3
 
@@ -53,17 +56,23 @@ class Panel:
         """
         Draw the panel elements on the surface
         """
+        self.level.draw(surface)
         self.score_text.draw(surface)
         self.score.draw(surface)
+        self.highscore_text.draw(surface)
+        self.highscore.draw(surface)
         for i in range(self.lives):
-            surface.blit(self.image, (640, 330 + 50 * i))
+            surface.blit(self.image, (630, 330 + 50 * i))
 
-    def update(self, lives: int, score: int):
+    def update(self, lives: int, level: int, score: int, highscore: int):
         """
         Update lives and score
         """
-        self.score.set_content(str(score))
         self.lives = lives
+        self.level.set_content(f"LEVEL {level}")
+        self.level.set_color([WHITE, GREEN, YELLOW, ORANGE, RED][level - 1])
+        self.score.set_content(str(score))
+        self.highscore.set_content(str(highscore))
 
 
 class Border(Object):
@@ -150,10 +159,7 @@ class ForceField:
             Border(483, 3, 740, 20, math.pi / 2, False),
             Border(483, 3, 260, 780, -math.pi / 2, False),
             Border(483, 3, 740, 780, -math.pi / 2, False),
-        ]
-
-        # Border for the display panel
-        self.panel = [
+            # Border for the display panel
             Border(3, 203, 700, 400, 0, True),
             Border(3, 203, 300, 400, math.pi, True),
             Border(403, 3, 500, 500, math.pi / 2, True),
@@ -164,24 +170,24 @@ class ForceField:
         """
         Draw all borders on the surface
         """
-        for border in self.borders + self.panel:
+        for border in self.borders:
             border.draw(surface)
 
-    def bounce(self, sprites: list[Entity]):
+    def bounce(self, *sprites: tuple[Entity]):
         """
         Check if the objects should bounce on any border
         """
         for obj in sprites:
-            for border in self.borders + self.panel:
+            for border in self.borders:
                 border.bounce(obj)
 
-    def crash(self, lasers: list[Laser]):
+    def crash(self, *lasers: tuple[Laser]):
         """
         Check if the lasers should crash on any border
         """
         for laser in lasers:
-            for border in self.borders + self.panel:
+            for border in self.borders:
                 if laser.collide(border):
+                    laser.die()
                     border.blink()
-                    lasers.remove(laser)
                     break

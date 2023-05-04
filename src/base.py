@@ -60,7 +60,9 @@ class Object:
         Check for collision with any other object
         """
         return (
-            self.x - self.width / 2 <= other.x + other.width / 2
+            (not isinstance(self, Entity) or self.alive)
+            and (not isinstance(other, Entity) or other.alive)
+            and self.x - self.width / 2 <= other.x + other.width / 2
             and other.x - other.width / 2 <= self.x + self.width / 2
             and self.y - self.height / 2 <= other.y + other.height / 2
             and other.y - other.height / 2 <= self.y + self.height / 2
@@ -82,6 +84,7 @@ class Entity(Object):
         self.set_direction(direction)
         self.set_rotation(rotation)
         self.set_speed(speed)
+        self.alive = True
 
     def set_direction(self, direction: float):
         """
@@ -101,23 +104,28 @@ class Entity(Object):
         """
         self.speed = speed
 
+    def die(self):
+        self.alive = False
+
     def draw(self, surface: pygame.Surface):
         """
         Draw the rotated sprite on the surface
         """
-        # Create the rotated image and center it properly
-        angle = -360 * (self.rotation + math.pi / 2) / (2 * math.pi)
-        rotated_image = pygame.transform.rotate(self.image, angle)
-        rect = rotated_image.get_rect(center=(self.x, self.y))
-        surface.blit(rotated_image, rect)
+        if self.alive:
+            # Create the rotated image and center it properly
+            angle = -360 * (self.rotation + math.pi / 2) / (2 * math.pi)
+            rotated_image = pygame.transform.rotate(self.image, angle)
+            rect = rotated_image.get_rect(center=(self.x, self.y))
+            surface.blit(rotated_image, rect)
 
     def move(self, dt: float):
         """
         Move the sprite
         We use dt to make the object move at the same speed on any computer
         """
-        self.x += math.cos(self.direction) * self.speed * dt
-        self.y += math.sin(self.direction) * self.speed * dt
+        if self.alive:
+            self.x += math.cos(self.direction) * self.speed * dt
+            self.y += math.sin(self.direction) * self.speed * dt
 
 
 class Text(Object):
@@ -162,7 +170,6 @@ class Text(Object):
             surface.blit(text, (self.x - width, self.y))
 
 
-# TODO: Link it properly with other objects
 class Explosion(Object):
     def __init__(self, x: int, y: int):
         super().__init__(35, 35, x, y)
@@ -178,3 +185,12 @@ class Explosion(Object):
             Timer(0.1, self.play, [step + 1]).start()
         else:
             self.done = True
+
+    def draw(self, surface: pygame.Surface):
+        """
+        Draw the object on the surface
+        """
+        if not self.done:
+            surface.blit(
+                self.image, (self.x - self.width / 2, self.y - self.height / 2)
+            )
