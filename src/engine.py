@@ -3,6 +3,7 @@ from random import randrange
 from src.base import Object, Explosion
 from src.graphics import ForceField, Panel
 from src.sprites import Player, Ship, DroidShip, CommandShip, DeathShip
+from src.settings import Settings
 from src.const import ENEMY_NUMBER
 
 
@@ -48,7 +49,7 @@ class Engine:
         self.force_field = ForceField()
 
     def change_level(self):
-        self.level += 1
+        self.level = min(self.level + 1, 4)
         self.reset()
 
     def get_objects(self) -> list[Object]:
@@ -66,22 +67,22 @@ class Engine:
             *self.explosions,
         )
 
-    def handle_keys(self, keys: pygame.key.ScancodeWrapper):
+    def handle_keys(self, keys: pygame.key.ScancodeWrapper, settings: Settings):
         """
         Handle user inputs in the game
         """
-        if keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]:
+        if keys[settings.keys["LEFT"]] and not keys[settings.keys["RIGHT"]]:
             self.player.rotating = "left"
-        elif keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT]:
+        elif keys[settings.keys["RIGHT"]] and not keys[settings.keys["LEFT"]]:
             self.player.rotating = "right"
         else:
             self.player.rotating = ""
-        if keys[pygame.K_UP]:
+        if keys[settings.keys["UP"]]:
             self.player.thrust()
             self.player.set_image("Player2.png")
         else:
             self.player.set_image("Player1.png")
-        if keys[pygame.K_SPACE]:
+        if keys[settings.keys["SHOOT"]]:
             self.player.shoot(self.player_lasers)
 
     def ship_death(self, ship: Ship):
