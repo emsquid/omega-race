@@ -31,6 +31,7 @@ class Game:
         self.is_home = False
         self.is_playing = False
         self.is_gameover = False
+        self.is_settings = False
 
     def draw(self, *objects: tuple[Object]):
         """
@@ -57,6 +58,8 @@ class Game:
                     if self.is_home:
                         if self.home.selection == 0:
                             self.play_screen()
+                        elif self.home.selection == 2:
+                            self.settings_srceen()
                     elif self.is_gameover:
                         if self.gameover.selection == 0:
                             self.play_screen()
@@ -66,6 +69,8 @@ class Game:
         keys = pygame.key.get_pressed()
         if self.is_home:
             self.home.handle_keys(keys, self.settings)
+        elif self.is_settings:
+            self.settings.handle_keys(keys, self.settings)
         elif self.is_playing:
             self.engine.handle_keys(keys, self.settings)
         elif self.is_gameover:
@@ -104,11 +109,21 @@ class Game:
         Home screen can lead you to play, scores and settings
         """
         self.is_home = True
-        self.is_playing, self.is_gameover = False, False
+        self.is_playing, self.is_gameover, self.is_settings = False, False, False
         while self.is_home:
             self.handle_inputs()
             self.update()
             self.draw(*self.home.get_objects())
+            pygame.display.update()
+
+    def settings_srceen(self):
+        self.engine.start()
+        self.is_settings = True
+        self.is_home, self.is_gameover, self.is_playing = False, False, False
+        while self.is_settings:
+            self.handle_inputs()
+            self.update()
+            self.draw(*self.settings.get_objects())
             pygame.display.update()
 
     def play_screen(self):
@@ -117,7 +132,7 @@ class Game:
         """
         self.engine.start()
         self.is_playing = True
-        self.is_home, self.is_gameover = False, False
+        self.is_home, self.is_gameover, self.is_settings = False, False, False
         while self.is_playing:
             self.handle_inputs()
             self.update()
@@ -129,7 +144,7 @@ class Game:
         GameOver screen let you play again or go back home after a loss
         """
         self.is_gameover = True
-        self.is_home, self.is_playing = False, False
+        self.is_home, self.is_playing, self.is_settings = False, False, False
         while self.is_gameover:
             self.handle_inputs()
             self.update()

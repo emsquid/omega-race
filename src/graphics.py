@@ -83,7 +83,7 @@ class Panel:
         self.lives = lives
         self.level.update(
             f"LEVEL {level}",
-            [WHITE, GREEN, YELLOW, ORANGE, RED][level - 1],
+            [WHITE, GREEN, YELLOW, ORANGE, RED][min(level - 1, 4)],
         )
         self.score.update(content=str(score))
         self.highscore.update(content=str(highscore))

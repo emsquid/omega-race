@@ -1,6 +1,7 @@
 import pygame
 from time import time
-from src.base import Text
+from src.base import Text, Object
+from src.const import RED, WHITE, GREY, BLACK
 
 
 class Settings:
@@ -17,7 +18,25 @@ class Settings:
             "SHOOT": pygame.K_SPACE,
         }
         self.selection = 0
+        self.last_change = 0
         self.menu_open = False  # nom de merde
+
+        self.title = Text("Settings", 500, 150, size=90)
+
+        self.up_text = Text("UP", 400, 300, RED, 40)
+        self.up_key = Text(pygame.key.name(self.keys["UP"]), 600, 300, WHITE, 40)
+
+        self.down_text = Text("DOWN", 400, 400, WHITE, 40)
+        self.down_key = Text(pygame.key.name(self.keys["DOWN"]), 600, 400, WHITE, 40)
+
+        self.left_text = Text("LEFT", 400, 500, WHITE, 40)
+        self.left_key = Text(pygame.key.name(self.keys["LEFT"]), 600, 500, WHITE, 40)
+
+        self.right_text = Text("RIGHT", 400, 600, WHITE, 40)
+        self.right_key = Text(pygame.key.name(self.keys["RIGHT"]), 600, 600, WHITE, 40)
+
+        self.shoot_text = Text("SHOOT", 400, 700, WHITE, 40)
+        self.shoot_key = Text(pygame.key.name(self.keys["SHOOT"]), 600, 700, WHITE, 40)
 
     def can_change(self) -> bool:
         """
@@ -37,6 +56,55 @@ class Settings:
         if key != pygame.K_RETURN:
             self.keys[action] = key
 
+    def get_objects(self) -> tuple[Object]:
+        """
+        Get every object handled by the settings
+
+        :return: tuple[Object], All objects
+        """
+        self.up_text.update(color=RED if self.selection == 0 else WHITE)
+        self.up_key.update(content=pygame.key.name(self.keys["UP"]))
+
+        self.down_text.update(color=RED if self.selection == 1 else WHITE)
+        self.down_key.update(content=pygame.key.name(self.keys["DOWN"]))
+
+        self.left_text.update(color=RED if self.selection == 2 else WHITE)
+        self.left_key.update(content=pygame.key.name(self.keys["LEFT"]))
+
+        self.right_text.update(color=RED if self.selection == 3 else WHITE)
+        self.right_key.update(content=pygame.key.name(self.keys["RIGHT"]))
+
+        self.shoot_text.update(color=RED if self.selection == 4 else WHITE)
+        self.shoot_key.update(content=pygame.key.name(self.keys["SHOOT"]))
+
+        obj = [
+            self.title,
+            self.up_text,
+            self.up_key,
+            self.down_text,
+            self.down_key,
+            self.left_text,
+            self.left_key,
+            self.right_text,
+            self.right_key,
+            self.shoot_text,
+            self.shoot_key,
+        ]
+
+        if self.menu_open:
+            # TODO: Make that better lol
+            message = Object(500, 200, 500, 400)
+            message.set_image()
+            message.image.fill(GREY)
+            message_text1 = Text("Please choose", 500, 380, BLACK, 40)
+            message_text2 = Text("the new key", 500, 420, BLACK, 40)
+
+            obj.append(message)
+            obj.append(message_text1)
+            obj.append(message_text2)
+
+        return obj
+
     def handle_keys(self, keys: pygame.key.ScancodeWrapper, settings):
         """
         Handle user inputs in the settings
@@ -47,18 +115,26 @@ class Settings:
         if (
             keys[settings.keys["UP"]]
             and not keys[settings.keys["DOWN"]]
+            and not keys[pygame.K_RETURN]
             and self.can_change()
         ):
-            self.selection = (self.selection - 1) % 3
+            self.selection = (self.selection - 1) % 5
             self.last_change = time()
         if (
             keys[settings.keys["DOWN"]]
             and not keys[settings.keys["UP"]]
+            and not keys[pygame.K_RETURN]
             and self.can_change()
         ):
-            self.selection = (self.selection + 1) % 3
+            self.selection = (self.selection + 1) % 5
             self.last_change = time()
+        if (
+            keys[pygame.K_RETURN]
+            and not keys[settings.keys["UP"]]
+            and not keys[settings.keys["DOWN"]]
+            and self.can_change()
+        ):
+            self.menu_open = True
 
-    def draw(self, surface):
-        # pygame.key.name()
-        title = Text("Settings", 200, 200, 90)
+        if keys[settings.keys["SHOOT"]] and self.can_change():
+            self.menu_open = False
