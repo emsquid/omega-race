@@ -101,6 +101,17 @@ class Game:
             self.draw(*self.home.get_objects())
             pygame.display.update()
 
+    def score_srceen(self):
+        self.engine.start()
+        self.is_ = True
+        self.is_home, self.is_gameover = False, False
+        while self.is_playing:
+            self.handle_inputs()
+            self.update()
+            self.draw(*self.engine.get_objects())
+            pygame.display.update()
+         
+
     def play_screen(self):
         """
         The war basically
