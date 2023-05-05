@@ -19,7 +19,8 @@ class Settings:
         }
         self.selection = 0
         self.last_change = 0
-        self.menu_open = False  # nom de merde
+        # TODO: nom de merde
+        self.menu_open = False
 
         self.title = Text("Settings", 500, 150, size=90)
 
@@ -53,7 +54,7 @@ class Settings:
 
         :return: bool, Whether it's been long enough or not
         """
-        return time() - self.last_change >= 0.15
+        return not self.menu_open and time() - self.last_change >= 0.15
 
     def update(self, action: str, key: int):
         """
@@ -62,7 +63,7 @@ class Settings:
         :param action: str, The action to change the key for
         :param key: int, The new key
         """
-        if key != pygame.K_RETURN:
+        if key != pygame.K_RETURN and not key in self.keys.values():
             self.keys[action] = key
 
     def get_objects(self) -> tuple[Object]:
@@ -87,6 +88,7 @@ class Settings:
         self.shoot_key.update(content=pygame.key.name(self.keys["SHOOT"]))
 
         self.home_text.update(color=RED if self.selection == 5 else WHITE)
+
         obj = (
             self.title,
             self.up_text,
@@ -118,7 +120,6 @@ class Settings:
         if (
             keys[settings.keys["UP"]]
             and not keys[settings.keys["DOWN"]]
-            and not keys[pygame.K_RETURN]
             and self.can_change()
         ):
             self.selection = (self.selection - 1) % 6
@@ -126,26 +127,21 @@ class Settings:
         if (
             keys[settings.keys["DOWN"]]
             and not keys[settings.keys["UP"]]
-            and not keys[pygame.K_RETURN]
             and self.can_change()
         ):
             self.selection = (self.selection + 1) % 6
             self.last_change = time()
-        if (
-            keys[pygame.K_RETURN]
-            and not keys[settings.keys["UP"]]
-            and not keys[settings.keys["DOWN"]]
-            and self.can_change()
-        ):
+        if keys[pygame.K_RETURN] and self.can_change():
             self.menu_open = True
             self.last_change = time()
 
-        if keys[settings.keys["SHOOT"]] and self.can_change():
-            self.menu_open = False
-            self.last_change = time()
+    def handle_events(self, event: pygame.event.Event):
+        """
+        Handle a user event when the menu is open
 
-    def handle_events(self, event: pygame.key):
-        if self.menu_open and self.can_change():
+        :param event: pygame.event.Event, The event (key) that was pressed
+        """
+        if self.menu_open:
             if self.selection == 0:
                 self.update("UP", event)
             elif self.selection == 1:
