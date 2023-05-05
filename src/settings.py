@@ -38,6 +38,13 @@ class Settings:
         self.shoot_text = Text("SHOOT", 400, 700, WHITE, 40)
         self.shoot_key = Text(pygame.key.name(self.keys["SHOOT"]), 600, 700, WHITE, 40)
 
+        # TODO: Make that better lol
+        self.message = Object(500, 200, 500, 400)
+        self.message.set_image()
+        self.message.image.fill(GREY)
+        self.message_text1 = Text("Please choose", 500, 380, BLACK, 40)
+        self.message_text2 = Text("the new key", 500, 420, BLACK, 40)
+
     def can_change(self) -> bool:
         """
         Check if the selection can change
@@ -77,7 +84,7 @@ class Settings:
         self.shoot_text.update(color=RED if self.selection == 4 else WHITE)
         self.shoot_key.update(content=pygame.key.name(self.keys["SHOOT"]))
 
-        obj = [
+        obj = (
             self.title,
             self.up_text,
             self.up_key,
@@ -89,21 +96,13 @@ class Settings:
             self.right_key,
             self.shoot_text,
             self.shoot_key,
-        ]
+        )
 
-        if self.menu_open:
-            # TODO: Make that better lol
-            message = Object(500, 200, 500, 400)
-            message.set_image()
-            message.image.fill(GREY)
-            message_text1 = Text("Please choose", 500, 380, BLACK, 40)
-            message_text2 = Text("the new key", 500, 420, BLACK, 40)
-
-            obj.append(message)
-            obj.append(message_text1)
-            obj.append(message_text2)
-
-        return obj
+        return (
+            obj + (self.message, self.message_text1, self.message_text2)
+            if self.menu_open
+            else obj
+        )
 
     def handle_keys(self, keys: pygame.key.ScancodeWrapper, settings):
         """
