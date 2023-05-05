@@ -72,7 +72,7 @@ class Panel:
         """
         self.lives = lives
         self.level.set_content(f"LEVEL {level}")
-        self.level.set_color([WHITE, GREEN, YELLOW, ORANGE, RED][level - 1])
+        self.level.set_color([WHITE, GREEN, YELLOW, ORANGE, RED][min(level - 1, 4)])
         self.score.set_content(str(score))
         self.highscore.set_content(str(highscore))
 

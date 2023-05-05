@@ -12,6 +12,7 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
 ORANGE = (255, 165, 0)
+GREY = (73, 72, 72)
 
 ENEMY_NUMBER = {
     "DroidShip": [5, 5, 6, 7, 7],

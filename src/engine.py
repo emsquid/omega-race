@@ -30,15 +30,15 @@ class Engine:
         self.enemies = (
             [
                 DroidShip(randrange(200, 800), randrange(550, 750), self.level)
-                for i in range(ENEMY_NUMBER["DroidShip"][self.level - 1])
+                for i in range(ENEMY_NUMBER["DroidShip"][min(self.level - 1, 4)])
             ]
             + [
                 CommandShip(randrange(200, 800), randrange(550, 750), self.level)
-                for i in range(ENEMY_NUMBER["CommandShip"][self.level - 1])
+                for i in range(ENEMY_NUMBER["CommandShip"][min(self.level - 1, 4)])
             ]
             + [
                 DeathShip(randrange(200, 800), randrange(550, 750), self.level)
-                for i in range(ENEMY_NUMBER["DeathShip"][self.level - 1])
+                for i in range(ENEMY_NUMBER["DeathShip"][min(self.level - 1, 4)])
             ]
         )
         self.mines = []
