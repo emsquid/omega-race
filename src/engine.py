@@ -16,7 +16,7 @@ class Engine:
     def __init__(self):
         pass
 
-    def start(self):
+    def restart(self):
         """
         Completely start the game
         """
@@ -29,7 +29,6 @@ class Engine:
         """
         Reset the game state, except for score and lives
         """
-        self.player = Player()
         self.enemies = (
             [
                 DroidShip(randrange(200, 800), randrange(550, 750), self.level)
@@ -48,6 +47,7 @@ class Engine:
         self.player_lasers = []
         self.enemies_lasers = []
         self.explosions = []
+        self.player = Player()
 
         self.force_field = ForceField()
 
