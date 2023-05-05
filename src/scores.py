@@ -1,4 +1,9 @@
+import os
 import pygame
+from threading import Thread
+from dotenv import load_dotenv
+from pymongo.server_api import ServerApi
+from pymongo.mongo_client import MongoClient
 from src.base import Object, Text
 from src.settings import Settings
 
@@ -9,9 +14,38 @@ class Scores:
     """
 
     def __init__(self):
-        self.highscore = 0
+        self.array = []
+        self.connected = False
+        Thread(target=self.connect).start()
 
         self.title = Text("Scores", 500, 150, size=90)
+        self.names = [
+            Text(
+                f"{i+1}. {self.array[i]['name'] if i<len(self.array) else '-----'}",
+                150 - i,
+                250 + i * 50,
+                anchor="topleft",
+            )
+            for i in range(10)
+        ]
+        self.scores = [
+            Text(
+                f"{self.array[i]['score'] if i<len(self.array) else '-----'}",
+                550,
+                250 + i * 50,
+                anchor="topright",
+            )
+            for i in range(10)
+        ]
+        self.levels = [
+            Text(
+                f"{self.array[i]['level'] if i<len(self.array) else '--'}",
+                800,
+                250 + i * 50,
+                anchor="topright",
+            )
+            for i in range(10)
+        ]
 
     def get_objects(self) -> tuple[Object]:
         """
@@ -19,8 +53,13 @@ class Scores:
 
         :return: tuple[Object], All objects
         """
-        # TODO
-        return [self.title]
+        for i in range(10):
+            if i < len(self.array):
+                self.names[i].update(content=f"{i+1}. {self.array[i]['name']}")
+                self.scores[i].update(content=f"{self.array[i]['score']}")
+                self.levels[i].update(content=f"{self.array[i]['level']}")
+
+        return (self.title, *self.names, *self.scores, *self.levels)
 
     def handle_keys(self, keys: pygame.key.ScancodeWrapper, settings: Settings):
         """
@@ -31,10 +70,39 @@ class Scores:
         """
         pass
 
-    def update(self, score: int):
-        """
-        Update the highscore
+    def connect(self):
+        load_dotenv()
+        uri = f"mongodb+srv://omegarace:{os.getenv('TOKEN')}@omegarace.1knm5ap.mongodb.net/?retryWrites=true&w=majority"
 
-        :param score: int, The current score
-        """
-        self.highscore = max(score, self.highscore)
+        try:
+            client = MongoClient(uri, server_api=ServerApi("1"))
+            self.db = client["Scores"]
+            self.connected = True
+            self.fetch()
+
+        except Exception as e:
+            self.db = None
+            self.connected = False
+            print(e)
+
+    def fetch(self):
+        if self.connected:
+            self.array = [doc for doc in self.db["Single"].find()]
+            self.array.sort(key=lambda doc: doc["score"], reverse=True)
+
+    def save_score(self, name: str, score: int, level: int):
+        if len(self.array) < 10 or score > self.array[9]["score"]:
+            doc = {"name": name, "score": score, "level": level}
+            self.array.append(doc)
+            self.array.sort(key=lambda doc: doc["score"], reverse=True)
+
+            if not self.connected:
+                return
+            try:
+                self.db["Single"].insert_one(doc)
+            except Exception as e:
+                self.connected = False
+                print(e)
+
+    def highscore(self) -> int:
+        return self.array[0]["score"] if len(self.array) > 0 else 0

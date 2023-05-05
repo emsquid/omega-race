@@ -38,11 +38,13 @@ class Game:
         self.is_scores = False
         self.is_settings = False
 
+        self.name = "Emanuel"
+
     def draw(self, *objects: tuple[Object]):
         """
         Draw the objects on top of the background and display it
 
-        :param *objects: tuple[Object], objects to draw
+        :param *objects: tuple[Object], All objects to draw
         """
         for obj in objects:
             obj.draw(self.background.image)
@@ -101,15 +103,15 @@ class Game:
             pass
         if self.is_play:
             if self.engine.running():
-                self.scores.update(self.engine.score)
                 self.panel.update(
                     self.engine.lives,
                     self.engine.level,
                     self.engine.score,
-                    self.scores.highscore,
+                    max(self.engine.score, self.scores.highscore()),
                 )
                 self.engine.update(dt)
             else:
+                self.scores.save_score(self.name, self.engine.score, self.engine.level)
                 self.gameover_screen()
         if self.is_gameover:
             pass

@@ -27,19 +27,19 @@ class Settings:
         self.up_text = Text("UP", 400, 280, RED, 40)
         self.up_key = Text(pygame.key.name(self.keys["UP"]), 600, 280, WHITE, 40)
 
-        self.down_text = Text("DOWN", 400, 380, WHITE, 40)
-        self.down_key = Text(pygame.key.name(self.keys["DOWN"]), 600, 380, WHITE, 40)
+        self.down_text = Text("DOWN", 400, 360, WHITE, 40)
+        self.down_key = Text(pygame.key.name(self.keys["DOWN"]), 600, 360, WHITE, 40)
 
-        self.left_text = Text("LEFT", 400, 480, WHITE, 40)
-        self.left_key = Text(pygame.key.name(self.keys["LEFT"]), 600, 480, WHITE, 40)
+        self.left_text = Text("LEFT", 400, 440, WHITE, 40)
+        self.left_key = Text(pygame.key.name(self.keys["LEFT"]), 600, 440, WHITE, 40)
 
-        self.right_text = Text("RIGHT", 400, 580, WHITE, 40)
-        self.right_key = Text(pygame.key.name(self.keys["RIGHT"]), 600, 580, WHITE, 40)
+        self.right_text = Text("RIGHT", 400, 520, WHITE, 40)
+        self.right_key = Text(pygame.key.name(self.keys["RIGHT"]), 600, 520, WHITE, 40)
 
-        self.shoot_text = Text("SHOOT", 400, 680, WHITE, 40)
-        self.shoot_key = Text(pygame.key.name(self.keys["SHOOT"]), 600, 680, WHITE, 40)
+        self.shoot_text = Text("SHOOT", 400, 600, WHITE, 40)
+        self.shoot_key = Text(pygame.key.name(self.keys["SHOOT"]), 600, 600, WHITE, 40)
 
-        self.home_text = Text("HOME", 800, 750, WHITE, 40)
+        self.home_text = Text("HOME", 800, 700, WHITE, 40)
 
         # TODO: Make that better lol
         self.message = Object(500, 200, 500, 400)
