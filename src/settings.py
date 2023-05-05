@@ -24,22 +24,22 @@ class Settings:
 
         self.title = Text("Settings", 500, 150, size=90)
 
-        self.up_text = Text("UP", 400, 280, RED, 40)
-        self.up_key = Text(pygame.key.name(self.keys["UP"]), 600, 280, WHITE, 40)
+        self.up_text = Text("UP", 300, 280, RED, size=40, anchor="left")
+        self.up_key = Text(pygame.key.name(self.keys["UP"]), 600, 280, size=40)
 
-        self.down_text = Text("DOWN", 400, 360, WHITE, 40)
-        self.down_key = Text(pygame.key.name(self.keys["DOWN"]), 600, 360, WHITE, 40)
+        self.down_text = Text("DOWN", 300, 360, size=40, anchor="left")
+        self.down_key = Text(pygame.key.name(self.keys["DOWN"]), 600, 360, size=40)
 
-        self.left_text = Text("LEFT", 400, 440, WHITE, 40)
-        self.left_key = Text(pygame.key.name(self.keys["LEFT"]), 600, 440, WHITE, 40)
+        self.left_text = Text("LEFT", 300, 440, size=40, anchor="left")
+        self.left_key = Text(pygame.key.name(self.keys["LEFT"]), 600, 440, size=40)
 
-        self.right_text = Text("RIGHT", 400, 520, WHITE, 40)
-        self.right_key = Text(pygame.key.name(self.keys["RIGHT"]), 600, 520, WHITE, 40)
+        self.right_text = Text("RIGHT", 300, 520, size=40, anchor="left")
+        self.right_key = Text(pygame.key.name(self.keys["RIGHT"]), 600, 520, size=40)
 
-        self.shoot_text = Text("SHOOT", 400, 600, WHITE, 40)
-        self.shoot_key = Text(pygame.key.name(self.keys["SHOOT"]), 600, 600, WHITE, 40)
+        self.shoot_text = Text("SHOOT", 300, 600, size=40, anchor="left")
+        self.shoot_key = Text(pygame.key.name(self.keys["SHOOT"]), 600, 600, size=40)
 
-        self.home_text = Text("HOME", 800, 700, WHITE, 40)
+        self.home = Text("HOME", 800, 700, size=40)
 
         # TODO: Make that better lol
         self.message = Object(500, 200, 500, 400)
@@ -87,7 +87,7 @@ class Settings:
         self.shoot_text.update(color=RED if self.selection == 4 else WHITE)
         self.shoot_key.update(content=pygame.key.name(self.keys["SHOOT"]))
 
-        self.home_text.update(color=RED if self.selection == 5 else WHITE)
+        self.home.update(color=RED if self.selection == 5 else WHITE)
 
         obj = (
             self.title,
@@ -101,7 +101,7 @@ class Settings:
             self.right_key,
             self.shoot_text,
             self.shoot_key,
-            self.home_text,
+            self.home,
         )
 
         return (

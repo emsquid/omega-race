@@ -6,6 +6,7 @@ from pymongo.server_api import ServerApi
 from pymongo.mongo_client import MongoClient
 from src.base import Object, Text
 from src.settings import Settings
+from src.const import RED
 
 
 class Scores:
@@ -23,7 +24,7 @@ class Scores:
             Text(
                 f"{i+1}. {self.array[i]['name'] if i<len(self.array) else '-----'}",
                 150 - i,
-                250 + i * 50,
+                240 + i * 40,
                 anchor="topleft",
             )
             for i in range(10)
@@ -32,7 +33,7 @@ class Scores:
             Text(
                 f"{self.array[i]['score'] if i<len(self.array) else '-----'}",
                 550,
-                250 + i * 50,
+                240 + i * 40,
                 anchor="topright",
             )
             for i in range(10)
@@ -41,11 +42,13 @@ class Scores:
             Text(
                 f"{self.array[i]['level'] if i<len(self.array) else '--'}",
                 800,
-                250 + i * 50,
+                240 + i * 40,
                 anchor="topright",
             )
             for i in range(10)
         ]
+
+        self.home = Text("HOME", 800, 700, RED, 40)
 
     def get_objects(self) -> tuple[Object]:
         """
@@ -59,7 +62,7 @@ class Scores:
                 self.scores[i].update(content=f"{self.array[i]['score']}")
                 self.levels[i].update(content=f"{self.array[i]['level']}")
 
-        return (self.title, *self.names, *self.scores, *self.levels)
+        return (self.title, *self.names, *self.scores, *self.levels, self.home)
 
     def handle_keys(self, keys: pygame.key.ScancodeWrapper, settings: Settings):
         """

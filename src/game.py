@@ -70,6 +70,8 @@ class Game:
                         elif self.home.selection == 2:
                             self.settings.last_change = time()
                             self.settings_screen()
+                    elif self.is_scores:
+                        self.home_screen()
                     elif self.is_settings:
                         if self.settings.selection == 5:
                             self.home_screen()

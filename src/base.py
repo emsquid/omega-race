@@ -193,6 +193,10 @@ class Text(Object):
         width, height = self.image.get_size()
         if self.anchor == "center":
             surface.blit(self.image, (self.x - width / 2, self.y - height / 2))
+        elif self.anchor == "left":
+            surface.blit(self.image, (self.x, self.y - height / 2))
+        elif self.anchor == "right":
+            surface.blit(self.image, (self.x - width, self.y - height / 2))
         elif self.anchor == "topleft":
             surface.blit(self.image, (self.x, self.y))
         elif self.anchor == "topright":
