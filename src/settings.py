@@ -23,20 +23,22 @@ class Settings:
 
         self.title = Text("Settings", 500, 150, size=90)
 
-        self.up_text = Text("UP", 400, 300, RED, 40)
-        self.up_key = Text(pygame.key.name(self.keys["UP"]), 600, 300, WHITE, 40)
+        self.up_text = Text("UP", 400, 280, RED, 40)
+        self.up_key = Text(pygame.key.name(self.keys["UP"]), 600, 280, WHITE, 40)
 
-        self.down_text = Text("DOWN", 400, 400, WHITE, 40)
-        self.down_key = Text(pygame.key.name(self.keys["DOWN"]), 600, 400, WHITE, 40)
+        self.down_text = Text("DOWN", 400, 380, WHITE, 40)
+        self.down_key = Text(pygame.key.name(self.keys["DOWN"]), 600, 380, WHITE, 40)
 
-        self.left_text = Text("LEFT", 400, 500, WHITE, 40)
-        self.left_key = Text(pygame.key.name(self.keys["LEFT"]), 600, 500, WHITE, 40)
+        self.left_text = Text("LEFT", 400, 480, WHITE, 40)
+        self.left_key = Text(pygame.key.name(self.keys["LEFT"]), 600, 480, WHITE, 40)
 
-        self.right_text = Text("RIGHT", 400, 600, WHITE, 40)
-        self.right_key = Text(pygame.key.name(self.keys["RIGHT"]), 600, 600, WHITE, 40)
+        self.right_text = Text("RIGHT", 400, 580, WHITE, 40)
+        self.right_key = Text(pygame.key.name(self.keys["RIGHT"]), 600, 580, WHITE, 40)
 
-        self.shoot_text = Text("SHOOT", 400, 700, WHITE, 40)
-        self.shoot_key = Text(pygame.key.name(self.keys["SHOOT"]), 600, 700, WHITE, 40)
+        self.shoot_text = Text("SHOOT", 400, 680, WHITE, 40)
+        self.shoot_key = Text(pygame.key.name(self.keys["SHOOT"]), 600, 680, WHITE, 40)
+
+        self.home_text = Text("HOME", 800, 750, WHITE, 40)
 
         # TODO: Make that better lol
         self.message = Object(500, 200, 500, 400)
@@ -84,6 +86,7 @@ class Settings:
         self.shoot_text.update(color=RED if self.selection == 4 else WHITE)
         self.shoot_key.update(content=pygame.key.name(self.keys["SHOOT"]))
 
+        self.home_text.update(color=RED if self.selection == 5 else WHITE)
         obj = (
             self.title,
             self.up_text,
@@ -96,6 +99,7 @@ class Settings:
             self.right_key,
             self.shoot_text,
             self.shoot_key,
+            self.home_text,
         )
 
         return (
@@ -117,7 +121,7 @@ class Settings:
             and not keys[pygame.K_RETURN]
             and self.can_change()
         ):
-            self.selection = (self.selection - 1) % 5
+            self.selection = (self.selection - 1) % 6
             self.last_change = time()
         if (
             keys[settings.keys["DOWN"]]
@@ -125,7 +129,7 @@ class Settings:
             and not keys[pygame.K_RETURN]
             and self.can_change()
         ):
-            self.selection = (self.selection + 1) % 5
+            self.selection = (self.selection + 1) % 6
             self.last_change = time()
         if (
             keys[pygame.K_RETURN]
@@ -134,6 +138,24 @@ class Settings:
             and self.can_change()
         ):
             self.menu_open = True
+            self.last_change = time()
 
         if keys[settings.keys["SHOOT"]] and self.can_change():
             self.menu_open = False
+            self.last_change = time()
+
+    def handle_events(self, event: pygame.key):
+        if self.menu_open and self.can_change():
+            if self.selection == 0:
+                self.update("UP", event)
+            elif self.selection == 1:
+                self.update("DOWN", event)
+            elif self.selection == 2:
+                self.update("LEFT", event)
+            elif self.selection == 3:
+                self.update("RIGHT", event)
+            elif self.selection == 4:
+                self.update("SHOOT", event)
+
+            self.menu_open = False
+            self.last_change = time()

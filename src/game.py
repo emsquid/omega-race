@@ -1,5 +1,6 @@
 import os
 import pygame
+from time import time
 from src.base import Object, Text
 from src.menu import Home, GameOver
 from src.engine import Engine
@@ -60,12 +61,18 @@ class Game:
                         if self.home.selection == 0:
                             self.play_screen()
                         elif self.home.selection == 2:
+                            self.settings.last_change=time()
                             self.settings_screen()
+                    elif self.is_settings:
+                        if self.settings.selection == 5:
+                            self.home_screen()
                     elif self.is_gameover:
                         if self.gameover.selection == 0:
                             self.play_screen()
                         elif self.gameover.selection == 1:
                             self.home_screen()
+                elif self.is_settings:
+                    self.settings.handle_events(event.key)
 
         keys = pygame.key.get_pressed()
         if self.is_home:
