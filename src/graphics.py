@@ -1,7 +1,7 @@
 import math
 import pygame
-from threading import Timer
 from time import time
+from threading import Timer
 from random import randrange, random
 from src.base import Object, Entity, Text
 from src.sprites import Player, Laser
@@ -28,10 +28,13 @@ class Background:
     def update(self, dt: int):
         """
         Move stars on the background
+
+        :param dt: int, The time delta between frames
         """
-        test = pygame.Surface((WIN_WIDTH, WIN_HEIGHT)).convert_alpha()
-        test.fill((0, 0, 0, 20))
-        self.image.blit(test, (0, 0))
+        # test = pygame.Surface((WIN_WIDTH, WIN_HEIGHT)).convert_alpha()
+        # test.fill((0, 0, 0, 20))
+        # self.image.blit(test, (0, 0))
+        self.image.fill(BLACK)
         for star in self.stars:
             pygame.draw.line(self.image, WHITE, (star[0], star[1]), (star[0], star[1]))
             star[1] -= star[2] * dt
@@ -57,6 +60,8 @@ class Panel:
     def draw(self, surface: pygame.Surface):
         """
         Draw the panel elements on the surface
+
+        :param surface: pygame.Surface, The surface to draw the panel on
         """
         self.level.draw(surface)
         self.score_text.draw(surface)
@@ -68,19 +73,26 @@ class Panel:
 
     def update(self, lives: int, level: int, score: int, highscore: int):
         """
-        Update lives and score
+        Update lives, level and scores
+
+        :param lives: int, The lives of the player
+        :param level: int, The level the player is at
+        :param score: int, The score of the player
+        :param highscore: int, The game highest score
         """
         self.lives = lives
-        self.level.set_content(f"LEVEL {level}")
-        self.level.set_color([WHITE, GREEN, YELLOW, ORANGE, RED][level - 1])
-        self.score.set_content(str(score))
-        self.highscore.set_content(str(highscore))
+        self.level.update(
+            f"LEVEL {level}",
+            [WHITE, GREEN, YELLOW, ORANGE, RED][level - 1],
+        )
+        self.score.update(content=str(score))
+        self.highscore.update(content=str(highscore))
 
 
 class Border(Object):
     """
     A Border draws the boundaries of the game field
-    It will bounce objects on collision
+    It will bounce entities on collision and crash lasers
     """
 
     def __init__(
@@ -90,10 +102,12 @@ class Border(Object):
         self.normal = normal
         self.visible = visible
 
-    def draw(self, surface):
+    def draw(self, surface: pygame.Surface):
         """
         Draw a border on the surface,
         The image differs if the border is visible
+
+        :param surface: pygame.Surface, The surface to draw the border on
         """
         image = pygame.Surface((self.width, self.height))
         if self.visible:
@@ -103,23 +117,28 @@ class Border(Object):
             image.fill(WHITE, (self.width - 3, self.height - 3, 3, 3))
         surface.blit(image, (self.x - self.width / 2, self.y - self.height / 2))
 
-    def bounce(self, sprite: Entity):
+    def bounce(self, entity: Entity):
         """
-        Bounce objects that collide with this border
-        The object should be a ship or the player
+        Bounce entities that collide with this border
+
+        :param entity: Entity, The entity to bounce
         """
-        # We use dot product to know if the object should bounce on the collided border
-        dot = math.cos(self.normal) * math.cos(sprite.direction) + math.sin(
+        dot = math.cos(self.normal) * math.cos(entity.direction) + math.sin(
             self.normal
-        ) * math.sin(sprite.direction)
-        if self.collide(sprite) and dot < 0:
+        ) * math.sin(entity.direction)
+        # We use dot product to know if the object should bounce on the collided border
+        if entity.collide(self) and dot < 0:
             if round(math.cos(self.normal), 5) != 0:
-                sprite.set_direction(math.pi - sprite.direction)
+                entity.set_direction(math.pi - entity.direction)
             else:
-                sprite.set_direction(-sprite.direction)
-            if isinstance(sprite, Player):
-                sprite.set_speed(sprite.speed * 0.75)
-                sprite.last_collision = time()
+                entity.set_direction(-entity.direction)
+            # Slow player
+            if isinstance(entity, Player):
+                entity.set_speed(entity.speed * 0.75)
+                entity.last_collision = time()
+            # Crash lasers
+            elif isinstance(entity, Laser):
+                entity.die()
             self.blink()
 
     def show(self):
@@ -138,9 +157,10 @@ class Border(Object):
         """
         Make the border blink, it will show then hide after 0.15s
         """
-        if not self.visible:
-            self.show()
-            Timer(0.15, self.hide).start()
+        if self.visible:
+            return
+        self.show()
+        Timer(0.15, self.hide).start()
 
 
 class ForceField:
@@ -171,25 +191,18 @@ class ForceField:
     def draw(self, surface: pygame.Surface):
         """
         Draw all borders on the surface
+
+        :param surface: pygame.Surface, The surface to draw the force field on
         """
         for border in self.borders:
             border.draw(surface)
 
-    def bounce(self, *sprites: tuple[Entity]):
+    def bounce(self, *entities: tuple[Entity]):
         """
-        Check if the objects should bounce on any border
-        """
-        for obj in sprites:
-            for border in self.borders:
-                border.bounce(obj)
+        Check if the entities should bounce on any border
 
-    def crash(self, *lasers: tuple[Laser]):
+        :param entities: tuple[Entity], The entities to bounce
         """
-        Check if the lasers should crash on any border
-        """
-        for laser in lasers:
+        for e in entities:
             for border in self.borders:
-                if laser.collide(border):
-                    laser.die()
-                    border.blink()
-                    break
+                border.bounce(e)

@@ -2,8 +2,8 @@ import pygame
 from random import randrange
 from threading import Timer
 from src.base import Object, Explosion
-from src.graphics import ForceField
 from src.sprites import Player, Ship, DroidShip, CommandShip, DeathShip
+from src.graphics import ForceField
 from src.settings import Settings
 from src.const import ENEMY_NUMBER
 
@@ -17,6 +17,9 @@ class Engine:
         pass
 
     def start(self):
+        """
+        Completely start the game
+        """
         self.level = 1
         self.lives = 3
         self.score = 0
@@ -50,11 +53,13 @@ class Engine:
 
         self.level_changed = False
 
-    def get_objects(self) -> list[Object]:
+    def get_objects(self) -> tuple[Object]:
         """
-        Return a list with every object handled by the engine
+        Get every object handled by the engine
+
+        :return: tuple[Object], All objects
         """
-        return [
+        return (
             self.force_field,
             *self.mines,
             *self.enemies,
@@ -62,11 +67,14 @@ class Engine:
             *self.player_lasers,
             *self.enemies_lasers,
             *self.explosions,
-        ]
+        )
 
     def handle_keys(self, keys: pygame.key.ScancodeWrapper, settings: Settings):
         """
         Handle user inputs in the game
+
+        :param keys: pygame.key.ScancodeWrapper, The pressed keys
+        :param settings: Settings, The current keys settings
         """
         if keys[settings.keys["LEFT"]] and not keys[settings.keys["RIGHT"]]:
             self.player.rotating = "left"
@@ -86,6 +94,8 @@ class Engine:
         """
         Handle ship death
         Transfrom another ship into a better ship when one dies
+
+        :param ship: Ship, The ship that died
         """
         if isinstance(ship, CommandShip):
             for i in range(len(self.enemies)):
@@ -100,7 +110,6 @@ class Engine:
                 enemy = self.enemies[i]
                 if enemy.alive and isinstance(enemy, CommandShip):
                     transform = DeathShip(enemy.x, enemy.y, self.level)
-                    transform.set_direction(enemy.direction)
                     self.enemies[i] = transform
                     break
 
@@ -114,7 +123,10 @@ class Engine:
             Timer(0.7, self.reset).start()
 
     def change_level(self):
-        if not self.level_changed:
+        """
+        Change the level of the game
+        """
+        if not self.level_changed and self.player.alive:
             self.level = min(self.level + 1, 5)
             self.level_changed = True
             Timer(0.7, self.reset).start()
@@ -122,6 +134,8 @@ class Engine:
     def update_enemies(self, dt: int):
         """
         Update enemies situations
+
+        :param dt: int, The time delta between frames
         """
         for enemy in self.enemies:
             if enemy.collide(self.player):
@@ -140,6 +154,8 @@ class Engine:
     def update_mines(self, dt: int):
         """
         Update mines situations
+
+        :param dt: int, The time delta between frames
         """
         for mine in self.mines:
             if mine.collide(self.player):
@@ -151,6 +167,8 @@ class Engine:
     def update_lasers(self, dt: int):
         """
         Update lasers situations
+
+        :param dt: int, The time delta between frames
         """
         for laser in self.player_lasers:
             for enemy in self.enemies + self.mines:
@@ -174,17 +192,28 @@ class Engine:
     def update(self, dt: int):
         """
         Update the game instance
+
+        :param dt: int, The time delta between frames
         """
         self.update_enemies(dt)
         self.update_mines(dt)
         self.update_lasers(dt)
 
         self.player.move(dt)
-        self.force_field.bounce(self.player, *self.enemies)
-        self.force_field.crash(*self.player_lasers, *self.enemies_lasers)
+        self.force_field.bounce(
+            self.player,
+            *self.enemies,
+            *self.player_lasers,
+            *self.enemies_lasers,
+        )
 
         if all(not enemy.alive for enemy in self.enemies):
             self.change_level()
 
     def running(self) -> bool:
+        """
+        Check if the game is still considered running
+
+        :return: bool, Whether the game is running or not
+        """
         return self.lives >= 0 or not self.player.alive

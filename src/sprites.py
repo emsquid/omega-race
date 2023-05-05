@@ -8,7 +8,7 @@ from src.const import PAN_X, PAN_Y, PAN_WIDTH, PAN_HEIGHT, WHITE
 
 class Laser(Entity):
     """
-    Lasers are the main source of danger here
+    Lasers are the main source of danger in the game
     """
 
     def __init__(self, x: int, y: int, direction: float):
@@ -33,24 +33,19 @@ class Player(Entity):
 
     def can_thrust(self) -> bool:
         """
-        Whether you can thrust or not
+        Check if the player can thrust
+
+        :return: bool, Whether you can thrust or not
         """
         return self.alive and time() - self.last_collision >= 0.4
 
     def can_shoot(self) -> bool:
         """
-        Whether you can shoot or not
+        Check if the player can shoot
+
+        :return: bool, Whether you can shoot or not
         """
         return self.alive and time() - self.last_shoot >= 0.4
-
-    def move(self, dt):
-        """
-        Move and rotate if needed
-        """
-        if self.alive:
-            self.rotate(dt)
-            self.x += math.cos(self.direction) * self.speed * dt
-            self.y += math.sin(self.direction) * self.speed * dt
 
     def thrust(self):
         """
@@ -64,6 +59,8 @@ class Player(Entity):
     def shoot(self, lasers: list[Laser]):
         """
         Shoot a laser
+
+        :param lasers: list[Laser], The lasers already in game
         """
         if self.can_shoot():
             lasers.append(Laser(self.x, self.y + 4, self.rotation))
@@ -72,11 +69,25 @@ class Player(Entity):
     def rotate(self, dt: int):
         """
         Rotate the player
+
+        :param dt: int, The time delta between frames
         """
         if self.rotating == "left":
             self.rotation -= dt * math.pi / 725
         elif self.rotating == "right":
             self.rotation += dt * math.pi / 725
+
+    def move(self, dt: int):
+        """
+        Move and rotate if needed
+
+        :param dt: int, The time delta between frames
+        """
+        if not self.alive:
+            return
+        self.rotate(dt)
+        self.x += math.cos(self.direction) * self.speed * dt
+        self.y += math.sin(self.direction) * self.speed * dt
 
 
 class Mine(Entity):
@@ -149,11 +160,23 @@ class Ship(Entity):
         ):
             self.set_direction(0)
 
+    def rotate(self, dt):
+        """
+        Rotate the ship
+
+        :param dt: int, The time delta between frames
+        """
+        self.rotation += math.pi * dt / 4096
+
     def move(self, dt: int):
         """
         Move and also rotate
+
+        :param dt: int, The time delta between frames
         """
-        self.rotation += math.pi * dt / 4096
+        if not self.alive:
+            return
+        self.rotate(dt)
         self.x += math.cos(self.direction) * self.speed * dt
         self.y += math.sin(self.direction) * self.speed * dt
 
@@ -182,26 +205,35 @@ class CommandShip(Ship):
 
     def can_drop(self) -> bool:
         """
-        Whether the ship can drop a mine or not
+        Check if the ship can drop a mine
+
+        :return: bool, Whether the ship can drop a mine or not
         """
         return self.alive and time() - self.last_drop >= 15
 
     def can_shoot(self) -> bool:
         """
-        Whether the ship can shoot or not
+        Check if the ship can shoot
+
+        :return: bool, Whether the ship can shoot or not
         """
         return self.alive and time() - self.last_shoot >= 5
 
-    def drop_mine(self, enemies: list):
+    def drop_mine(self, mines: list[Mine]):
         """
         Drop a Photon Mine at the ship's position
+
+        :param mines: list[Mine], The mines already in the game
         """
-        enemies.insert(0, PhotonMine(self.x, self.y))
+        mines.insert(0, PhotonMine(self.x, self.y))
         self.last_drop = time()
 
     def shoot(self, player: Player, lasers: list[Laser]):
         """
         Shoot a laser towards the player
+
+        :param player: Player, The player to shoot at
+        :param lasers: list[Laser]: The lasers already in the game
         """
         direction = math.atan2(player.y - self.y, player.x - self.x)
         lasers.append(Laser(self.x, self.y, direction))
@@ -220,19 +252,23 @@ class DeathShip(Ship):
 
     def can_drop(self) -> bool:
         """
-        Whether the ship can drop a mine or not
+        Check if the ship can drop a mine
+
+        :return: bool, Whether the ship can drop a mine or not
         """
         return self.alive and time() - self.last_drop >= 15
 
-    def drop_mine(self, enemies: list):
+    def drop_mine(self, mines: list[Mine]):
         """
         Drop a Photon or Vapor Mine at the ship's position
+
+        :param enemies: list[Mine], The mines already in the game
         """
         mine_type = randrange(0, 2)
         if mine_type == 1:
-            enemies.insert(0, VaporMine(self.x, self.y))
+            mines.insert(0, VaporMine(self.x, self.y))
         else:
-            enemies.insert(0, PhotonMine(self.x, self.y))
+            mines.insert(0, PhotonMine(self.x, self.y))
         self.last_drop = time()
 
     def turn(self):

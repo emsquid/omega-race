@@ -10,7 +10,7 @@ from src.const import WIN_WIDTH, WIN_HEIGHT, WHITE
 
 class Game:
     """
-    The main game instance
+    The main game instance, handles display and inputs
     """
 
     def __init__(self):
@@ -35,17 +35,18 @@ class Game:
     def draw(self, *objects: tuple[Object]):
         """
         Draw the objects on top of the background and display it
+
+        :param *objects: tuple[Object], objects to draw
         """
         for obj in objects:
             obj.draw(self.background.image)
         Text(str(int(self.clock.get_fps())), 55, 40, WHITE).draw(self.background.image)
         game = pygame.transform.scale(self.background.image, self.screen.get_size())
-
         self.screen.blit(game, (0, 0))
 
     def handle_inputs(self):
         """
-        Handle user events and keypresses
+        Handle user events and keypresses depending on the current screen
         """
         events = pygame.event.get()
         for event in events:
@@ -72,7 +73,7 @@ class Game:
 
     def update(self):
         """
-        Update the situation of all objects
+        Update the situation of all objects depending on the current screen
         """
         dt = self.clock.tick(1000)
         self.background.update(dt)
@@ -112,7 +113,7 @@ class Game:
 
     def play_screen(self):
         """
-        The war basically
+        Play screen let you play the super cool game we made
         """
         self.engine.start()
         self.is_playing = True
@@ -125,7 +126,7 @@ class Game:
 
     def gameover_screen(self):
         """
-        Sadge you lost
+        GameOver screen let you play again or go back home after a loss
         """
         self.is_gameover = True
         self.is_home, self.is_playing = False, False
