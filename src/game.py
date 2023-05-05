@@ -1,6 +1,7 @@
 import os
 import pygame
 from time import time
+from threading import Thread
 from src.base import Object, Text
 from src.menu import Home, GameOver
 from src.engine import Engine
@@ -113,7 +114,7 @@ class Game:
                 )
                 self.engine.update(dt)
             else:
-                self.scores.save_score(self.name, self.engine.score, self.engine.level)
+                self.scores.add_score(self.name, self.engine.score, self.engine.level)
                 self.gameover_screen()
         if self.is_gameover:
             pass
@@ -169,6 +170,7 @@ class Game:
         """
         Scores screen is the hall of fame
         """
+        Thread(target=self.scores.connect).start()
         self.is_scores = True
         self.is_home, self.is_gameover, self.is_play, self.is_settings = [False] * 4
         while self.is_scores:

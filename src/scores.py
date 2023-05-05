@@ -15,6 +15,7 @@ class Scores:
     """
 
     def __init__(self):
+        load_dotenv()
         self.array = []
         self.connected = False
         Thread(target=self.connect).start()
@@ -74,15 +75,14 @@ class Scores:
         pass
 
     def connect(self):
-        load_dotenv()
-        uri = f"mongodb+srv://omegarace:{os.getenv('TOKEN')}@omegarace.1knm5ap.mongodb.net/?retryWrites=true&w=majority"
-
+        if self.connected:
+            return
         try:
+            uri = f"mongodb+srv://omegarace:{os.getenv('TOKEN')}@omegarace.1knm5ap.mongodb.net/?retryWrites=true&w=majority"
             client = MongoClient(uri, server_api=ServerApi("1"))
             self.db = client["Scores"]
             self.connected = True
             self.fetch()
-
         except Exception as e:
             self.db = None
             self.connected = False
@@ -93,19 +93,21 @@ class Scores:
             self.array = [doc for doc in self.db["Single"].find()]
             self.array.sort(key=lambda doc: doc["score"], reverse=True)
 
-    def save_score(self, name: str, score: int, level: int):
-        if len(self.array) < 10 or score > self.array[9]["score"]:
-            doc = {"name": name, "score": score, "level": level}
-            self.array.append(doc)
-            self.array.sort(key=lambda doc: doc["score"], reverse=True)
-
-            if not self.connected:
-                return
+    def insert(self, doc: dict):
+        if self.connected:
             try:
                 self.db["Single"].insert_one(doc)
             except Exception as e:
                 self.connected = False
                 print(e)
+
+    def add_score(self, name: str, score: int, level: int):
+        if len(self.array) < 10 or score > self.array[9]["score"]:
+            doc = {"name": name, "score": score, "level": level}
+            self.array.append(doc)
+            self.array.sort(key=lambda doc: doc["score"], reverse=True)
+
+            Thread(target=self.insert, args=(doc)).start()
 
     def highscore(self) -> int:
         return self.array[0]["score"] if len(self.array) > 0 else 0
