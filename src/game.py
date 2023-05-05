@@ -23,6 +23,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.background = Background()
         self.panel = Panel()
+
         self.home = Home()
         self.engine = Engine()
         self.gameover = GameOver()
@@ -59,7 +60,7 @@ class Game:
                         if self.home.selection == 0:
                             self.play_screen()
                         elif self.home.selection == 2:
-                            self.settings_srceen()
+                            self.settings_screen()
                     elif self.is_gameover:
                         if self.gameover.selection == 0:
                             self.play_screen()
@@ -69,12 +70,12 @@ class Game:
         keys = pygame.key.get_pressed()
         if self.is_home:
             self.home.handle_keys(keys, self.settings)
-        elif self.is_settings:
-            self.settings.handle_keys(keys, self.settings)
         elif self.is_playing:
             self.engine.handle_keys(keys, self.settings)
         elif self.is_gameover:
             self.gameover.handle_keys(keys, self.settings)
+        elif self.is_settings:
+            self.settings.handle_keys(keys, self.settings)
 
     def update(self):
         """
@@ -97,6 +98,8 @@ class Game:
                 self.gameover_screen()
         if self.is_gameover:
             pass
+        if self.is_settings:
+            pass
 
     def run(self):
         """
@@ -114,16 +117,6 @@ class Game:
             self.handle_inputs()
             self.update()
             self.draw(*self.home.get_objects())
-            pygame.display.update()
-
-    def settings_srceen(self):
-        self.engine.start()
-        self.is_settings = True
-        self.is_home, self.is_gameover, self.is_playing = False, False, False
-        while self.is_settings:
-            self.handle_inputs()
-            self.update()
-            self.draw(*self.settings.get_objects())
             pygame.display.update()
 
     def play_screen(self):
@@ -149,6 +142,18 @@ class Game:
             self.handle_inputs()
             self.update()
             self.draw(*self.gameover.get_objects(), self.panel)
+            pygame.display.update()
+
+    def settings_screen(self):
+        """
+        Settings screen let you change your configuration
+        """
+        self.is_settings = True
+        self.is_home, self.is_gameover, self.is_playing = False, False, False
+        while self.is_settings:
+            self.handle_inputs()
+            self.update()
+            self.draw(*self.settings.get_objects())
             pygame.display.update()
 
     def exit(self):
