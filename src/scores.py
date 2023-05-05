@@ -9,7 +9,6 @@ from src.settings import Settings
 from src.const import RED
 
 
-# TODO: Remove prints when good
 class Scores:
     """
     The scores of the game
@@ -18,6 +17,7 @@ class Scores:
     def __init__(self):
         load_dotenv()
         self.array = []
+        self.db = None
         self.connected = False
         Thread(target=self.connect).start()
 
@@ -69,22 +69,20 @@ class Scores:
             self.db = client["Scores"]
             self.connected = True
             self.fetch()
-        except Exception as e:
-            self.db = None
+        except:
             self.connected = False
-            print(e)
 
     def fetch(self):
         """
         Try to fetch scores from the remote database
         """
-        if self.connected:
-            try:
-                self.array = [doc for doc in self.db["Single"].find()]
-                self.array.sort(key=lambda doc: doc["score"], reverse=True)
-            except Exception as e:
-                self.connected = False
-                print(e)
+        if not self.connected:
+            return
+        try:
+            self.array = [doc for doc in self.db["Single"].find()]
+            self.array.sort(key=lambda doc: doc["score"], reverse=True)
+        except:
+            self.connected = False
 
     def insert(self, doc: dict):
         """
@@ -92,12 +90,12 @@ class Scores:
 
         :param doc: dict, The document to insert
         """
-        if self.connected:
-            try:
-                self.db["Single"].insert_one(doc)
-            except Exception as e:
-                self.connected = False
-                print(e)
+        if not self.connected:
+            return
+        try:
+            self.db["Single"].insert_one(doc)
+        except:
+            self.connected = False
 
     def add_score(self, name: str, score: int, level: int):
         """

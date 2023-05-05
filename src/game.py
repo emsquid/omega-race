@@ -170,7 +170,7 @@ class Game:
         """
         Scores screen is the hall of fame
         """
-        Thread(target=self.scores.connect).start()
+        Thread(target=self.scores.fetch).start()
         self.is_scores = True
         self.is_home, self.is_gameover, self.is_play, self.is_settings = [False] * 4
         while self.is_scores:

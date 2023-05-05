@@ -127,7 +127,7 @@ class Engine:
         Change the level of the game
         """
         if not self.level_changed and self.player.alive:
-            self.level = min(self.level + 1, 5)
+            self.level += 1
             self.level_changed = True
             Timer(0.7, self.reset).start()
 
