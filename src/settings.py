@@ -56,7 +56,7 @@ class Settings:
         """
         return not self.menu_open and time() - self.last_change >= 0.15
 
-    def update(self, action: str, key: int):
+    def update_key(self, action: str, key: int):
         """
         Update the key for an action
 
@@ -66,11 +66,9 @@ class Settings:
         if key != pygame.K_RETURN and not key in self.keys.values():
             self.keys[action] = key
 
-    def get_objects(self) -> tuple[Object]:
+    def update(self):
         """
-        Get every object handled by the settings
-
-        :return: tuple[Object], All objects
+        Update the situation for all objects
         """
         self.up_text.update(color=RED if self.selection == 0 else WHITE)
         self.up_key.update(content=pygame.key.name(self.keys["UP"]))
@@ -89,6 +87,12 @@ class Settings:
 
         self.home.update(color=RED if self.selection == 5 else WHITE)
 
+    def get_objects(self) -> tuple[Object]:
+        """
+        Get every object handled by the settings
+
+        :return: tuple[Object], All objects
+        """
         obj = (
             self.title,
             self.up_text,
@@ -135,23 +139,23 @@ class Settings:
             self.menu_open = True
             self.last_change = time()
 
-    def handle_events(self, event: pygame.event.Event):
+    def handle_event(self, event: pygame.event.Event):
         """
         Handle a user event when the menu is open
 
         :param event: pygame.event.Event, The event (key) that was pressed
         """
-        if self.menu_open:
+        if self.menu_open and event.type == pygame.KEYDOWN:
             if self.selection == 0:
-                self.update("UP", event)
+                self.update_key("UP", event.key)
             elif self.selection == 1:
-                self.update("DOWN", event)
+                self.update_key("DOWN", event.key)
             elif self.selection == 2:
-                self.update("LEFT", event)
+                self.update_key("LEFT", event.key)
             elif self.selection == 3:
-                self.update("RIGHT", event)
+                self.update_key("RIGHT", event.key)
             elif self.selection == 4:
-                self.update("SHOOT", event)
+                self.update_key("SHOOT", event.key)
 
             self.menu_open = False
             self.last_change = time()

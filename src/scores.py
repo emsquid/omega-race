@@ -1,5 +1,6 @@
 import os
 import pygame
+from time import time
 from threading import Thread
 from dotenv import load_dotenv
 from pymongo.server_api import ServerApi
@@ -19,6 +20,7 @@ class Scores:
         self.array = []
         self.db = None
         self.connected = False
+        self.last_fetch = 0
         Thread(target=self.connect).start()
 
         self.title = Text("Scores", 500, 150, size=90)
@@ -34,28 +36,13 @@ class Scores:
         ]
         self.home = Text("HOME", 800, 700, RED, 40)
 
-    def get_objects(self) -> tuple[Object]:
+    def can_fetch(self) -> bool:
         """
-        Get every object handled by the scores
+        Check if the scores should be fetched
 
-        :return: tuple[Object], All objects
+        :return: bool, Whether it's been long enough or not
         """
-        for i in range(10):
-            if i < len(self.array):
-                self.names[i].update(content=f"{i+1}. {self.array[i]['name']}")
-                self.scores[i].update(content=f"{self.array[i]['score']}")
-                self.levels[i].update(content=f"{self.array[i]['level']}")
-
-        return (self.title, *self.names, *self.scores, *self.levels, self.home)
-
-    def handle_keys(self, keys: pygame.key.ScancodeWrapper, settings: Settings):
-        """
-        Handle user inputs in the settings
-
-        :param keys: pygame.key.ScancodeWrapper, The pressed keys
-        :param settings: Settings, The current keys settings
-        """
-        pass
+        return self.connected and time() - self.last_fetch > 15
 
     def connect(self):
         """
@@ -76,11 +63,12 @@ class Scores:
         """
         Try to fetch scores from the remote database
         """
-        if not self.connected:
+        if not self.can_fetch():
             return
         try:
             self.array = [doc for doc in self.db["Single"].find()]
             self.array.sort(key=lambda doc: doc["score"], reverse=True)
+            self.last_fetch = time()
         except:
             self.connected = False
 
@@ -119,3 +107,22 @@ class Scores:
         :return: int, The highscore
         """
         return self.array[0]["score"] if len(self.array) > 0 else 0
+
+    def update(self):
+        """
+        Update the situation of all objects
+        """
+        Thread(target=self.fetch).start()
+        for i in range(10):
+            if i < len(self.array):
+                self.names[i].update(content=f"{i+1}. {self.array[i]['name']}")
+                self.scores[i].update(content=f"{self.array[i]['score']}")
+                self.levels[i].update(content=f"{self.array[i]['level']}")
+
+    def get_objects(self) -> tuple[Object]:
+        """
+        Get every object handled by the scores
+
+        :return: tuple[Object], All objects
+        """
+        return (self.title, *self.names, *self.scores, *self.levels, self.home)

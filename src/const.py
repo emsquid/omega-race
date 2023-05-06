@@ -14,6 +14,14 @@ YELLOW = (255, 255, 0)
 ORANGE = (255, 165, 0)
 GREY = (73, 72, 72)
 
+# SCREENS
+WELCOME = 0
+HOME = 1
+PLAY = 2
+SCORES = 3
+SETTINGS = 4
+GAMEOVER = 5
+
 ENEMY_NUMBER = {
     "DroidShip": [5, 5, 6, 7, 7],
     "CommandShip": [1, 2, 3, 4, 5],
