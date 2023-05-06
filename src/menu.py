@@ -3,7 +3,17 @@ from time import time
 from src.base import Object, Text
 from src.graphics import Border
 from src.settings import Settings
-from src.const import WHITE, RED, GREEN
+from src.const import (
+    WIN_WIDTH,
+    WIN_HEIGHT,
+    CEN_X,
+    CEN_Y,
+    PAN_WIDTH,
+    PAN_HEIGHT,
+    WHITE,
+    RED,
+    GREEN,
+)
 
 
 class Welcome:
@@ -13,9 +23,11 @@ class Welcome:
 
     def __init__(self):
         self.name = ""
-        self.title = Text("Omega Race", 500, 150, size=90)
-        self.input_text = Text("Enter your name:", 500, 400, size=40)
-        self.input = Text(self.name, 500, 450, color=GREEN, size=40)
+
+        self.title = Text("Omega Race", CEN_X, WIN_HEIGHT / 5, 90)
+
+        self.input_text = Text("Enter your name:", CEN_X, CEN_Y, 40)
+        self.input = Text(self.name, CEN_X, CEN_Y + 50, 40, GREEN)
 
     def update(self):
         """
@@ -52,10 +64,12 @@ class Home:
     def __init__(self):
         self.selection = 0
         self.last_change = 0
-        self.title = Text("Omega Race", 500, 150, size=90)
-        self.play = Text("Play", 500, 350, RED, size=40)
-        self.scores = Text("Scores", 500, 450, size=40)
-        self.settings = Text("Settings", 500, 550, size=40)
+
+        self.title = Text("Omega Race", CEN_X, WIN_HEIGHT / 5, 90)
+
+        self.play = Text("Play", CEN_X, CEN_Y - 50, 40, RED)
+        self.scores = Text("Scores", CEN_X, CEN_Y + 50, 40)
+        self.settings = Text("Settings", CEN_X, CEN_Y + 150, 40)
 
     def can_change(self) -> bool:
         """
@@ -112,14 +126,16 @@ class GameOver:
     def __init__(self):
         self.selection = 0
         self.last_change = 0
-        self.title = Text("Game Over", 500, 165, size=90)
-        self.play = Text("Play Again", 250, 650, RED, size=40)
-        self.home = Text("Home", 750, 650, size=40)
+
+        self.title = Text("Game Over", CEN_X, WIN_HEIGHT / 5, 90)
+
+        self.play = Text("Play Again", WIN_WIDTH / 4, WIN_HEIGHT * 3 / 4 + 50, 40, RED)
+        self.home = Text("Home", WIN_WIDTH * 3 / 4, WIN_HEIGHT * 3 / 4 + 50, 40)
         self.borders = [
-            Border(3, 203, 700, 400, 0, True),
-            Border(3, 203, 300, 400, 0, True),
-            Border(403, 3, 500, 500, 0, True),
-            Border(403, 3, 500, 300, 0, True),
+            Border(3, PAN_HEIGHT + 3, CEN_X - PAN_WIDTH / 2, CEN_Y, 0, True),
+            Border(3, PAN_HEIGHT + 3, CEN_X + PAN_WIDTH / 2, CEN_Y, 0, True),
+            Border(PAN_WIDTH + 3, 3, CEN_X, CEN_Y - PAN_HEIGHT / 2, 0, True),
+            Border(PAN_WIDTH + 3, 3, CEN_X, CEN_Y + PAN_HEIGHT / 2, 0, True),
         ]
 
     def can_change(self) -> bool:

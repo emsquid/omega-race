@@ -1,7 +1,6 @@
 import os
 import pygame
 from time import time
-from threading import Thread
 from src.base import Object, Text
 from src.menu import Welcome, Home, GameOver
 from src.engine import Engine
@@ -47,17 +46,31 @@ class Game:
 
         self.name = ""
 
-    def draw(self, *objects: tuple[Object]):
+    def draw(self):
         """
-        Draw the objects on top of the background and display it
+        Draw the game objects on top of the background and display it
+        """
+        if self.current_screen == WELCOME:
+            objects = self.welcome.get_objects()
+        elif self.current_screen == HOME:
+            objects = self.home.get_objects()
+        elif self.current_screen == PLAY:
+            objects = self.engine.get_objects() + (self.panel,)
+        elif self.current_screen == SCORES:
+            objects = self.scores.get_objects()
+        elif self.current_screen == SETTINGS:
+            objects = self.settings.get_objects()
+        elif self.current_screen == GAMEOVER:
+            objects = self.gameover.get_objects() + (self.panel,)
+        else:
+            objects = ()
 
-        :param *objects: tuple[Object], All objects to draw
-        """
+        game = self.background.image
         for obj in objects:
-            obj.draw(self.background.image)
+            obj.draw(game)
         # TODO: Remove that when done
-        Text(str(int(self.clock.get_fps())), 55, 40).draw(self.background.image)
-        game = pygame.transform.scale(self.background.image, self.screen.get_size())
+        Text(str(int(self.clock.get_fps())), 55, 40).draw(game)
+        game = pygame.transform.smoothscale(game, self.screen.get_size())
         self.screen.blit(game, (0, 0))
 
     def handle_inputs(self):
@@ -140,77 +153,53 @@ class Game:
         Run the game instance
         """
         self.welcome_screen()
+        while True:
+            self.handle_inputs()
+            self.update()
+            self.draw()
+            pygame.display.update()
 
     def welcome_screen(self):
         """
         Welcome screen to get player's name
         """
         self.current_screen = WELCOME
-        while self.current_screen == WELCOME:
-            self.handle_inputs()
-            self.update()
-            self.draw(*self.welcome.get_objects())
-            pygame.display.update()
 
     def home_screen(self):
         """
         Home screen can lead you to play, scores and settings
         """
         self.current_screen = HOME
-        while self.current_screen == HOME:
-            self.handle_inputs()
-            self.update()
-            self.draw(*self.home.get_objects())
-            pygame.display.update()
 
     def play_screen(self):
         """
         Play screen let you play the super cool game we made
         """
+        self.engine.start()
         self.current_screen = PLAY
-        self.engine.restart()
-        while self.current_screen == PLAY:
-            self.handle_inputs()
-            self.update()
-            self.draw(*self.engine.get_objects(), self.panel)
-            pygame.display.update()
 
     def scores_screen(self):
         """
         Scores screen is the hall of fame
         """
         self.current_screen = SCORES
-        while self.current_screen == SCORES:
-            self.handle_inputs()
-            self.update()
-            self.draw(*self.scores.get_objects())
-            pygame.display.update()
 
     def settings_screen(self):
         """
         Settings screen let you change your configuration
         """
         self.current_screen = SETTINGS
-        while self.current_screen == SETTINGS:
-            self.handle_inputs()
-            self.update()
-            self.draw(*self.settings.get_objects())
-            pygame.display.update()
 
     def gameover_screen(self):
         """
         GameOver screen let you play again or go back home after a loss
         """
         self.current_screen = GAMEOVER
-        while self.current_screen == GAMEOVER:
-            self.handle_inputs()
-            self.update()
-            self.draw(*self.gameover.get_objects(), self.panel)
-            pygame.display.update()
 
     def exit(self):
         """
         Close the window and exit the program
         """
+        # TODO: Save settings
         pygame.quit()
         os._exit(0)

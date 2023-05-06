@@ -1,11 +1,24 @@
-import math
 import pygame
 from time import time
 from threading import Timer
+from math import pi, cos, sin
 from random import randrange, random
 from src.base import Object, Entity, Text
 from src.sprites import Player, Laser
-from src.const import WIN_WIDTH, WIN_HEIGHT, BLACK, WHITE, GREEN, YELLOW, ORANGE, RED
+from src.const import (
+    WIN_WIDTH,
+    WIN_HEIGHT,
+    CEN_X,
+    CEN_Y,
+    PAN_WIDTH,
+    PAN_HEIGHT,
+    BLACK,
+    WHITE,
+    GREEN,
+    YELLOW,
+    ORANGE,
+    RED,
+)
 
 
 class Background:
@@ -49,7 +62,7 @@ class Panel:
     """
 
     def __init__(self):
-        self.level = Text("LEVEL 1", 460, 325, GREEN, anchor="topleft")
+        self.level = Text("LEVEL 1", 460, 325, color=GREEN, anchor="topleft")
         self.score_text = Text("SCORE", 330, 325, anchor="topleft")
         self.score = Text("0", 330, 360, anchor="topleft")
         self.highscore_text = Text("HIGHSCORE", 330, 415, anchor="topleft")
@@ -102,45 +115,6 @@ class Border(Object):
         self.normal = normal
         self.visible = visible
 
-    def draw(self, surface: pygame.Surface):
-        """
-        Draw a border on the surface,
-        The image differs if the border is visible
-
-        :param surface: pygame.Surface, The surface to draw the border on
-        """
-        image = pygame.Surface((self.width, self.height))
-        if self.visible:
-            image.fill(WHITE)
-        else:
-            image.fill(WHITE, (0, 0, 3, 3))
-            image.fill(WHITE, (self.width - 3, self.height - 3, 3, 3))
-        surface.blit(image, (self.x - self.width / 2, self.y - self.height / 2))
-
-    def bounce(self, entity: Entity):
-        """
-        Bounce entities that collide with this border
-
-        :param entity: Entity, The entity to bounce
-        """
-        dot = math.cos(self.normal) * math.cos(entity.direction) + math.sin(
-            self.normal
-        ) * math.sin(entity.direction)
-        # We use dot product to know if the object should bounce on the collided border
-        if entity.collide(self) and dot < 0:
-            if round(math.cos(self.normal), 5) != 0:
-                entity.set_direction(math.pi - entity.direction)
-            else:
-                entity.set_direction(-entity.direction)
-            # Slow player
-            if isinstance(entity, Player):
-                entity.set_speed(entity.speed * 0.75)
-                entity.last_collision = time()
-            # Crash lasers
-            elif isinstance(entity, Laser):
-                entity.die()
-            self.blink()
-
     def show(self):
         """
         Make the border visible
@@ -162,6 +136,45 @@ class Border(Object):
         self.show()
         Timer(0.15, self.hide).start()
 
+    def draw(self, surface: pygame.Surface):
+        """
+        Draw a border on the surface,
+        The image differs if the border is visible
+
+        :param surface: pygame.Surface, The surface to draw the border on
+        """
+        image = pygame.Surface((self.width, self.height))
+        if self.visible:
+            image.fill(WHITE)
+        else:
+            image.fill(WHITE, (0, 0, 3, 3))
+            image.fill(WHITE, (self.width - 3, self.height - 3, 3, 3))
+        surface.blit(image, (self.x - self.width / 2, self.y - self.height / 2))
+
+    def bounce(self, entity: Entity):
+        """
+        Bounce entities that collide with this border
+
+        :param entity: Entity, The entity to bounce
+        """
+        dot = cos(self.normal) * cos(entity.direction) + sin(self.normal) * sin(
+            entity.direction
+        )
+        # We use dot product to know if the object should bounce on the collided border
+        if entity.collide(self) and dot < 0:
+            if round(cos(self.normal), 5) != 0:
+                entity.set_direction(pi - entity.direction)
+            else:
+                entity.set_direction(-entity.direction)
+            # Slow player
+            if isinstance(entity, Player):
+                entity.set_speed(entity.speed * 0.75)
+                entity.last_collision = time()
+            # Crash lasers
+            elif isinstance(entity, Laser):
+                entity.die()
+            self.blink()
+
 
 class ForceField:
     """
@@ -172,20 +185,22 @@ class ForceField:
         # Border for the boundaries of the game field
         self.borders = [
             # Left and right borders
-            Border(3, 383, 20, 210, 0, False),
-            Border(3, 383, 20, 590, 0, False),
-            Border(3, 383, 980, 210, math.pi, False),
-            Border(3, 383, 980, 590, math.pi, False),
+            Border(3, CEN_Y - 17, 20, WIN_HEIGHT / 4 + 10, 0, False),
+            Border(3, CEN_Y - 17, 20, WIN_HEIGHT * 3 / 4 - 10, 0, False),
+            Border(3, CEN_Y - 17, WIN_WIDTH - 20, WIN_HEIGHT / 4 + 10, pi, False),
+            Border(3, CEN_Y - 17, WIN_WIDTH - 20, WIN_HEIGHT * 3 / 4 - 10, pi, False),
             # Top and bottom borders
-            Border(483, 3, 260, 20, math.pi / 2, False),
-            Border(483, 3, 740, 20, math.pi / 2, False),
-            Border(483, 3, 260, 780, -math.pi / 2, False),
-            Border(483, 3, 740, 780, -math.pi / 2, False),
+            Border(CEN_X - 17, 3, WIN_WIDTH / 4 + 10, 20, pi / 2, False),
+            Border(CEN_X - 17, 3, WIN_WIDTH * 3 / 4 - 10, 20, pi / 2, False),
+            Border(CEN_X - 17, 3, WIN_WIDTH / 4 + 10, WIN_HEIGHT - 20, -pi / 2, False),
+            Border(
+                CEN_X - 17, 3, WIN_WIDTH * 3 / 4 - 10, WIN_HEIGHT - 20, -pi / 2, False
+            ),
             # Border for the display panel
-            Border(3, 203, 700, 400, 0, True),
-            Border(3, 203, 300, 400, math.pi, True),
-            Border(403, 3, 500, 500, math.pi / 2, True),
-            Border(403, 3, 500, 300, -math.pi / 2, True),
+            Border(3, PAN_HEIGHT + 3, CEN_X - PAN_WIDTH / 2, CEN_Y, pi, True),
+            Border(3, PAN_HEIGHT + 3, CEN_X + PAN_WIDTH / 2, CEN_Y, 0, True),
+            Border(PAN_WIDTH + 3, 3, CEN_X, CEN_Y - PAN_HEIGHT / 2, -pi / 2, True),
+            Border(PAN_WIDTH + 3, 3, CEN_X, CEN_Y + PAN_HEIGHT / 2, pi / 2, True),
         ]
 
     def draw(self, surface: pygame.Surface):

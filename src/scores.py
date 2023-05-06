@@ -1,13 +1,11 @@
 import os
-import pygame
 from time import time
 from threading import Thread
 from dotenv import load_dotenv
 from pymongo.server_api import ServerApi
 from pymongo.mongo_client import MongoClient
 from src.base import Object, Text
-from src.settings import Settings
-from src.const import RED
+from src.const import WIN_WIDTH, WIN_HEIGHT, CEN_X, RED
 
 
 class Scores:
@@ -17,13 +15,15 @@ class Scores:
 
     def __init__(self):
         load_dotenv()
+
         self.array = []
         self.db = None
-        self.connected = False
         self.last_fetch = 0
+        self.connected = False
         Thread(target=self.connect).start()
 
-        self.title = Text("Scores", 500, 150, size=90)
+        self.title = Text("Scores", CEN_X, WIN_HEIGHT / 5, 90)
+
         self.names = [
             Text(f"{i+1}. -----", 150 - i, 240 + i * 40, anchor="topleft")
             for i in range(10)
@@ -34,7 +34,7 @@ class Scores:
         self.levels = [
             Text("--", 800, 240 + i * 40, anchor="topright") for i in range(10)
         ]
-        self.home = Text("HOME", 800, 700, RED, 40)
+        self.home = Text("HOME", WIN_WIDTH * 4 / 5, WIN_HEIGHT - 100, 40, RED)
 
     def can_fetch(self) -> bool:
         """

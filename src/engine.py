@@ -16,7 +16,7 @@ class Engine:
     def __init__(self):
         pass
 
-    def restart(self):
+    def start(self):
         """
         Completely start the game
         """

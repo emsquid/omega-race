@@ -1,9 +1,9 @@
-import math
 import pygame
 from time import time
 from random import randrange, random
+from math import pi, cos, sin, atan2, sqrt
 from src.base import Entity
-from src.const import PAN_X, PAN_Y, PAN_WIDTH, PAN_HEIGHT, WHITE
+from src.const import CEN_X, CEN_Y, PAN_WIDTH, PAN_HEIGHT, WHITE
 
 
 class Laser(Entity):
@@ -24,7 +24,7 @@ class Player(Entity):
     """
 
     def __init__(self):
-        super().__init__(32, 32, 500, 200, -math.pi / 2, -math.pi / 2, 0)
+        super().__init__(32, 32, 500, 200, -pi / 2, -pi / 2, 0)
         self.set_image("Player1.png")
         # left or right
         self.rotating = ""
@@ -73,9 +73,9 @@ class Player(Entity):
         :param dt: int, The time delta between frames
         """
         if self.rotating == "left":
-            self.rotation -= dt * math.pi / 725
+            self.rotation -= dt * pi / 725
         elif self.rotating == "right":
-            self.rotation += dt * math.pi / 725
+            self.rotation += dt * pi / 725
 
     def move(self, dt: int):
         """
@@ -86,8 +86,8 @@ class Player(Entity):
         if not self.alive:
             return
         self.rotate(dt)
-        self.x += math.cos(self.direction) * self.speed * dt
-        self.y += math.sin(self.direction) * self.speed * dt
+        self.x += cos(self.direction) * self.speed * dt
+        self.y += sin(self.direction) * self.speed * dt
 
 
 class Mine(Entity):
@@ -96,7 +96,7 @@ class Mine(Entity):
     """
 
     def __init__(self, width: int, height: int, x: int, y: int, points: int):
-        super().__init__(width, height, x, y, -math.pi / 2, -math.pi / 2, 0)
+        super().__init__(width, height, x, y, -pi / 2, -pi / 2, 0)
         self.points = points
 
 
@@ -137,26 +137,26 @@ class Ship(Entity):
         """
         # top left
         if (
-            self.x + self.distance < PAN_X - PAN_WIDTH / 2
-            and self.y < PAN_Y - PAN_HEIGHT / 2
+            self.x + self.distance < CEN_X - PAN_WIDTH / 2
+            and self.y < CEN_Y - PAN_HEIGHT / 2
         ):
-            self.set_direction(math.pi / 2)
+            self.set_direction(pi / 2)
         # top right
         if (
-            self.x > PAN_X + PAN_WIDTH / 2
-            and self.y + self.distance < PAN_Y - PAN_HEIGHT / 2
+            self.x > CEN_X + PAN_WIDTH / 2
+            and self.y + self.distance < CEN_Y - PAN_HEIGHT / 2
         ):
-            self.set_direction(-math.pi)
+            self.set_direction(pi)
         # bottom right
         if (
-            self.x - self.distance > PAN_X + PAN_WIDTH / 2
-            and self.y > PAN_Y + PAN_HEIGHT / 2
+            self.x - self.distance > CEN_X + PAN_WIDTH / 2
+            and self.y > CEN_Y + PAN_HEIGHT / 2
         ):
-            self.set_direction(-math.pi / 2)
+            self.set_direction(-pi / 2)
         # bottom left
         if (
-            self.x < PAN_X - PAN_WIDTH / 2
-            and self.y - self.distance > PAN_Y + PAN_HEIGHT / 2
+            self.x < CEN_X - PAN_WIDTH / 2
+            and self.y - self.distance > CEN_Y + PAN_HEIGHT / 2
         ):
             self.set_direction(0)
 
@@ -166,7 +166,7 @@ class Ship(Entity):
 
         :param dt: int, The time delta between frames
         """
-        self.rotation += math.pi * dt / 4096
+        self.rotation += pi * dt / 4096
 
     def move(self, dt: int):
         """
@@ -177,8 +177,8 @@ class Ship(Entity):
         if not self.alive:
             return
         self.rotate(dt)
-        self.x += math.cos(self.direction) * self.speed * dt
-        self.y += math.sin(self.direction) * self.speed * dt
+        self.x += cos(self.direction) * self.speed * dt
+        self.y += sin(self.direction) * self.speed * dt
 
 
 class DroidShip(Ship):
@@ -187,7 +187,7 @@ class DroidShip(Ship):
     """
 
     def __init__(self, x: int, y: int, level: int):
-        super().__init__(x, y, 0, 0.01 * math.sqrt(level), 1000)
+        super().__init__(x, y, 0, 0.01 * sqrt(level), 1000)
         self.set_image("DroidShip.png")
 
 
@@ -197,7 +197,7 @@ class CommandShip(Ship):
     """
 
     def __init__(self, x: int, y: int, level: int):
-        super().__init__(x, y, 0, 0.05 * math.sqrt(level), 1500)
+        super().__init__(x, y, 0, 0.05 * sqrt(level), 1500)
         self.set_image("CommandShip.png")
         self.last_drop = time()
         self.last_shoot = time()
@@ -235,7 +235,7 @@ class CommandShip(Ship):
         :param player: Player, The player to shoot at
         :param lasers: list[Laser]: The lasers already in the game
         """
-        direction = math.atan2(player.y - self.y, player.x - self.x)
+        direction = atan2(player.y - self.y, player.x - self.x)
         lasers.append(Laser(self.x, self.y, direction))
         self.last_shoot = time()
 
@@ -246,7 +246,7 @@ class DeathShip(Ship):
     """
 
     def __init__(self, x: int, y: int, level: int):
-        super().__init__(x, y, random() * math.pi * 2, 0.2 * math.sqrt(level), 2000)
+        super().__init__(x, y, random() * pi * 2, 0.2 * sqrt(level), 2000)
         self.set_image("DeathShip.png")
         self.last_drop = time()
 
