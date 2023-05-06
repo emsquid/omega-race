@@ -1,11 +1,11 @@
 import os
 import pygame
 from time import time
-from src.base import Object, Text
+from src.base import Text
 from src.menu import Welcome, Home, GameOver
 from src.engine import Engine
 from src.graphics import Background, Panel
-from src.scores import Scores
+from src.scores import Data, Scores
 from src.settings import Settings
 from src.const import (
     WIN_WIDTH,
@@ -19,6 +19,7 @@ from src.const import (
 )
 
 
+# TODO: Think about modules (better separation/groups)
 class Game:
     """
     The main game instance, handles display and inputs
@@ -34,6 +35,8 @@ class Game:
         self.clock = pygame.time.Clock()
         self.background = Background()
         self.panel = Panel()
+
+        self.data = Data()
 
         self.welcome = Welcome()
         self.home = Home()
@@ -123,8 +126,11 @@ class Game:
         """
         Update the situation of all objects depending on the current screen
         """
-        dt = self.clock.tick(1000)
+        dt = self.clock.tick(60)
+
+        self.data.update()
         self.background.update(dt)
+
         if self.current_screen == WELCOME:
             self.welcome.update()
         elif self.current_screen == HOME:
@@ -135,14 +141,14 @@ class Game:
                     self.engine.lives,
                     self.engine.level,
                     self.engine.score,
-                    max(self.engine.score, self.scores.highscore()),
+                    max(self.engine.score, self.data.highscore()),
                 )
                 self.engine.update(dt)
             else:
-                self.scores.add_score(self.name, self.engine.score, self.engine.level)
+                self.data.add_score(self.name, self.engine.score, self.engine.level)
                 self.gameover_screen()
         elif self.current_screen == SCORES:
-            self.scores.update()
+            self.scores.update(self.data.scores)
         elif self.current_screen == SETTINGS:
             self.settings.update()
         elif self.current_screen == GAMEOVER:

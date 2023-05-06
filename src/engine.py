@@ -5,9 +5,10 @@ from src.base import Object, Explosion
 from src.sprites import Player, Ship, DroidShip, CommandShip, DeathShip
 from src.graphics import ForceField
 from src.settings import Settings
-from src.const import ENEMY_NUMBER
+from src.const import WIN_WIDTH, WIN_HEIGHT, CEN_Y, PAN_HEIGHT, ENEMY_NUMBER
 
 
+# TODO: Add pause
 class Engine:
     """
     The Engine handles the game logic and interactions
@@ -31,15 +32,27 @@ class Engine:
         """
         self.enemies = (
             [
-                DroidShip(randrange(200, 800), randrange(550, 750), self.level)
+                DroidShip(
+                    randrange(200, WIN_WIDTH - 200),
+                    randrange(CEN_Y + PAN_HEIGHT / 2 + 50, WIN_HEIGHT - 50),
+                    self.level,
+                )
                 for i in range(ENEMY_NUMBER["DroidShip"][min(self.level - 1, 4)])
             ]
             + [
-                CommandShip(randrange(200, 800), randrange(550, 750), self.level)
+                CommandShip(
+                    randrange(200, WIN_WIDTH - 200),
+                    randrange(CEN_Y + PAN_HEIGHT / 2 + 50, WIN_HEIGHT - 50),
+                    self.level,
+                )
                 for i in range(ENEMY_NUMBER["CommandShip"][min(self.level - 1, 4)])
             ]
             + [
-                DeathShip(randrange(200, 800), randrange(550, 750), self.level)
+                DeathShip(
+                    randrange(200, WIN_WIDTH - 200),
+                    randrange(CEN_Y + PAN_HEIGHT / 2 + 50, WIN_HEIGHT - 50),
+                    self.level,
+                )
                 for i in range(ENEMY_NUMBER["DeathShip"][min(self.level - 1, 4)])
             ]
         )
@@ -77,9 +90,9 @@ class Engine:
         :param settings: Settings, The current keys settings
         """
         if keys[settings.keys["LEFT"]] and not keys[settings.keys["RIGHT"]]:
-            self.player.rotating = "left"
+            self.player.rotating = "LEFT"
         elif keys[settings.keys["RIGHT"]] and not keys[settings.keys["LEFT"]]:
-            self.player.rotating = "right"
+            self.player.rotating = "RIGHT"
         else:
             self.player.rotating = ""
         if keys[settings.keys["UP"]]:
@@ -117,7 +130,7 @@ class Engine:
         """
         Handle player death
         """
-        if self.player.alive:
+        if not self.level_changed and self.player.alive:
             self.lives -= 1
             self.player.die()
             Timer(0.7, self.reset).start()

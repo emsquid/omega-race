@@ -45,7 +45,7 @@ class Background:
         :param dt: int, The time delta between frames
         """
         # test = pygame.Surface((WIN_WIDTH, WIN_HEIGHT)).convert_alpha()
-        # test.fill((0, 0, 0, 20))
+        # test.fill((0, 0, 0, min(int(dt * 3), 255)))
         # self.image.blit(test, (0, 0))
         self.image.fill(BLACK)
         for star in self.stars:
@@ -96,7 +96,7 @@ class Panel:
         self.lives = lives
         self.level.update(
             f"LEVEL {level}",
-            [WHITE, GREEN, YELLOW, ORANGE][level - 1] if level < 5 else RED,
+            [WHITE, GREEN, YELLOW, ORANGE, RED][min(level - 1, 4)],
         )
         self.score.update(content=str(score))
         self.highscore.update(content=str(highscore))

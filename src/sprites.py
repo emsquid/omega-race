@@ -26,7 +26,7 @@ class Player(Entity):
     def __init__(self):
         super().__init__(32, 32, 500, 200, -pi / 2, -pi / 2, 0)
         self.set_image("Player1.png")
-        # left or right
+        # LEFT | RIGHT
         self.rotating = ""
         self.last_collision = 0
         self.last_shoot = 0
@@ -72,9 +72,9 @@ class Player(Entity):
 
         :param dt: int, The time delta between frames
         """
-        if self.rotating == "left":
+        if self.rotating == "LEFT":
             self.rotation -= dt * pi / 725
-        elif self.rotating == "right":
+        elif self.rotating == "RIGHT":
             self.rotation += dt * pi / 725
 
     def move(self, dt: int):
@@ -120,7 +120,6 @@ class VaporMine(Mine):
         self.set_image("VaporMine.png")
 
 
-# TODO: Think about drop/shoot cooldowns
 class Ship(Entity):
     """
     Ships are the enemies in the games, they will try to kill the player
@@ -199,7 +198,9 @@ class CommandShip(Ship):
     def __init__(self, x: int, y: int, level: int):
         super().__init__(x, y, 0, 0.05 * sqrt(level), 1500)
         self.set_image("CommandShip.png")
+        self.drop_cooldown = randrange(10, 20)
         self.last_drop = time()
+        self.shoot_cooldown = randrange(3, 8)
         self.last_shoot = time()
         self.distance = randrange(50, 250)
 
@@ -209,7 +210,7 @@ class CommandShip(Ship):
 
         :return: bool, Whether the ship can drop a mine or not
         """
-        return self.alive and time() - self.last_drop >= 15
+        return self.alive and time() - self.last_drop >= self.drop_cooldown
 
     def can_shoot(self) -> bool:
         """
@@ -217,7 +218,7 @@ class CommandShip(Ship):
 
         :return: bool, Whether the ship can shoot or not
         """
-        return self.alive and time() - self.last_shoot >= 5
+        return self.alive and time() - self.last_shoot >= self.shoot_cooldown
 
     def drop_mine(self, mines: list[Mine]):
         """
@@ -226,6 +227,7 @@ class CommandShip(Ship):
         :param mines: list[Mine], The mines already in the game
         """
         mines.insert(0, PhotonMine(self.x, self.y))
+        self.drop_cooldown = randrange(10, 20)
         self.last_drop = time()
 
     def shoot(self, player: Player, lasers: list[Laser]):
@@ -237,6 +239,7 @@ class CommandShip(Ship):
         """
         direction = atan2(player.y - self.y, player.x - self.x)
         lasers.append(Laser(self.x, self.y, direction))
+        self.shoot_cooldown = randrange(3, 8)
         self.last_shoot = time()
 
 
@@ -248,6 +251,7 @@ class DeathShip(Ship):
     def __init__(self, x: int, y: int, level: int):
         super().__init__(x, y, random() * pi * 2, 0.2 * sqrt(level), 2000)
         self.set_image("DeathShip.png")
+        self.drop_cooldown = randrange(10, 20)
         self.last_drop = time()
 
     def can_drop(self) -> bool:
@@ -256,7 +260,7 @@ class DeathShip(Ship):
 
         :return: bool, Whether the ship can drop a mine or not
         """
-        return self.alive and time() - self.last_drop >= 15
+        return self.alive and time() - self.last_drop >= self.drop_cooldown
 
     def drop_mine(self, mines: list[Mine]):
         """
@@ -269,6 +273,7 @@ class DeathShip(Ship):
             mines.insert(0, VaporMine(self.x, self.y))
         else:
             mines.insert(0, PhotonMine(self.x, self.y))
+        self.drop_cooldown = randrange(10, 20)
         self.last_drop = time()
 
     def turn(self):
