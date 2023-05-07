@@ -13,6 +13,8 @@ from src.const import WIN_WIDTH, WIN_HEIGHT, CEN_Y, PAN_HEIGHT, ENEMY_NUMBER
 class Engine(Screen):
     """
     The Engine handles the game logic and interactions
+
+    :param config: Config, The game configuration
     """
 
     def __init__(self, config: Config):
@@ -80,11 +82,13 @@ class Engine(Screen):
             self.player.rotating = "RIGHT"
         else:
             self.player.rotating = ""
+
         if keys[self.config.keys["UP"]]:
             self.player.thrust()
             self.player.set_image("Player2.png")
         else:
             self.player.set_image("Player1.png")
+
         if keys[self.config.keys["SHOOT"]]:
             self.player.shoot(self.player_lasers)
 
@@ -139,8 +143,8 @@ class Engine(Screen):
             if enemy.collide(self.player):
                 enemy.die()
                 self.player_death()
-                self.score += enemy.points
                 self.explosions.append(Explosion(self.player.x, self.player.y))
+                self.score += enemy.points
             if isinstance(enemy, (DroidShip, CommandShip)):
                 enemy.turn()
             if isinstance(enemy, CommandShip) and enemy.can_shoot():
@@ -159,8 +163,8 @@ class Engine(Screen):
             if mine.collide(self.player):
                 mine.die()
                 self.player_death()
-                self.score += mine.points
                 self.explosions.append(Explosion(self.player.x, self.player.y))
+                self.score += mine.points
 
     def update_lasers(self, dt: int):
         """
@@ -173,10 +177,10 @@ class Engine(Screen):
                 if laser.collide(enemy):
                     laser.die()
                     enemy.die()
-                    self.score += enemy.points
                     if enemy in self.enemies:
                         self.ship_death(enemy)
                     self.explosions.append(Explosion(enemy.x, enemy.y))
+                    self.score += enemy.points
                     break
             laser.move(dt)
 
@@ -187,6 +191,15 @@ class Engine(Screen):
                 self.explosions.append(Explosion(self.player.x, self.player.y))
             laser.move(dt)
 
+    def update_explosions(self, dt: int):
+        """
+        Update explosions situations
+
+        :param dt: int, The time delta between frames
+        """
+        for explosion in self.explosions:
+            explosion.update()
+
     def update(self, dt: int):
         """
         Update the game instance
@@ -196,6 +209,7 @@ class Engine(Screen):
         self.update_enemies(dt)
         self.update_mines(dt)
         self.update_lasers(dt)
+        self.update_explosions(dt)
 
         self.player.move(dt)
         self.force_field.update()

@@ -106,12 +106,19 @@ class Border(Object):
     """
     A Border draws the boundaries of the game field
     It will bounce entities on collision and crash lasers
+
+    :param x: int, The x coordinate of the border
+    :param y: int, The y coordinate of the border
+    :param width: int, The width of the border
+    :param height: int, The height of the border
+    :param normal: float, The normal (radians) of the border (to bounce)
+    :param visible: bool, Whether the border is usually visible or not
     """
 
     def __init__(
-        self, width: int, height: int, x: int, y: int, normal: float, visible: bool
+        self, x: int, y: int, width: int, height: int, normal: float, visible: bool
     ):
-        super().__init__(width, height, x, y)
+        super().__init__(x, y, width, height)
         self.normal = normal
         self.visible = visible
         self.changed = True
@@ -188,22 +195,22 @@ class ForceField:
         # Border for the boundaries of the game field
         self.borders = [
             # Left and right borders
-            Border(3, CEN_Y - 17, 20, WIN_HEIGHT / 4 + 10, 0, False),
-            Border(3, CEN_Y - 17, 20, WIN_HEIGHT * 3 / 4 - 10, 0, False),
-            Border(3, CEN_Y - 17, WIN_WIDTH - 20, WIN_HEIGHT / 4 + 10, pi, False),
-            Border(3, CEN_Y - 17, WIN_WIDTH - 20, WIN_HEIGHT * 3 / 4 - 10, pi, False),
+            Border(20, WIN_HEIGHT / 4 + 10, 3, CEN_Y - 17, 0, False),
+            Border(20, WIN_HEIGHT * 3 / 4 - 10, 3, CEN_Y - 17, 0, False),
+            Border(WIN_WIDTH - 20, WIN_HEIGHT / 4 + 10, 3, CEN_Y - 17, pi, False),
+            Border(WIN_WIDTH - 20, WIN_HEIGHT * 3 / 4 - 10, 3, CEN_Y - 17, pi, False),
             # Top and bottom borders
-            Border(CEN_X - 17, 3, WIN_WIDTH / 4 + 10, 20, pi / 2, False),
-            Border(CEN_X - 17, 3, WIN_WIDTH * 3 / 4 - 10, 20, pi / 2, False),
-            Border(CEN_X - 17, 3, WIN_WIDTH / 4 + 10, WIN_HEIGHT - 20, -pi / 2, False),
+            Border(WIN_WIDTH / 4 + 10, 20, CEN_X - 17, 3, pi / 2, False),
+            Border(WIN_WIDTH * 3 / 4 - 10, 20, CEN_X - 17, 3, pi / 2, False),
+            Border(WIN_WIDTH / 4 + 10, WIN_HEIGHT - 20, CEN_X - 17, 3, -pi / 2, False),
             Border(
-                CEN_X - 17, 3, WIN_WIDTH * 3 / 4 - 10, WIN_HEIGHT - 20, -pi / 2, False
+                WIN_WIDTH * 3 / 4 - 10, WIN_HEIGHT - 20, CEN_X - 17, 3, -pi / 2, False
             ),
             # Border for the display panel
-            Border(3, PAN_HEIGHT + 3, CEN_X - PAN_WIDTH / 2, CEN_Y, pi, True),
-            Border(3, PAN_HEIGHT + 3, CEN_X + PAN_WIDTH / 2, CEN_Y, 0, True),
-            Border(PAN_WIDTH + 3, 3, CEN_X, CEN_Y - PAN_HEIGHT / 2, -pi / 2, True),
-            Border(PAN_WIDTH + 3, 3, CEN_X, CEN_Y + PAN_HEIGHT / 2, pi / 2, True),
+            Border(CEN_X - PAN_WIDTH / 2, CEN_Y, 3, PAN_HEIGHT + 3, pi, True),
+            Border(CEN_X + PAN_WIDTH / 2, CEN_Y, 3, PAN_HEIGHT + 3, 0, True),
+            Border(CEN_X, CEN_Y - PAN_HEIGHT / 2, PAN_WIDTH + 3, 3, -pi / 2, True),
+            Border(CEN_X, CEN_Y + PAN_HEIGHT / 2, PAN_WIDTH + 3, 3, pi / 2, True),
         ]
 
     def draw(self, surface: pygame.Surface):

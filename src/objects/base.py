@@ -1,24 +1,39 @@
 import math
 import pygame
-from threading import Timer
+from time import time
 from src.const import WHITE, RED
 
 
 class Object:
     """
     The most basic class, an Object can represent anything in pygame
+
+    :param x: int, The x coordinate of the object
+    :param y: int, The y coordinate of the object
+    :param width: int, The width of the object
+    :param height: int, The height of the object
     """
 
     def __init__(
         self,
-        width: int,
-        height: int,
         x: int,
         y: int,
+        width: int,
+        height: int,
     ):
-        self.set_size(width, height)
         self.set_position(x, y)
+        self.set_size(width, height)
         self.set_image()
+
+    def set_position(self, x: int, y: int):
+        """
+        Set the position of the object
+
+        :param x: int > 0, The x coordinate of the object
+        :param y: int > 0, The y coordinate of the object
+        """
+        self.x = x
+        self.y = y
 
     def set_size(self, width: int, height: int):
         """
@@ -30,16 +45,6 @@ class Object:
         """
         self.width = width
         self.height = height
-
-    def set_position(self, x: int, y: int):
-        """
-        Set the position of the object
-
-        :param x: int > 0, The x coordinate of the object
-        :param y: int > 0, The y coordinate of the object
-        """
-        self.x = x
-        self.y = y
 
     def set_image(self, filename: str = None, surface: pygame.Surface = None):
         """
@@ -77,29 +82,33 @@ class Object:
             (not isinstance(self, Entity) or self.alive)
             and (not isinstance(other, Entity) or other.alive)
             and pygame.sprite.collide_mask(self, other)
-            # and self.x - self.width / 2 <= other.x + other.width / 2
-            # and other.x - other.width / 2 <= self.x + self.width / 2
-            # and self.y - self.height / 2 <= other.y + other.height / 2
-            # and other.y - other.height / 2 <= self.y + self.height / 2
         )
 
 
 class Entity(Object):
     """
-    An Entity is an Object with a life
+    An Entity is a moving Object
+
+    :param x: int, The x coordinate of the entity
+    :param y: int, The y coordinate of the entity
+    :param width: int, The width of the entity
+    :param height: int, The height of the entity
+    :param direction: float, The direction (radians) the entity advances towards
+    :param rotation: float, The rotation (radians) the entity has
+    :param speed: float, The speed at which the entity advances
     """
 
     def __init__(
         self,
-        width: int,
-        height: int,
         x: int,
         y: int,
+        width: int,
+        height: int,
         direction: float,
         rotation: float,
         speed: float,
     ):
-        super().__init__(width, height, x, y)
+        super().__init__(x, y, width, height)
         self.set_direction(direction)
         self.set_rotation(rotation)
         self.set_speed(speed)
@@ -109,7 +118,7 @@ class Entity(Object):
         """
         Set the direction of the entity
 
-        :param direction: float, The direction (radians) the entity advances toward
+        :param direction: float, The direction (radians) the entity advances towards
         """
         self.direction = direction
 
@@ -163,6 +172,17 @@ class Entity(Object):
 
 
 class Text(Object):
+    """
+    Well, it's a text
+
+    :param content: str, The content of the text
+    :param x: int, The x coordinate of the text
+    :param y: int, The y coordinate of the text
+    :param size: int = 25, The size of the font
+    :param color: tuple = WHITE, The color of the text
+    :param anchor: str = "center" | "left" | "right" | "topleft" | "topright", The anchor for rendering
+    """
+
     def __init__(
         self,
         content: str,
@@ -170,9 +190,9 @@ class Text(Object):
         y: int,
         size: int = 25,
         color: tuple = WHITE,
-        anchor: str = "center",  # topleft, topright, center
+        anchor: str = "center",
     ):
-        super().__init__(0, 0, x, y)
+        super().__init__(x, y, 0, 0)
         self.font = pygame.font.Font("assets/font1.ttf", size)
         self.anchor = anchor
         self.update(content, color)
@@ -210,33 +230,45 @@ class Text(Object):
 class Explosion(Object):
     """
     Represent an animated explosion
+
+    :param x: int, The x coordinate of the explosion
+    :param y: int, The x coordinate of the explosion
     """
 
     def __init__(self, x: int, y: int):
-        super().__init__(35, 35, x, y)
+        super().__init__(x, y, 35, 35)
+        self.step = 1
+        self.last_update = 0
         self.done = False
         # sound = pygame.mixer.Sound("assets/Explosion.wav")
         # sound.play()
-        self.play()
 
-    def play(self, step: int = 1):
+    def can_update(self) -> bool:
         """
-        Play each step of the explosion
+        Check if the explosion can be updated
 
-        :param step: 1 <= int <= 6, The step the explosion is at
+        :return: bool, Whether it's been long enough or not
         """
-        if step <= 6:
-            self.set_image(f"Explosion{step}.png")
-            Timer(0.1, self.play, [step + 1]).start()
-        else:
+        return not self.done and time() - self.last_update > 0.1
+
+    def update(self):
+        """
+        Update the state of the explosion
+        """
+        if not self.can_update():
+            return
+        self.set_image(f"Explosion{self.step}.png")
+        self.last_update = time()
+        self.step += 1
+        if self.step > 5:
             self.done = True
 
     def draw(self, surface: pygame.Surface):
         """
-        Draw the object on the surface
+        Draw the explosion on the surface
 
         :param surface: pygame.Surface, The surface to draw the explosion on
         """
         if self.done:
             return
-        surface.blit(self.image, (self.x - self.width / 2, self.y - self.height / 2))
+        super().draw(surface)

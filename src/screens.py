@@ -245,7 +245,7 @@ class Settings(Screen):
         self.home = Text("HOME", WIN_WIDTH * 4 / 5, WIN_HEIGHT - 100, 40)
 
         # TODO: Make that better lol
-        self.popup = Object(CEN_X, WIN_HEIGHT / 4, 500, 400)
+        self.popup = Object(CEN_X, CEN_Y, WIN_WIDTH / 2, WIN_HEIGHT / 4)
         self.popup.image.fill(GREY)
         self.popup_text_1 = Text("Please choose", CEN_X, CEN_Y - 20, 40, BLACK)
         self.popup_text_2 = Text("the new key", CEN_X, CEN_Y + 20, 40, BLACK)
@@ -351,10 +351,10 @@ class GameOver(Screen):
         self.play = Text("Play Again", WIN_WIDTH / 4, WIN_HEIGHT * 3 / 4 + 50, 40, RED)
         self.home = Text("Home", WIN_WIDTH * 3 / 4, WIN_HEIGHT * 3 / 4 + 50, 40)
         self.borders = [
-            Border(3, PAN_HEIGHT + 3, CEN_X - PAN_WIDTH / 2, CEN_Y, 0, True),
-            Border(3, PAN_HEIGHT + 3, CEN_X + PAN_WIDTH / 2, CEN_Y, 0, True),
-            Border(PAN_WIDTH + 3, 3, CEN_X, CEN_Y - PAN_HEIGHT / 2, 0, True),
-            Border(PAN_WIDTH + 3, 3, CEN_X, CEN_Y + PAN_HEIGHT / 2, 0, True),
+            Border(CEN_X - PAN_WIDTH / 2, CEN_Y, 3, PAN_HEIGHT + 3, 0, True),
+            Border(CEN_X + PAN_WIDTH / 2, CEN_Y, 3, PAN_HEIGHT + 3, 0, True),
+            Border(CEN_X, CEN_Y - PAN_HEIGHT / 2, PAN_WIDTH + 3, 3, 0, True),
+            Border(CEN_X, CEN_Y + PAN_HEIGHT / 2, PAN_WIDTH + 3, 3, 0, True),
         ]
 
         self.choices = [PLAY, HOME]
@@ -390,3 +390,5 @@ class GameOver(Screen):
         """
         self.play.update(color=RED if self.selection == 0 else WHITE)
         self.home.update(color=RED if self.selection == 1 else WHITE)
+        for border in self.borders:
+            border.update()

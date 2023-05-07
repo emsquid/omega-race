@@ -1,7 +1,7 @@
 import pygame
 from time import time
+from math import pi, atan2, sqrt
 from random import randrange, random
-from math import pi, cos, sin, atan2, sqrt
 from src.objects.base import Entity
 from src.const import CEN_X, CEN_Y, PAN_WIDTH, PAN_HEIGHT, WHITE
 
@@ -9,10 +9,14 @@ from src.const import CEN_X, CEN_Y, PAN_WIDTH, PAN_HEIGHT, WHITE
 class Laser(Entity):
     """
     Lasers are the main source of danger in the game
+
+    :param x: int, The x coordinate of the laser
+    :param y: int, The x coordinate of the laser
+    :param direction: float, The direction (radians)
     """
 
     def __init__(self, x: int, y: int, direction: float):
-        super().__init__(2, 10, x, y - 4, direction, direction, 0.3)
+        super().__init__(x, y, 2, 10, direction, direction, 0.3)
         image = pygame.Surface((2, 15), pygame.SRCALPHA)
         image.fill(WHITE)
         self.set_image(surface=image)
@@ -24,7 +28,7 @@ class Player(Entity):
     """
 
     def __init__(self):
-        super().__init__(32, 32, 500, 200, -pi / 2, -pi / 2, 0)
+        super().__init__(500, 200, 31, 31, -pi / 2, -pi / 2, 0)
         self.set_image("Player1.png")
         # LEFT | RIGHT
         self.rotating = ""
@@ -65,7 +69,7 @@ class Player(Entity):
         if self.can_shoot():
             # sound = pygame.mixer.Sound("assets/Retro Weapon Laser 03.wav")
             # sound.play()
-            lasers.append(Laser(self.x, self.y + 4, self.rotation))
+            lasers.append(Laser(self.x, self.y, self.rotation))
             self.last_shoot = time()
 
     def rotate(self, dt: int):
@@ -85,50 +89,65 @@ class Player(Entity):
 
         :param dt: int, The time delta between frames
         """
-        if not self.alive:
-            return
+        super().move(dt)
         self.rotate(dt)
-        self.x += cos(self.direction) * self.speed * dt
-        self.y += sin(self.direction) * self.speed * dt
 
 
 class Mine(Entity):
     """
     Mines doesn't move, but they still kill the player
+
+    :param x: int, The x coordinate of the mine
+    :param y: int, The y coordinate of the mine
+    :param width: int, The width of the mine
+    :param height: int, The height coordinate of the mine
+    :param points: int, The points the mine is worth
     """
 
-    def __init__(self, width: int, height: int, x: int, y: int, points: int):
-        super().__init__(width, height, x, y, -pi / 2, -pi / 2, 0)
+    def __init__(self, x: int, y: int, width: int, height: int, points: int):
+        super().__init__(x, y, width, height, -pi / 2, -pi / 2, 0)
         self.points = points
 
 
 class PhotonMine(Mine):
     """
     The Photon Mine is half a Vapor Mine
+
+    :param x: int, The x coordinate of the mine
+    :param y: int, The y coordinate of the mine
     """
 
     def __init__(self, x: int, y: int):
-        super().__init__(13, 13, x, y, 350)
+        super().__init__(x, y, 15, 15, 350)
         self.set_image("PhotonMine.png")
 
 
 class VaporMine(Mine):
     """
     The Vapor Mine is twice a Photon Mine
+
+    :param x: int, The x coordinate of the mine
+    :param y: int, The y coordinate of the mine
     """
 
     def __init__(self, x: int, y: int):
-        super().__init__(22, 22, x, y, 500)
+        super().__init__(x, y, 25, 25, 500)
         self.set_image("VaporMine.png")
 
 
 class Ship(Entity):
     """
     Ships are the enemies in the games, they will try to kill the player
+
+    :param x: int, The x coordinate of the ship
+    :param y: int, The y coordinate of the ship
+    :param direction: float, The direction the ship advances towards
+    :param speed: float, The speed of the ship
+    :param points: int, The points the ship is worth
     """
 
     def __init__(self, x: int, y: int, direction: float, speed: float, points: int):
-        super().__init__(25, 25, x, y, direction, direction, speed)
+        super().__init__(x, y, 31, 31, direction, direction, speed)
         self.points = points
         self.distance = randrange(50, 250)
 
@@ -175,16 +194,17 @@ class Ship(Entity):
 
         :param dt: int, The time delta between frames
         """
-        if not self.alive:
-            return
+        super().move(dt)
         self.rotate(dt)
-        self.x += cos(self.direction) * self.speed * dt
-        self.y += sin(self.direction) * self.speed * dt
 
 
 class DroidShip(Ship):
     """
     The Droid Ship doesn't move a lot, but it can transfrom into a CommandShip
+
+    :param x: int, The x coordinate of the ship
+    :param y: int, The y coordinate of the ship
+    :param level: int, The level the ship is at (increases speed)
     """
 
     def __init__(self, x: int, y: int, level: int):
@@ -195,6 +215,10 @@ class DroidShip(Ship):
 class CommandShip(Ship):
     """
     The Command Ship is more dangerous, it moves and fires laser towards the player
+
+    :param x: int, The x coordinate of the ship
+    :param y: int, The y coordinate of the ship
+    :param level: int, The level the ship is at (increases speed)
     """
 
     def __init__(self, x: int, y: int, level: int):
@@ -248,6 +272,10 @@ class CommandShip(Ship):
 class DeathShip(Ship):
     """
     The Death Ship will bounce at full speed on every border
+
+    :param x: int, The x coordinate of the ship
+    :param y: int, The y coordinate of the ship
+    :param level: int, The level the ship is at (increases speed)
     """
 
     def __init__(self, x: int, y: int, level: int):
