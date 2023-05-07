@@ -5,7 +5,8 @@ from src.base import Text
 from src.menu import Welcome, Home, GameOver
 from src.engine import Engine
 from src.graphics import Background, Panel
-from src.scores import Data, Scores
+from src.data import Data
+from src.scores import Scores
 from src.settings import Settings
 from src.const import (
     WIN_WIDTH,
