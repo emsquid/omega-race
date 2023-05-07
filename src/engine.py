@@ -1,21 +1,22 @@
 import pygame
 from random import randrange
 from threading import Timer
-from src.base import Object, Explosion
-from src.sprites import Player, Ship, DroidShip, CommandShip, DeathShip
-from src.graphics import ForceField
-from src.settings import Settings
+from src.objects.base import Explosion
+from src.objects.sprites import Player, Ship, DroidShip, CommandShip, DeathShip
+from src.objects.graphics import ForceField
+from src.screens import Screen
+from src.config import Config
 from src.const import WIN_WIDTH, WIN_HEIGHT, CEN_Y, PAN_HEIGHT, ENEMY_NUMBER
 
 
 # TODO: Add pause
-class Engine:
+class Engine(Screen):
     """
     The Engine handles the game logic and interactions
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, config: Config):
+        super().__init__(config)
 
     def start(self):
         """
@@ -66,41 +67,25 @@ class Engine:
 
         self.level_changed = False
 
-    def get_objects(self) -> tuple[Object]:
-        """
-        Get every object handled by the engine
-
-        :return: tuple[Object], All objects
-        """
-        return (
-            self.force_field,
-            *self.mines,
-            *self.enemies,
-            self.player,
-            *self.player_lasers,
-            *self.enemies_lasers,
-            *self.explosions,
-        )
-
-    def handle_keys(self, keys: pygame.key.ScancodeWrapper, settings: Settings):
+    def handle_keys(self, keys: pygame.key.ScancodeWrapper):
         """
         Handle user inputs in the game
 
         :param keys: pygame.key.ScancodeWrapper, The pressed keys
         :param settings: Settings, The current keys settings
         """
-        if keys[settings.keys["LEFT"]] and not keys[settings.keys["RIGHT"]]:
+        if keys[self.config.keys["LEFT"]] and not keys[self.config.keys["RIGHT"]]:
             self.player.rotating = "LEFT"
-        elif keys[settings.keys["RIGHT"]] and not keys[settings.keys["LEFT"]]:
+        elif keys[self.config.keys["RIGHT"]] and not keys[self.config.keys["LEFT"]]:
             self.player.rotating = "RIGHT"
         else:
             self.player.rotating = ""
-        if keys[settings.keys["UP"]]:
+        if keys[self.config.keys["UP"]]:
             self.player.thrust()
             self.player.set_image("Player2.png")
         else:
             self.player.set_image("Player1.png")
-        if keys[settings.keys["SHOOT"]]:
+        if keys[self.config.keys["SHOOT"]]:
             self.player.shoot(self.player_lasers)
 
     def ship_death(self, ship: Ship):
@@ -219,6 +204,16 @@ class Engine:
             *self.player_lasers,
             *self.enemies_lasers,
         )
+
+        self.objects = [
+            self.force_field,
+            *self.mines,
+            *self.enemies,
+            self.player,
+            *self.player_lasers,
+            *self.enemies_lasers,
+            *self.explosions,
+        ]
 
         if all(not enemy.alive for enemy in self.enemies):
             self.change_level()

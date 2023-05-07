@@ -3,8 +3,8 @@ from time import time
 from threading import Timer
 from math import pi, cos, sin
 from random import randrange, random
-from src.base import Object, Entity, Text
-from src.sprites import Player, Laser
+from src.objects.base import Object, Entity, Text
+from src.objects.sprites import Player, Laser
 from src.const import (
     WIN_WIDTH,
     WIN_HEIGHT,

@@ -4,8 +4,6 @@ from threading import Thread
 from dotenv import load_dotenv
 from pymongo.server_api import ServerApi
 from pymongo.mongo_client import MongoClient
-from src.base import Object, Text
-from src.const import WIN_WIDTH, WIN_HEIGHT, CEN_X, RED
 
 
 class Data:
@@ -54,7 +52,7 @@ class Data:
             self.db = client["Scores"]
             self.connected = True
             self.fetch()
-        except:
+        except Exception:
             self.connected = False
 
     def fetch(self):
@@ -67,7 +65,7 @@ class Data:
         try:
             self.scores = [doc for doc in self.db["Single"].find()]
             self.scores.sort(key=lambda doc: doc["score"], reverse=True)
-        except:
+        except Exception:
             self.connected = False
 
     def insert(self, doc: dict):
@@ -80,7 +78,7 @@ class Data:
             return
         try:
             self.db["Single"].insert_one(doc)
-        except:
+        except Exception:
             self.connected = False
 
     def add_score(self, name: str, score: int, level: int):
@@ -112,44 +110,3 @@ class Data:
         """
         Thread(target=self.connect).start()
         Thread(target=self.fetch).start()
-
-
-class Scores:
-    """
-    The scores of the game
-    """
-
-    def __init__(self):
-        self.title = Text("Scores", CEN_X, WIN_HEIGHT / 5, 90)
-
-        self.names = [
-            Text(f"{i+1}. -----", 150 - i, 240 + i * 40, anchor="topleft")
-            for i in range(10)
-        ]
-        self.scores = [
-            Text("-----", 550, 240 + i * 40, anchor="topright") for i in range(10)
-        ]
-        self.levels = [
-            Text("--", 800, 240 + i * 40, anchor="topright") for i in range(10)
-        ]
-        self.home = Text("HOME", WIN_WIDTH * 4 / 5, WIN_HEIGHT - 100, 40, RED)
-
-    def update(self, scores: list[dict]):
-        """
-        Update the situation of all objects
-
-        :param scores: list[dict], The current scores in the game
-        """
-        for i in range(10):
-            if i < len(scores):
-                self.names[i].update(content=f"{i+1}. {scores[i]['name']}")
-                self.scores[i].update(content=f"{scores[i]['score']}")
-                self.levels[i].update(content=f"{scores[i]['level']}")
-
-    def get_objects(self) -> tuple[Object]:
-        """
-        Get every object handled by the scores
-
-        :return: tuple[Object], All objects
-        """
-        return (self.title, *self.names, *self.scores, *self.levels, self.home)
