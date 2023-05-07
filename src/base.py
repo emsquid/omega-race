@@ -203,6 +203,7 @@ class Text(Object):
             surface.blit(self.image, (self.x - width, self.y))
 
 
+
 class Explosion(Object):
     """
     Represent an animated explosion
@@ -211,14 +212,19 @@ class Explosion(Object):
     def __init__(self, x: int, y: int):
         super().__init__(35, 35, x, y)
         self.done = False
-        self.play()
+        self.play()     
 
     def play(self, step: int = 1):
         """
         Play each step of the explosion
 
         :param step: 1 <= int <= 6, The step the explosion is at
-        """
+        """            
+
+        self.sound = pygame.mixer.Sound("assets/Explosion.wav")
+
+        if step ==1:
+            pygame.mixer.Sound.play(self.sound)
         if step <= 6:
             self.set_image(f"Explosion{step}.png")
             Timer(0.1, self.play, [step + 1]).start()

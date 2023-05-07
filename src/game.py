@@ -28,6 +28,7 @@ class Game:
 
     def __init__(self):
         pygame.init()
+        pygame.mixer.init()
 
         pygame.display.set_icon(pygame.image.load("assets/Icon.png"))
         pygame.display.set_caption("Omega Race")
