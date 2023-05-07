@@ -2,16 +2,29 @@
 
 ## Introduction
 
-TODO
+This is our first year final project, the goal here is to make a modern version of [Omega Race](https://en.wikipedia.org/wiki/Omega_Race)
+Here is how the old version looks
+
+- Image/Video here
+
+And here is how our version looks
+
+- Image/Video here
 
 ## Installation
 
-TODO
+Get the project and install dependencies
+```bash
+git clone https://github.com/emsquid/omega-race
 
-## Scores
-Il y a 5 scores différents:
-- Mines Photons: 350 points
-- Mines Vapeurs: 500 points
-- Vaisseau Droïde: 1000 points
-- Vaisseau Amiral: 1500 points
-- Vaisseau Mortel: 2500 points
+cd omega-race
+
+pip3 install -r requirements.txt
+```
+
+And enjoy yourself 
+```bash
+python3 main.py
+```
+
+You may need the `.env` to run the game with all options, ask me :)
