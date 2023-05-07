@@ -63,8 +63,8 @@ class Player(Entity):
         :param lasers: list[Laser], The lasers already in game
         """
         if self.can_shoot():
-            self.sound = pygame.mixer.Sound("assets/Retro Weapon Laser 03.wav")
-            pygame.mixer.Sound.play(self.sound)
+            # sound = pygame.mixer.Sound("assets/Retro Weapon Laser 03.wav")
+            # sound.play()
             lasers.append(Laser(self.x, self.y + 4, self.rotation))
             self.last_shoot = time()
 

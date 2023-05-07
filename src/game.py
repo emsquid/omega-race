@@ -78,6 +78,7 @@ class Game:
                     if choice is not None:
                         if choice == PLAY:
                             self.screens[PLAY].start()
+                        # TODO: Not clean ;(
                         elif choice == SETTINGS:
                             self.screens[SETTINGS].last_change = time()
                         self.current = choice
@@ -95,7 +96,6 @@ class Game:
 
         self.data.update()
         self.background.update(dt)
-
         self.screens[self.current].update(dt)
 
         if self.current == PLAY:
@@ -125,6 +125,6 @@ class Game:
         """
         Close the window and exit the program
         """
-        # TODO: Save settings
+        # TODO: Save config
         pygame.quit()
         os._exit(0)

@@ -115,17 +115,27 @@ class Border(Object):
         self.normal = normal
         self.visible = visible
 
+        if visible:
+            self.show()
+        else:
+            self.hide()
+
     def show(self):
         """
         Make the border visible
         """
-        self.visible = True
+        image = pygame.Surface((self.width, self.height))
+        image.fill(WHITE)
+        self.set_image(surface=image)
 
     def hide(self):
         """
         Make the border invisible
         """
-        self.visible = False
+        image = pygame.Surface((self.width, self.height))
+        image.fill(WHITE, (0, 0, 3, 3))
+        image.fill(WHITE, (self.width - 3, self.height - 3, 3, 3))
+        self.set_image(surface=image)
 
     def blink(self):
         """
@@ -135,21 +145,6 @@ class Border(Object):
             return
         self.show()
         Timer(0.15, self.hide).start()
-
-    def draw(self, surface: pygame.Surface):
-        """
-        Draw a border on the surface,
-        The image differs if the border is visible
-
-        :param surface: pygame.Surface, The surface to draw the border on
-        """
-        image = pygame.Surface((self.width, self.height))
-        if self.visible:
-            image.fill(WHITE)
-        else:
-            image.fill(WHITE, (0, 0, 3, 3))
-            image.fill(WHITE, (self.width - 3, self.height - 3, 3, 3))
-        surface.blit(image, (self.x - self.width / 2, self.y - self.height / 2))
 
     def bounce(self, entity: Entity):
         """

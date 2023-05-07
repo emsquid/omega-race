@@ -48,14 +48,16 @@ class Object:
         :param filename: str = None, The file to retrieve the image from
         :param surface: pygame.Surface = None, The surface to use as an image
         """
-        if not filename is None:
+        if filename is not None:
             self.image = pygame.image.load(f"assets/{filename}").convert_alpha()
-        elif not surface is None:
+        elif surface is not None:
             self.image = surface.convert_alpha()
         else:
-            # Default case for development, should throw an error
-            self.image = pygame.Surface((self.width, self.height))
+            # TODO: Default case for development, should throw an error
+            self.image = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
             self.image.fill(RED)
+        self.mask = pygame.mask.from_surface(self.image)
+        self.rect = self.image.get_rect(center=(self.x, self.y))
 
     def draw(self, surface: pygame.Surface):
         """
@@ -63,7 +65,7 @@ class Object:
 
         :param surface: pygame.Surface, The surface to draw the object on
         """
-        surface.blit(self.image, (self.x - self.width / 2, self.y - self.height / 2))
+        surface.blit(self.image, self.rect)
 
     def collide(self, other) -> bool:
         """
@@ -74,10 +76,11 @@ class Object:
         return (
             (not isinstance(self, Entity) or self.alive)
             and (not isinstance(other, Entity) or other.alive)
-            and self.x - self.width / 2 <= other.x + other.width / 2
-            and other.x - other.width / 2 <= self.x + self.width / 2
-            and self.y - self.height / 2 <= other.y + other.height / 2
-            and other.y - other.height / 2 <= self.y + self.height / 2
+            and pygame.sprite.collide_mask(self, other)
+            # and self.x - self.width / 2 <= other.x + other.width / 2
+            # and other.x - other.width / 2 <= self.x + self.width / 2
+            # and self.y - self.height / 2 <= other.y + other.height / 2
+            # and other.y - other.height / 2 <= self.y + self.height / 2
         )
 
 
@@ -143,8 +146,9 @@ class Entity(Object):
         # Create the rotated image and center it properly
         angle = -360 * (self.rotation + math.pi / 2) / (2 * math.pi)
         rotated_image = pygame.transform.rotate(self.image, angle)
-        rect = rotated_image.get_rect(center=(self.x, self.y))
-        surface.blit(rotated_image, rect)
+        self.mask = pygame.mask.from_surface(rotated_image)
+        self.rect = rotated_image.get_rect(center=(self.x, self.y))
+        surface.blit(rotated_image, self.rect)
 
     def move(self, dt: int):
         """
@@ -203,7 +207,6 @@ class Text(Object):
             surface.blit(self.image, (self.x - width, self.y))
 
 
-
 class Explosion(Object):
     """
     Represent an animated explosion
@@ -212,19 +215,16 @@ class Explosion(Object):
     def __init__(self, x: int, y: int):
         super().__init__(35, 35, x, y)
         self.done = False
-        self.play()     
+        # sound = pygame.mixer.Sound("assets/Explosion.wav")
+        # sound.play()
+        self.play()
 
     def play(self, step: int = 1):
         """
         Play each step of the explosion
 
         :param step: 1 <= int <= 6, The step the explosion is at
-        """            
-
-        self.sound = pygame.mixer.Sound("assets/Explosion.wav")
-
-        if step ==1:
-            pygame.mixer.Sound.play(self.sound)
+        """
         if step <= 6:
             self.set_image(f"Explosion{step}.png")
             Timer(0.1, self.play, [step + 1]).start()
