@@ -164,8 +164,8 @@ class Text(Object):
         content: str,
         x: int,
         y: int,
-        color: tuple = WHITE,
         size: int = 25,
+        color: tuple = WHITE,
         anchor: str = "center",  # topleft, topright, center
     ):
         super().__init__(0, 0, x, y)
