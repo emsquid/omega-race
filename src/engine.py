@@ -198,6 +198,7 @@ class Engine(Screen):
         self.update_lasers(dt)
 
         self.player.move(dt)
+        self.force_field.update()
         self.force_field.bounce(
             self.player,
             *self.enemies,

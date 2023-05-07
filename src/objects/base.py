@@ -184,8 +184,8 @@ class Text(Object):
         :param content: str, The content of the text
         :param color: tuple, The color (RGBA) of the text
         """
-        self.content = content if content != None else self.content
-        self.color = color if color != None else self.color
+        self.content = content if content is not None else self.content
+        self.color = color if color is not None else self.color
         self.image = self.font.render(self.content, True, self.color).convert_alpha()
 
     def draw(self, surface: pygame.Surface):

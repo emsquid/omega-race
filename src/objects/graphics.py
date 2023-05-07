@@ -114,28 +114,21 @@ class Border(Object):
         super().__init__(width, height, x, y)
         self.normal = normal
         self.visible = visible
-
-        if visible:
-            self.show()
-        else:
-            self.hide()
+        self.changed = True
 
     def show(self):
         """
         Make the border visible
         """
-        image = pygame.Surface((self.width, self.height))
-        image.fill(WHITE)
-        self.set_image(surface=image)
+        self.visible = True
+        self.changed = True
 
     def hide(self):
         """
         Make the border invisible
         """
-        image = pygame.Surface((self.width, self.height))
-        image.fill(WHITE, (0, 0, 3, 3))
-        image.fill(WHITE, (self.width - 3, self.height - 3, 3, 3))
-        self.set_image(surface=image)
+        self.visible = False
+        self.changed = True
 
     def blink(self):
         """
@@ -145,6 +138,21 @@ class Border(Object):
             return
         self.show()
         Timer(0.15, self.hide).start()
+
+    def update(self):
+        """
+        Update the state of the border
+        """
+        if not self.changed:
+            return
+        image = pygame.Surface((self.width, self.height))
+        if self.visible:
+            image.fill(WHITE)
+        else:
+            image.fill(WHITE, (0, 0, 3, 3))
+            image.fill(WHITE, (self.width - 3, self.height - 3, 3, 3))
+        self.set_image(surface=image)
+        self.changed = False
 
     def bounce(self, entity: Entity):
         """
@@ -206,6 +214,13 @@ class ForceField:
         """
         for border in self.borders:
             border.draw(surface)
+
+    def update(self):
+        """
+        Update the state of the force field
+        """
+        for border in self.borders:
+            border.update()
 
     def bounce(self, *entities: tuple[Entity]):
         """

@@ -1,6 +1,7 @@
 import os
 import pygame
 from time import time
+from src.objects.base import Text
 from src.objects.graphics import Background, Panel
 from src.screens import Welcome, Home, Scores, Settings, GameOver
 from src.engine import Engine
@@ -60,6 +61,7 @@ class Game:
 
         for obj in objects:
             obj.draw(self.background.image)
+        Text(str(int(self.clock.get_fps())), 60, 40).draw(self.background.image)
         pygame.transform.smoothscale(
             self.background.image, self.display.get_size(), self.display
         )
@@ -92,7 +94,7 @@ class Game:
         """
         Update the situation of all objects depending on the current screen
         """
-        dt = self.clock.tick(60)
+        dt = self.clock.tick(1000)
 
         self.data.update()
         self.background.update(dt)
