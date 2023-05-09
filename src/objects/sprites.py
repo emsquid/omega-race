@@ -18,7 +18,7 @@ class Laser(Entity):
     def __init__(self, x: int, y: int, direction: float):
         image = pygame.Surface((2, 15), pygame.SRCALPHA)
         image.fill(WHITE)
-        super().__init__(x, y, 2, 10, image, direction, direction, 0.3)
+        super().__init__(x, y, image, direction, direction, 0.3)
 
         sound = pygame.mixer.Sound("assets/sounds/Laser.wav")
         sound.set_volume(0.25)
@@ -31,7 +31,7 @@ class Player(Entity):
     """
 
     def __init__(self):
-        super().__init__(500, 200, 31, 31, "Player1.png", -pi / 2, -pi / 2, 0)
+        super().__init__(500, 200, "Player1.png", -pi / 2, -pi / 2, 0)
         # LEFT | RIGHT
         self.rotating = ""
         self.last_collision = 0
@@ -99,14 +99,12 @@ class Mine(Entity):
 
     :param x: int, The x coordinate of the mine
     :param y: int, The y coordinate of the mine
-    :param width: int, The width of the mine
-    :param height: int, The height coordinate of the mine
     :param image: str | pygame.Surface, The image of the mine
     :param points: int, The points the mine is worth
     """
 
-    def __init__(self, x: int, y: int, width: int, height: int, image, points: int):
-        super().__init__(x, y, width, height, image, -pi / 2, -pi / 2, 0)
+    def __init__(self, x: int, y: int, image, points: int):
+        super().__init__(x, y, image, -pi / 2, -pi / 2, 0)
         self.points = points
 
 
@@ -119,7 +117,7 @@ class PhotonMine(Mine):
     """
 
     def __init__(self, x: int, y: int):
-        super().__init__(x, y, 15, 15, "PhotonMine.png", 350)
+        super().__init__(x, y, "PhotonMine.png", 350)
 
 
 class VaporMine(Mine):
@@ -131,7 +129,7 @@ class VaporMine(Mine):
     """
 
     def __init__(self, x: int, y: int):
-        super().__init__(x, y, 25, 25, "VaporMine.png", 500)
+        super().__init__(x, y, "VaporMine.png", 500)
 
 
 class Ship(Entity):
@@ -157,7 +155,7 @@ class Ship(Entity):
         points: int,
         level: int,
     ):
-        super().__init__(x, y, 31, 31, image, direction, direction, speed * sqrt(level))
+        super().__init__(x, y, image, direction, direction, speed * sqrt(level))
         self.points = points
         self.distance = randrange(50, 250)
 

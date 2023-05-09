@@ -118,7 +118,7 @@ class Border(Object):
     def __init__(
         self, x: int, y: int, width: int, height: int, normal: float, visible: bool
     ):
-        super().__init__(x, y, width, height, pygame.Surface((width, height)))
+        super().__init__(x, y, pygame.Surface((width, height)))
         self.normal = normal
         self.visible = visible
         self.changed = True
@@ -152,12 +152,12 @@ class Border(Object):
         """
         if not self.changed:
             return
-        image = pygame.Surface((self.width, self.height))
+        image = pygame.Surface((self.rect.width, self.rect.height))
         if self.visible:
             image.fill(WHITE)
         else:
             image.fill(WHITE, (0, 0, 3, 3))
-            image.fill(WHITE, (self.width - 3, self.height - 3, 3, 3))
+            image.fill(WHITE, (self.rect.width - 3, self.rect.height - 3, 3, 3))
         self.set_image(image)
         self.changed = False
 

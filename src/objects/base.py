@@ -10,14 +10,11 @@ class Object:
 
     :param x: int, The x coordinate of the object
     :param y: int, The y coordinate of the object
-    :param width: int, The width of the object
-    :param height: int, The height of the object
     :param image: str | pygame.Surface, The image of the object
     """
 
-    def __init__(self, x: int, y: int, width: int, height: int, image):
+    def __init__(self, x: int, y: int, image):
         self.set_position(x, y)
-        self.set_size(width, height)
         self.set_image(image)
 
     def set_position(self, x: int, y: int):
@@ -29,17 +26,6 @@ class Object:
         """
         self.x = x
         self.y = y
-
-    def set_size(self, width: int, height: int):
-        """
-        Set the size of the object
-
-        :param width: int > 0, The width of the object
-        :param height: int > 0, The height of the object
-
-        """
-        self.width = width
-        self.height = height
 
     def set_image(self, image):
         """
@@ -86,8 +72,6 @@ class Entity(Object):
 
     :param x: int, The x coordinate of the entity
     :param y: int, The y coordinate of the entity
-    :param width: int, The width of the entity
-    :param height: int, The height of the entity
     :param image: str | pygame.Surface, The image of the entity
     :param direction: float, The direction (radians) the entity advances towards
     :param rotation: float, The rotation (radians) the entity has
@@ -98,14 +82,12 @@ class Entity(Object):
         self,
         x: int,
         y: int,
-        width: int,
-        height: int,
         image,
         direction: float,
         rotation: float,
         speed: float,
     ):
-        super().__init__(x, y, width, height, image)
+        super().__init__(x, y, image)
         self.set_direction(direction)
         self.set_rotation(rotation)
         self.set_speed(speed)
@@ -192,7 +174,7 @@ class Text(Object):
         self.font = pygame.font.Font("assets/fonts/font.ttf", size)
         self.anchor = anchor
         self.update(content, color)
-        super().__init__(x, y, 0, 0, self.image)
+        super().__init__(x, y, self.image)
 
     def update(self, content: str = None, color: tuple = None):
         """
@@ -233,7 +215,7 @@ class Explosion(Object):
     """
 
     def __init__(self, x: int, y: int):
-        super().__init__(x, y, 35, 35, "Explosion1.png")
+        super().__init__(x, y, "Explosion1.png")
         self.step = 0
         self.last_update = 0
         sound = pygame.mixer.Sound("assets/sounds/Explosion.wav")
