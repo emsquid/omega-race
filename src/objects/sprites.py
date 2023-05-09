@@ -21,6 +21,10 @@ class Laser(Entity):
         image.fill(WHITE)
         self.set_image(surface=image)
 
+        sound = pygame.mixer.Sound("assets/sounds/Laser.wav")
+        sound.set_volume(0.25)
+        sound.play()
+
 
 class Player(Entity):
     """
@@ -67,8 +71,6 @@ class Player(Entity):
         :param lasers: list[Laser], The lasers already in game
         """
         if self.can_shoot():
-            sound = pygame.mixer.Sound("assets/sounds/Retro Weapon Laser 03.wav")
-            sound.play()
             lasers.append(Laser(self.x, self.y, self.rotation))
             self.last_shoot = time()
 

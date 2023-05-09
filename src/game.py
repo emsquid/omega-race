@@ -27,6 +27,8 @@ class Game:
     def __init__(self):
         pygame.init()
         pygame.mixer.init()
+        pygame.mixer.music.load("assets/sounds/Menu.wav")
+        pygame.mixer.music.play(-1)
 
         pygame.display.set_icon(pygame.image.load("assets/images/Icon.png"))
         pygame.display.set_caption("Omega Race")
@@ -79,6 +81,9 @@ class Game:
                     choice = self.screens[self.current].get_choice()
                     if choice is not None:
                         if choice == PLAY:
+                            pygame.mixer.music.load("assets/sounds/Battle.wav")
+                            pygame.mixer.music.play(-1)
+                            pygame.mixer.music.set_volume(0.3)
                             self.screens[PLAY].start()
                         # TODO: Not clean ;(
                         elif choice == SETTINGS:
@@ -112,6 +117,9 @@ class Game:
             else:
                 self.data.add_score(self.config.name, engine.score, engine.level)
                 self.current = GAMEOVER
+                pygame.mixer.music.load("assets/sounds/Menu.wav")
+                pygame.mixer.music.play(-1)
+                pygame.mixer.music.set_volume(1)
 
     def run(self):
         """
