@@ -118,6 +118,9 @@ class Game:
                 self.current = GAMEOVER
                 Mixer(1 * self.config.volume).music("Menu.wav")
 
+        # TODO: degueu
+        pygame.mixer.music.set_volume(self.config.volume)
+
     def run(self):
         """
         Run the game instance

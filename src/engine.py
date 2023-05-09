@@ -91,7 +91,7 @@ class Engine(Screen):
             self.player.set_image("Player1.png")
 
         if keys[self.config.keys["SHOOT"]] and self.player.can_shoot():
-            Mixer(0.25*self.config.volume).play("Laser.wav")
+            Mixer(0.25 * self.config.volume).play("Laser.wav")
             self.player.shoot(self.player_lasers)
 
     def create_explosion(self, x: int, y: int):
