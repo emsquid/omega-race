@@ -248,8 +248,9 @@ class Settings(Screen):
         self.home = Text("HOME", WIN_WIDTH * 4 / 5, WIN_HEIGHT - 100, 40)
 
         # TODO: Make that better lol
-        self.popup = Object(CEN_X, CEN_Y, WIN_WIDTH / 2, WIN_HEIGHT / 4)
-        self.popup.image.fill(GREY)
+        popup_image = pygame.Surface((WIN_WIDTH / 2, WIN_HEIGHT / 4))
+        popup_image.fill(GREY)
+        self.popup = Object(CEN_X, CEN_Y, popup_image)
         self.popup_text_1 = Text("Please choose", CEN_X, CEN_Y - 20, 40, BLACK)
         self.popup_text_2 = Text("the new key", CEN_X, CEN_Y + 20, 40, BLACK)
 

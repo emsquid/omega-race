@@ -10,20 +10,12 @@ class Object:
 
     :param x: int, The x coordinate of the object
     :param y: int, The y coordinate of the object
-    :param width: int, The width of the object
-    :param height: int, The height of the object
+    :param image: str | pygame.Surface, The image of the object
     """
 
-    def __init__(
-        self,
-        x: int,
-        y: int,
-        width: int,
-        height: int,
-    ):
+    def __init__(self, x: int, y: int, image):
         self.set_position(x, y)
-        self.set_size(width, height)
-        self.set_image()
+        self.set_image(image)
 
     def set_position(self, x: int, y: int):
         """
@@ -35,28 +27,17 @@ class Object:
         self.x = x
         self.y = y
 
-    def set_size(self, width: int, height: int):
-        """
-        Set the size of the object
-
-        :param width: int > 0, The width of the object
-        :param height: int > 0, The height of the object
-
-        """
-        self.width = width
-        self.height = height
-
-    def set_image(self, filename: str = None, surface: pygame.Surface = None):
+    def set_image(self, image):
         """
         Set the image of the object,
 
         :param filename: str = None, The file to retrieve the image from
         :param surface: pygame.Surface = None, The surface to use as an image
         """
-        if filename is not None:
-            self.image = pygame.image.load(f"assets/images/{filename}").convert_alpha()
-        elif surface is not None:
-            self.image = surface.convert_alpha()
+        if isinstance(image, str):
+            self.image = pygame.image.load(f"assets/images/{image}").convert_alpha()
+        elif isinstance(image, pygame.Surface):
+            self.image = image.convert_alpha()
         else:
             # TODO: Default case for development, should throw an error
             self.image = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
@@ -91,8 +72,7 @@ class Entity(Object):
 
     :param x: int, The x coordinate of the entity
     :param y: int, The y coordinate of the entity
-    :param width: int, The width of the entity
-    :param height: int, The height of the entity
+    :param image: str | pygame.Surface, The image of the entity
     :param direction: float, The direction (radians) the entity advances towards
     :param rotation: float, The rotation (radians) the entity has
     :param speed: float, The speed at which the entity advances
@@ -102,13 +82,12 @@ class Entity(Object):
         self,
         x: int,
         y: int,
-        width: int,
-        height: int,
+        image,
         direction: float,
         rotation: float,
         speed: float,
     ):
-        super().__init__(x, y, width, height)
+        super().__init__(x, y, image)
         self.set_direction(direction)
         self.set_rotation(rotation)
         self.set_speed(speed)
@@ -192,10 +171,10 @@ class Text(Object):
         color: tuple = WHITE,
         anchor: str = "center",
     ):
-        super().__init__(x, y, 0, 0)
         self.font = pygame.font.Font("assets/fonts/font.ttf", size)
         self.anchor = anchor
         self.update(content, color)
+        super().__init__(x, y, self.image)
 
     def update(self, content: str = None, color: tuple = None):
         """
@@ -236,7 +215,7 @@ class Explosion(Object):
     """
 
     def __init__(self, x: int, y: int):
-        super().__init__(x, y, 35, 35)
+        super().__init__(x, y, "Explosion1.png")
         self.step = 0
         self.last_update = 0
         
