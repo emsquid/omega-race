@@ -305,20 +305,30 @@ class Settings(Screen):
 
         :param dt: int, The time delta between frames
         """
-        self.up_text.update(color=RED if self.selection == 0 else WHITE)
-        self.up_key.update(content=name(self.config.keys["UP"]))
+        self.up_key.update(
+            content=name(self.config.keys["UP"]),
+            color=RED if self.selection == 0 else WHITE,
+        )
 
-        self.down_text.update(color=RED if self.selection == 1 else WHITE)
-        self.down_key.update(content=name(self.config.keys["DOWN"]))
+        self.down_key.update(
+            content=name(self.config.keys["DOWN"]),
+            color=RED if self.selection == 1 else WHITE,
+        )
 
-        self.left_text.update(color=RED if self.selection == 2 else WHITE)
-        self.left_key.update(content=name(self.config.keys["LEFT"]))
+        self.left_key.update(
+            content=name(self.config.keys["LEFT"]),
+            color=RED if self.selection == 2 else WHITE,
+        )
 
-        self.right_text.update(color=RED if self.selection == 3 else WHITE)
-        self.right_key.update(content=name(self.config.keys["RIGHT"]))
+        self.right_key.update(
+            content=name(self.config.keys["RIGHT"]),
+            color=RED if self.selection == 3 else WHITE,
+        )
 
-        self.shoot_text.update(color=RED if self.selection == 4 else WHITE)
-        self.shoot_key.update(content=name(self.config.keys["SHOOT"]))
+        self.shoot_key.update(
+            content=name(self.config.keys["SHOOT"]),
+            color=RED if self.selection == 4 else WHITE,
+        )
 
         self.home.update(color=RED if self.selection == 5 else WHITE)
 
