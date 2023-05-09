@@ -16,10 +16,11 @@ class Engine(Screen):
     The Engine handles the game logic and interactions
 
     :param config: Config, The game configuration
+    :param mixer: Mixer, The game mixer for music and sounds
     """
 
-    def __init__(self, config: Config):
-        super().__init__(config)
+    def __init__(self, config: Config, mixer: Mixer):
+        super().__init__(config, mixer)
 
     def start(self):
         """
@@ -84,19 +85,19 @@ class Engine(Screen):
         else:
             self.player.rotating = ""
 
-        if keys[self.config.keys["UP"]]:
+        if keys[self.config.keys["UP"]] and self.player.can_thrust():
             self.player.thrust()
             self.player.set_image("Player2.png")
         else:
             self.player.set_image("Player1.png")
 
         if keys[self.config.keys["SHOOT"]] and self.player.can_shoot():
-            Mixer(0.25 * self.config.volume).play("Laser.wav")
             self.player.shoot(self.player_lasers)
+            self.mixer.play("Laser.wav", 0.15)
 
     def create_explosion(self, x: int, y: int):
         self.explosions.append(Explosion(x, y))
-        Mixer(self.config.volume).play("Explosion.wav")
+        self.mixer.play("Explosion.wav", 1)
 
     def ship_death(self, ship: Ship):
         """
@@ -155,6 +156,7 @@ class Engine(Screen):
                 enemy.turn()
             if isinstance(enemy, CommandShip) and enemy.can_shoot():
                 enemy.shoot(self.player, self.enemies_lasers)
+                self.mixer.play("Laser.wav", 0.15)
             if isinstance(enemy, (CommandShip, DeathShip)) and enemy.can_drop():
                 enemy.drop_mine(self.mines)
             enemy.move(dt)

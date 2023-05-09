@@ -41,18 +41,17 @@ class Game:
 
         self.config = Config()
         self.data = Data()
+        self.mixer = Mixer(self.config)
 
         self.screens = {
-            WELCOME: Welcome(self.config),
-            HOME: Home(self.config),
-            PLAY: Engine(self.config),
-            SCORES: Scores(self.config, self.data),
-            SETTINGS: Settings(self.config),
-            GAMEOVER: GameOver(self.config),
+            WELCOME: Welcome(self.config, self.mixer),
+            HOME: Home(self.config, self.mixer),
+            PLAY: Engine(self.config, self.mixer),
+            SCORES: Scores(self.config, self.mixer, self.data),
+            SETTINGS: Settings(self.config, self.mixer),
+            GAMEOVER: GameOver(self.config, self.mixer),
         }
         self.current = WELCOME
-
-        Mixer(1 * self.config.volume).music("Menu.wav")
 
     def draw(self):
         """
@@ -82,7 +81,7 @@ class Game:
                     choice = self.screens[self.current].get_choice()
                     if choice is not None:
                         if choice == PLAY:
-                            Mixer(0.3 * self.config.volume).music("Battle.wav")
+                            self.mixer.music("Battle.wav", 0.3)
                             self.screens[PLAY].start()
                         # TODO: Not clean ;(
                         elif choice == SETTINGS:
@@ -101,6 +100,7 @@ class Game:
         dt = self.clock.tick(self.config.fps)
 
         self.data.update()
+        self.mixer.update()
         self.background.update(dt)
         self.screens[self.current].update(dt)
 
@@ -116,15 +116,13 @@ class Game:
             else:
                 self.data.add_score(self.config.name, engine.score, engine.level)
                 self.current = GAMEOVER
-                Mixer(1 * self.config.volume).music("Menu.wav")
-
-        # TODO: degueu
-        pygame.mixer.music.set_volume(self.config.volume)
+                self.mixer.music("Menu.wav", 1)
 
     def run(self):
         """
         Run the game instance
         """
+        self.mixer.music("Menu.wav", 1)
         while True:
             self.handle_inputs()
             self.update()

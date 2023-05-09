@@ -53,10 +53,9 @@ class Player(Entity):
         """
         Thrust in the direction the player is pointing
         """
-        if self.can_thrust():
-            self.speed = 0.2
-            self.direction = self.rotation
-            self.last_thrust = time()
+        self.speed = 0.2
+        self.direction = self.rotation
+        self.last_thrust = time()
 
     def shoot(self, lasers: list[Laser]):
         """
@@ -64,9 +63,8 @@ class Player(Entity):
 
         :param lasers: list[Laser], The lasers already in game
         """
-        if self.can_shoot():
-            lasers.append(Laser(self.x, self.y, self.rotation))
-            self.last_shoot = time()
+        lasers.append(Laser(self.x, self.y, self.rotation))
+        self.last_shoot = time()
 
     def rotate(self, dt: int):
         """
