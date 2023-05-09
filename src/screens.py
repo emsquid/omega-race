@@ -237,28 +237,29 @@ class Settings(Screen):
 
         self.title = Text("Settings", CEN_X, WIN_HEIGHT / 5, 90)
 
-        self.up_text = Text("UP", CEN_X - 150, CEN_Y - 160, anchor="left")
+        self.up_text = Text("UP :", CEN_X - 150, CEN_Y - 160, anchor="left")
         self.up_key = Text(
             name(self.config.keys["UP"]), CEN_X + 100, CEN_Y - 160, color=RED
         )
 
-        self.down_text = Text("DOWN", CEN_X - 150, CEN_Y - 120, anchor="left")
+        self.down_text = Text("DOWN :", CEN_X - 150, CEN_Y - 120, anchor="left")
         self.down_key = Text(name(self.config.keys["DOWN"]), CEN_X + 100, CEN_Y - 120)
 
-        self.left_text = Text("LEFT", CEN_X - 150, CEN_Y - 80, anchor="left")
+        self.left_text = Text("LEFT :", CEN_X - 150, CEN_Y - 80, anchor="left")
         self.left_key = Text(name(self.config.keys["LEFT"]), CEN_X + 100, CEN_Y - 80)
 
-        self.right_text = Text("RIGHT", CEN_X - 150, CEN_Y - 40, anchor="left")
+        self.right_text = Text("RIGHT :", CEN_X - 150, CEN_Y - 40, anchor="left")
         self.right_key = Text(name(self.config.keys["RIGHT"]), CEN_X + 100, CEN_Y - 40)
 
-        self.shoot_text = Text("SHOOT", CEN_X - 150, CEN_Y, anchor="left")
+        self.shoot_text = Text("SHOOT :", CEN_X - 150, CEN_Y, anchor="left")
         self.shoot_key = Text(name(self.config.keys["SHOOT"]), CEN_X + 100, CEN_Y)
 
-        self.volume_text = Text("VOLUME", CEN_X - 150, CEN_Y + 40, anchor="left")
+        self.volume_text = Text("VOLUME :", CEN_X - 150, CEN_Y + 40, anchor="left")
         self.volume = Text(f"< {config.volume*100}% >", CEN_X + 100, CEN_Y + 40)
 
-        self.fps_text = Text("FPS", CEN_X - 150, CEN_Y + 80, anchor="left")
+        self.fps_text = Text("FPS :", CEN_X - 150, CEN_Y + 80, anchor="left")
         self.fps = Text(f"< {config.fps} >", CEN_X + 100, CEN_Y + 80)
+
         self.home = Text("HOME", WIN_WIDTH * 4 / 5, WIN_HEIGHT - 100, 40)
 
         # TODO: Make that better lol
@@ -320,15 +321,15 @@ class Settings(Screen):
         """
         if self.popup_open and event.type == pygame.KEYDOWN:
             if self.selection == 0:
-                self.config.update_key("UP", event.key)
+                self.config.update_key("UP :", event.key)
             elif self.selection == 1:
-                self.config.update_key("DOWN", event.key)
+                self.config.update_key("DOWN :", event.key)
             elif self.selection == 2:
-                self.config.update_key("LEFT", event.key)
+                self.config.update_key("LEFT :", event.key)
             elif self.selection == 3:
-                self.config.update_key("RIGHT", event.key)
+                self.config.update_key("RIGHT :", event.key)
             elif self.selection == 4:
-                self.config.update_key("SHOOT", event.key)
+                self.config.update_key("SHOOT :", event.key)
 
             self.popup_open = False
             self.last_change = time()
