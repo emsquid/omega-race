@@ -29,6 +29,7 @@ class Engine(Screen):
         self.level = 1
         self.lives = 3
         self.score = 0
+        self.paused = False
         self.reset()
 
     def reset(self):
@@ -69,7 +70,6 @@ class Engine(Screen):
 
         self.force_field = ForceField()
 
-        self.paused = False
         self.level_changed = False
 
     def handle_keys(self, keys: pygame.key.ScancodeWrapper):
@@ -105,7 +105,12 @@ class Engine(Screen):
 
         :param event: pygame.event.Event, The event (key) that was pressed
         """
-        if event.type == pygame.KEYDOWN and event.key == self.config.keys["PAUSE"]:
+        if (
+            not self.level_changed
+            and self.player.alive
+            and event.type == pygame.KEYDOWN
+            and event.key == self.config.keys["PAUSE"]
+        ):
             if not self.paused:
                 self.pause()
             else:
