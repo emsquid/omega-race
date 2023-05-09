@@ -8,17 +8,17 @@ class Config:
 
     def __init__(self):
         self.name = ""
-
         self.keys = {
             "UP": pygame.K_UP,
             "DOWN": pygame.K_DOWN,
             "LEFT": pygame.K_LEFT,
             "RIGHT": pygame.K_RIGHT,
             "SHOOT": pygame.K_SPACE,
+            "PAUSE": pygame.K_p,
         }
-
         self.volume = 1
-        self.fps=120
+        self.fps = 120
+
     def update_key(self, action: str, key: int):
         """
         Update the key for an action

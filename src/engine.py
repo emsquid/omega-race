@@ -1,4 +1,5 @@
 import pygame
+from time import time
 from random import randrange
 from threading import Timer
 from src.objects.base import Explosion
@@ -10,7 +11,6 @@ from src.mixer import Mixer
 from src.const import WIN_WIDTH, WIN_HEIGHT, CEN_Y, PAN_HEIGHT, ENEMY_NUMBER
 
 
-# TODO: Add pause
 class Engine(Screen):
     """
     The Engine handles the game logic and interactions
@@ -69,6 +69,7 @@ class Engine(Screen):
 
         self.force_field = ForceField()
 
+        self.paused = False
         self.level_changed = False
 
     def handle_keys(self, keys: pygame.key.ScancodeWrapper):
@@ -78,6 +79,9 @@ class Engine(Screen):
         :param keys: pygame.key.ScancodeWrapper, The pressed keys
         :param settings: Settings, The current keys settings
         """
+        if self.paused:
+            return
+
         if keys[self.config.keys["LEFT"]] and not keys[self.config.keys["RIGHT"]]:
             self.player.rotating = "LEFT"
         elif keys[self.config.keys["RIGHT"]] and not keys[self.config.keys["LEFT"]]:
@@ -95,7 +99,47 @@ class Engine(Screen):
             self.player.shoot(self.player_lasers)
             self.mixer.play("Laser.wav", 0.15)
 
+    def handle_event(self, event: pygame.event.Event):
+        """
+        Handle a single user event
+
+        :param event: pygame.event.Event, The event (key) that was pressed
+        """
+        if event.type == pygame.KEYDOWN and event.key == self.config.keys["PAUSE"]:
+            if not self.paused:
+                self.pause()
+            else:
+                self.unpause()
+
+    def pause(self):
+        """
+        Pause the game
+        """
+        self.paused = True
+        for enemy in self.enemies:
+            if isinstance(enemy, CommandShip):
+                enemy.shoot_cooldown_pause = time() - enemy.last_shoot
+            if isinstance(enemy, (CommandShip, DeathShip)):
+                enemy.drop_cooldown_pause = time() - enemy.last_drop
+
+    def unpause(self):
+        """
+        Unpause the game
+        """
+        self.paused = False
+        for enemy in self.enemies:
+            if isinstance(enemy, CommandShip):
+                enemy.last_shoot = time() - enemy.shoot_cooldown_pause
+            if isinstance(enemy, (CommandShip, DeathShip)):
+                enemy.last_drop = time() - enemy.drop_cooldown_pause
+
     def create_explosion(self, x: int, y: int):
+        """
+        Create an explosion
+
+        :param x: int, The x coordinate of the explosion
+        :param y: int, The y coordinate of the explosion
+        """
         self.explosions.append(Explosion(x, y))
         self.mixer.play("Explosion.wav", 1)
 
@@ -214,6 +258,9 @@ class Engine(Screen):
 
         :param dt: int, The time delta between frames
         """
+        if self.paused:
+            return
+
         self.update_enemies(dt)
         self.update_mines(dt)
         self.update_lasers(dt)

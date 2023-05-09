@@ -237,27 +237,25 @@ class Settings(Screen):
 
         self.title = Text("Settings", CEN_X, WIN_HEIGHT / 5, 90)
 
-        self.up_text = Text("UP :", CEN_X - 150, CEN_Y - 160, anchor="left")
-        self.up_key = Text(
-            name(self.config.keys["UP"]), CEN_X + 100, CEN_Y - 160, color=RED
-        )
+        self.up_text = Text("UP :", CEN_X - 50, CEN_Y - 160, anchor="right")
+        self.up_key = Text(name(self.config.keys["UP"]), CEN_X + 100, CEN_Y - 160)
 
-        self.down_text = Text("DOWN :", CEN_X - 150, CEN_Y - 120, anchor="left")
+        self.down_text = Text("DOWN :", CEN_X - 50, CEN_Y - 120, anchor="right")
         self.down_key = Text(name(self.config.keys["DOWN"]), CEN_X + 100, CEN_Y - 120)
 
-        self.left_text = Text("LEFT :", CEN_X - 150, CEN_Y - 80, anchor="left")
+        self.left_text = Text("LEFT :", CEN_X - 50, CEN_Y - 80, anchor="right")
         self.left_key = Text(name(self.config.keys["LEFT"]), CEN_X + 100, CEN_Y - 80)
 
-        self.right_text = Text("RIGHT :", CEN_X - 150, CEN_Y - 40, anchor="left")
+        self.right_text = Text("RIGHT :", CEN_X - 50, CEN_Y - 40, anchor="right")
         self.right_key = Text(name(self.config.keys["RIGHT"]), CEN_X + 100, CEN_Y - 40)
 
-        self.shoot_text = Text("SHOOT :", CEN_X - 150, CEN_Y, anchor="left")
+        self.shoot_text = Text("SHOOT :", CEN_X - 50, CEN_Y, anchor="right")
         self.shoot_key = Text(name(self.config.keys["SHOOT"]), CEN_X + 100, CEN_Y)
 
-        self.volume_text = Text("VOLUME :", CEN_X - 150, CEN_Y + 40, anchor="left")
+        self.volume_text = Text("VOLUME :", CEN_X - 50, CEN_Y + 40, anchor="right")
         self.volume = Text(f"< {config.volume*100}% >", CEN_X + 100, CEN_Y + 40)
 
-        self.fps_text = Text("FPS :", CEN_X - 150, CEN_Y + 80, anchor="left")
+        self.fps_text = Text("FPS :", CEN_X - 50, CEN_Y + 80, anchor="right")
         self.fps = Text(f"< {config.fps} >", CEN_X + 100, CEN_Y + 80)
 
         self.home = Text("HOME", WIN_WIDTH * 4 / 5, WIN_HEIGHT - 100, 40)
