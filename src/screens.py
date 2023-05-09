@@ -244,6 +244,9 @@ class Settings(Screen):
         self.shoot_text = Text("SHOOT", CEN_X - 150, CEN_Y, anchor="left")
         self.shoot_key = Text(name(self.config.keys["SHOOT"]), CEN_X + 100, CEN_Y)
 
+        self.volume_text = Text("VOLUME", CEN_X - 150, CEN_Y + 40, anchor="left")
+        self.volume = Text(f"< {config.volume*100}% >", CEN_X + 100, CEN_Y + 40)
+
         self.home = Text("HOME", WIN_WIDTH * 4 / 5, WIN_HEIGHT - 100, 40)
 
         # TODO: Make that better lol
@@ -255,7 +258,7 @@ class Settings(Screen):
 
         self.popup_open = False
 
-        self.choices = [None, None, None, None, None, HOME]
+        self.choices = [None, None, None, None, None, None, HOME]
 
     def can_change(self) -> bool:
         """
@@ -272,8 +275,22 @@ class Settings(Screen):
         :param keys: pygame.key.ScancodeWrapper, The pressed keys
         """
         super().handle_keys(keys)
-        if keys[pygame.K_RETURN] and self.can_change():
+        if keys[pygame.K_RETURN] and self.selection < 5 and self.can_change():
             self.popup_open = True
+            self.last_change = time()
+        if (
+            keys[self.config.keys["LEFT"]]
+            and not keys[self.config.keys["RIGHT"]]
+            and self.can_change()
+        ):
+            self.config.volume = max(self.config.volume - 0.05, 0)
+            self.last_change = time()
+        if (
+            keys[self.config.keys["RIGHT"]]
+            and not keys[self.config.keys["LEFT"]]
+            and self.can_change()
+        ):
+            self.config.volume = min(self.config.volume + 0.05, 1)
             self.last_change = time()
 
     def handle_event(self, event: pygame.event.Event):
@@ -328,7 +345,10 @@ class Settings(Screen):
             color=RED if self.selection == 4 else WHITE,
         )
 
-        self.home.update(color=RED if self.selection == 5 else WHITE)
+        self.volume_text.update(color=RED if self.selection == 5 else WHITE)
+        self.volume.update(content=f"< {int(self.config.volume*100)}% >")
+
+        self.home.update(color=RED if self.selection == 6 else WHITE)
 
         self.objects = [
             self.title,
@@ -342,6 +362,8 @@ class Settings(Screen):
             self.right_key,
             self.shoot_text,
             self.shoot_key,
+            self.volume_text,
+            self.volume,
             self.home,
         ]
 
