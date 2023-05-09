@@ -75,7 +75,6 @@ class Screen:
         Handle user inputs in the screen
 
         :param keys: pygame.key.ScancodeWrapper, The pressed keys
-        :param settings: Settings, The current keys settings
         """
         if (
             keys[self.config.keys["UP"]]
@@ -271,7 +270,6 @@ class Settings(Screen):
         Handle user inputs in the settings
 
         :param keys: pygame.key.ScancodeWrapper, The pressed keys
-        :param settings: Settings, The current keys settings
         """
         super().handle_keys(keys)
         if keys[pygame.K_RETURN] and self.can_change():
@@ -379,7 +377,6 @@ class GameOver(Screen):
         Handle user inputs in the game over
 
         :param keys: pygame.key.ScancodeWrapper, The pressed keys
-        :param settings: Settings, The current keys settings
         """
         if (
             keys[self.config.keys["LEFT"]]
