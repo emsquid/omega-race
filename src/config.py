@@ -18,7 +18,7 @@ class Config:
         }
 
         self.volume = 1
-
+        self.fps=120
     def update_key(self, action: str, key: int):
         """
         Update the key for an action

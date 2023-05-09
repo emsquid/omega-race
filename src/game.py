@@ -98,7 +98,7 @@ class Game:
         """
         Update the situation of all objects depending on the current screen
         """
-        dt = self.clock.tick(60)
+        dt = self.clock.tick(self.config.fps)
 
         self.data.update()
         self.background.update(dt)

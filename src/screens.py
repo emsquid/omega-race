@@ -75,6 +75,7 @@ class Screen:
         Handle user inputs in the screen
 
         :param keys: pygame.key.ScancodeWrapper, The pressed keys
+        :param settings: Settings, The current keys settings
         """
         if (
             keys[self.config.keys["UP"]]
@@ -230,7 +231,9 @@ class Settings(Screen):
         self.title = Text("Settings", CEN_X, WIN_HEIGHT / 5, 90)
 
         self.up_text = Text("UP", CEN_X - 150, CEN_Y - 160, anchor="left")
-        self.up_key = Text(name(self.config.keys["UP"]), CEN_X + 100, CEN_Y - 160, color=RED)
+        self.up_key = Text(
+            name(self.config.keys["UP"]), CEN_X + 100, CEN_Y - 160, color=RED
+        )
 
         self.down_text = Text("DOWN", CEN_X - 150, CEN_Y - 120, anchor="left")
         self.down_key = Text(name(self.config.keys["DOWN"]), CEN_X + 100, CEN_Y - 120)
@@ -247,6 +250,8 @@ class Settings(Screen):
         self.volume_text = Text("VOLUME", CEN_X - 150, CEN_Y + 40, anchor="left")
         self.volume = Text(f"< {config.volume*100}% >", CEN_X + 100, CEN_Y + 40)
 
+        self.fps_text = Text("FPS", CEN_X - 150, CEN_Y + 80, anchor="left")
+        self.fps = Text(f"< {config.fps} >", CEN_X + 100, CEN_Y + 80)
         self.home = Text("HOME", WIN_WIDTH * 4 / 5, WIN_HEIGHT - 100, 40)
 
         # TODO: Make that better lol
@@ -258,7 +263,7 @@ class Settings(Screen):
 
         self.popup_open = False
 
-        self.choices = [None, None, None, None, None, None, HOME]
+        self.choices = [None, None, None, None, None, None, None, HOME]
 
     def can_change(self) -> bool:
         """
@@ -273,6 +278,7 @@ class Settings(Screen):
         Handle user inputs in the settings
 
         :param keys: pygame.key.ScancodeWrapper, The pressed keys
+        :param settings: Settings, The current keys settings
         """
         super().handle_keys(keys)
         if keys[pygame.K_RETURN] and self.selection < 5 and self.can_change():
@@ -283,14 +289,20 @@ class Settings(Screen):
             and not keys[self.config.keys["RIGHT"]]
             and self.can_change()
         ):
-            self.config.volume = max(self.config.volume - 0.05, 0)
+            if self.selection == 5:
+                self.config.volume = max(self.config.volume - 0.05, 0)
+            if self.selection == 6:
+                self.config.fps = max(self.config.fps - 5, 30)
             self.last_change = time()
         if (
             keys[self.config.keys["RIGHT"]]
             and not keys[self.config.keys["LEFT"]]
             and self.can_change()
         ):
-            self.config.volume = min(self.config.volume + 0.05, 1)
+            if self.selection == 5:
+                self.config.volume = min(self.config.volume + 0.05, 1)
+            if self.selection == 6:
+                self.config.fps = min(self.config.fps + 5, 240)
             self.last_change = time()
 
     def handle_event(self, event: pygame.event.Event):
@@ -345,10 +357,17 @@ class Settings(Screen):
             color=RED if self.selection == 4 else WHITE,
         )
 
-        self.volume.update(color=RED if self.selection == 5 else WHITE)
-        self.volume.update(content=f"< {int(self.config.volume*100)}% >")
+        self.volume.update(
+            content=f"< {int(self.config.volume*100)}% >",
+            color=RED if self.selection == 5 else WHITE,
+        )
 
-        self.home.update(color=RED if self.selection == 6 else WHITE)
+        self.fps.update(
+            content=f"< {self.config.fps} >",
+            color=RED if self.selection == 6 else WHITE,
+        )
+
+        self.home.update(color=RED if self.selection == 7 else WHITE)
 
         self.objects = [
             self.title,
@@ -364,6 +383,8 @@ class Settings(Screen):
             self.shoot_key,
             self.volume_text,
             self.volume,
+            self.fps_text,
+            self.fps,
             self.home,
         ]
 
@@ -399,6 +420,7 @@ class GameOver(Screen):
         Handle user inputs in the game over
 
         :param keys: pygame.key.ScancodeWrapper, The pressed keys
+        :param settings: Settings, The current keys settings
         """
         if (
             keys[self.config.keys["LEFT"]]
