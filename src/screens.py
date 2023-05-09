@@ -215,7 +215,7 @@ class Scores(Screen):
                 self.levels[i].update(content=f"{self.data.scores[i]['level']}")
 
 
-keyname = pygame.key.name
+name = pygame.key.name
 
 
 class Settings(Screen):
@@ -230,20 +230,20 @@ class Settings(Screen):
 
         self.title = Text("Settings", CEN_X, WIN_HEIGHT / 5, 90)
 
-        self.up_text = Text("UP", CEN_X - 200, CEN_Y - 160, color=RED, anchor="left")
-        self.up_key = Text(keyname(self.config.keys["UP"]), CEN_X + 100, CEN_Y - 160)
+        self.up_text = Text("UP", CEN_X - 150, CEN_Y - 160, color=RED, anchor="left")
+        self.up_key = Text(name(self.config.keys["UP"]), CEN_X + 100, CEN_Y - 160)
 
-        self.down_text = Text("DOWN", CEN_X - 200, CEN_Y - 120, anchor="left")
-        self.down_key = Text(keyname(self.config.keys["DOWN"]), CEN_X + 100, CEN_Y - 120)
+        self.down_text = Text("DOWN", CEN_X - 150, CEN_Y - 120, anchor="left")
+        self.down_key = Text(name(self.config.keys["DOWN"]), CEN_X + 100, CEN_Y - 120)
 
-        self.left_text = Text("LEFT", CEN_X - 200, CEN_Y - 80, anchor="left")
-        self.left_key = Text(keyname(self.config.keys["LEFT"]), CEN_X +100, CEN_Y -80)
+        self.left_text = Text("LEFT", CEN_X - 150, CEN_Y - 80, anchor="left")
+        self.left_key = Text(name(self.config.keys["LEFT"]), CEN_X + 100, CEN_Y - 80)
 
-        self.right_text = Text("RIGHT", CEN_X - 200, CEN_Y - 40, anchor="left")
-        self.right_key = Text(keyname(self.config.keys["RIGHT"]), CEN_X+100, CEN_Y-40)
+        self.right_text = Text("RIGHT", CEN_X - 150, CEN_Y - 40, anchor="left")
+        self.right_key = Text(name(self.config.keys["RIGHT"]), CEN_X + 100, CEN_Y - 40)
 
-        self.shoot_text = Text("SHOOT", CEN_X - 200, CEN_Y, anchor="left")
-        self.shoot_key = Text(keyname(self.config.keys["SHOOT"]), CEN_X+100, CEN_Y)
+        self.shoot_text = Text("SHOOT", CEN_X - 150, CEN_Y, anchor="left")
+        self.shoot_key = Text(name(self.config.keys["SHOOT"]), CEN_X + 100, CEN_Y)
 
         self.home = Text("HOME", WIN_WIDTH * 4 / 5, WIN_HEIGHT - 100, 40)
 
@@ -306,19 +306,19 @@ class Settings(Screen):
         :param dt: int, The time delta between frames
         """
         self.up_text.update(color=RED if self.selection == 0 else WHITE)
-        self.up_key.update(content=pygame.key.name(self.config.keys["UP"]))
+        self.up_key.update(content=name(self.config.keys["UP"]))
 
         self.down_text.update(color=RED if self.selection == 1 else WHITE)
-        self.down_key.update(content=pygame.key.name(self.config.keys["DOWN"]))
+        self.down_key.update(content=name(self.config.keys["DOWN"]))
 
         self.left_text.update(color=RED if self.selection == 2 else WHITE)
-        self.left_key.update(content=pygame.key.name(self.config.keys["LEFT"]))
+        self.left_key.update(content=name(self.config.keys["LEFT"]))
 
         self.right_text.update(color=RED if self.selection == 3 else WHITE)
-        self.right_key.update(content=pygame.key.name(self.config.keys["RIGHT"]))
+        self.right_key.update(content=name(self.config.keys["RIGHT"]))
 
         self.shoot_text.update(color=RED if self.selection == 4 else WHITE)
-        self.shoot_key.update(content=pygame.key.name(self.config.keys["SHOOT"]))
+        self.shoot_key.update(content=name(self.config.keys["SHOOT"]))
 
         self.home.update(color=RED if self.selection == 5 else WHITE)
 
