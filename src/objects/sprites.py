@@ -21,10 +21,6 @@ class Laser(Entity):
         image.fill(WHITE)
         self.set_image(surface=image)
 
-        sound = pygame.mixer.Sound("assets/sounds/Laser.wav")
-        sound.set_volume(0.25)
-        sound.play()
-
 
 class Player(Entity):
     """

@@ -239,8 +239,7 @@ class Explosion(Object):
         super().__init__(x, y, 35, 35)
         self.step = 0
         self.last_update = 0
-        sound = pygame.mixer.Sound("assets/sounds/Explosion.wav")
-        sound.play()
+        
 
     def can_update(self) -> bool:
         """

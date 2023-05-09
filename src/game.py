@@ -6,6 +6,7 @@ from src.objects.graphics import Background, Panel
 from src.screens import Welcome, Home, Scores, Settings, GameOver
 from src.engine import Engine
 from src.config import Config
+from src.mixer import Mixer
 from src.data import Data
 from src.const import (
     WIN_WIDTH,
@@ -27,8 +28,6 @@ class Game:
     def __init__(self):
         pygame.init()
         pygame.mixer.init()
-        pygame.mixer.music.load("assets/sounds/Menu.wav")
-        pygame.mixer.music.play(-1)
 
         pygame.display.set_icon(pygame.image.load("assets/images/Icon.png"))
         pygame.display.set_caption("Omega Race")
@@ -52,6 +51,8 @@ class Game:
             GAMEOVER: GameOver(self.config),
         }
         self.current = WELCOME
+
+        Mixer(1 * self.config.volume).music("Menu.wav")
 
     def draw(self):
         """
@@ -81,9 +82,7 @@ class Game:
                     choice = self.screens[self.current].get_choice()
                     if choice is not None:
                         if choice == PLAY:
-                            pygame.mixer.music.load("assets/sounds/Battle.wav")
-                            pygame.mixer.music.play(-1)
-                            pygame.mixer.music.set_volume(0.3)
+                            Mixer(0.3 * self.config.volume).music("Battle.wav")
                             self.screens[PLAY].start()
                         # TODO: Not clean ;(
                         elif choice == SETTINGS:
@@ -117,9 +116,7 @@ class Game:
             else:
                 self.data.add_score(self.config.name, engine.score, engine.level)
                 self.current = GAMEOVER
-                pygame.mixer.music.load("assets/sounds/Menu.wav")
-                pygame.mixer.music.play(-1)
-                pygame.mixer.music.set_volume(1)
+                Mixer(1 * self.config.volume).music("Menu.wav")
 
     def run(self):
         """

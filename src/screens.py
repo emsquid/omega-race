@@ -215,6 +215,9 @@ class Scores(Screen):
                 self.levels[i].update(content=f"{self.data.scores[i]['level']}")
 
 
+keyname = pygame.key.name
+
+
 class Settings(Screen):
     """
     The settings of the game
@@ -227,20 +230,20 @@ class Settings(Screen):
 
         self.title = Text("Settings", CEN_X, WIN_HEIGHT / 5, 90)
 
-        self.up_text = Text("UP", CEN_X - 200, CEN_Y - 120, 40, RED, anchor="left")
-        self.up_key = Text(pygame.key.name(self.config.keys["UP"]), 600, 280, 40)
+        self.up_text = Text("UP", CEN_X - 200, CEN_Y - 160, color=RED, anchor="left")
+        self.up_key = Text(keyname(self.config.keys["UP"]), CEN_X + 100, CEN_Y - 160)
 
-        self.down_text = Text("DOWN", CEN_X - 200, CEN_Y - 40, 40, anchor="left")
-        self.down_key = Text(pygame.key.name(self.config.keys["DOWN"]), 600, 360, 40)
+        self.down_text = Text("DOWN", CEN_X - 200, CEN_Y - 120, anchor="left")
+        self.down_key = Text(keyname(self.config.keys["DOWN"]), CEN_X + 100, CEN_Y - 120)
 
-        self.left_text = Text("LEFT", CEN_X - 200, CEN_Y + 40, 40, anchor="left")
-        self.left_key = Text(pygame.key.name(self.config.keys["LEFT"]), 600, 440, 40)
+        self.left_text = Text("LEFT", CEN_X - 200, CEN_Y - 80, anchor="left")
+        self.left_key = Text(keyname(self.config.keys["LEFT"]), CEN_X +100, CEN_Y -80)
 
-        self.right_text = Text("RIGHT", CEN_X - 200, CEN_Y + 120, 40, anchor="left")
-        self.right_key = Text(pygame.key.name(self.config.keys["RIGHT"]), 600, 520, 40)
+        self.right_text = Text("RIGHT", CEN_X - 200, CEN_Y - 40, anchor="left")
+        self.right_key = Text(keyname(self.config.keys["RIGHT"]), CEN_X+100, CEN_Y-40)
 
-        self.shoot_text = Text("SHOOT", CEN_X - 200, CEN_Y + 200, 40, anchor="left")
-        self.shoot_key = Text(pygame.key.name(self.config.keys["SHOOT"]), 600, 600, 40)
+        self.shoot_text = Text("SHOOT", CEN_X - 200, CEN_Y, anchor="left")
+        self.shoot_key = Text(keyname(self.config.keys["SHOOT"]), CEN_X+100, CEN_Y)
 
         self.home = Text("HOME", WIN_WIDTH * 4 / 5, WIN_HEIGHT - 100, 40)
 

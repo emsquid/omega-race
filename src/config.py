@@ -17,6 +17,8 @@ class Config:
             "SHOOT": pygame.K_SPACE,
         }
 
+        self.volume = 1
+
     def update_key(self, action: str, key: int):
         """
         Update the key for an action
