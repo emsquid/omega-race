@@ -1,20 +1,43 @@
 import pygame
+from src.config import Config
 
 
 class Mixer:
     """
-    -
+    Mixer handles music and sound effects in the game
+
+    :param config: Config, The game configuration
     """
 
-    def __init__(self, volume: float):
-        self.volume = volume
+    def __init__(self, config: Config):
+        self.config = config
+        self.music_volume = 1
 
-    def music(self, file: str):
+    def update(self):
+        """
+        Update the state of the mixer
+        """
+        pygame.mixer.music.set_volume(self.music_volume * self.config.volume)
+
+    def music(self, file: str, volume: float):
+        """
+        Play the game ambiant music
+
+        :param file: str, The filename of the music
+        :param volume: float, The volume to play the music at
+        """
         pygame.mixer.music.load(f"assets/sounds/{file}")
-        pygame.mixer.music.set_volume(self.volume) 
+        pygame.mixer.music.set_volume(volume * self.config.volume)
         pygame.mixer.music.play(-1)
+        self.music_volume = volume
 
-    def play(self, file: str):
+    def play(self, file: str, volume: float):
+        """
+        Play a sound effect
+
+        :param file: str, The filename of the sound
+        :param volume: float, The volume to play the music at
+        """
         sound = pygame.mixer.Sound(f"assets/sounds/{file}")
-        sound.set_volume(self.volume)
+        sound.set_volume(volume * self.config.volume)
         sound.play()

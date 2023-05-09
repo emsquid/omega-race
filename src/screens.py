@@ -4,6 +4,7 @@ from src.objects.base import Object, Text
 from src.objects.graphics import Border
 from src.config import Config
 from src.data import Data
+from src.mixer import Mixer
 from src.const import (
     WIN_WIDTH,
     WIN_HEIGHT,
@@ -28,10 +29,12 @@ class Screen:
     Represents a screen which can be displayed and handle inputs
 
     :param config: Config, The game configuration
+    :param mixer: Mixer, The game mixer for music and sounds
     """
 
-    def __init__(self, config: Config):
+    def __init__(self, config: Config, mixer: Mixer):
         self.config = config
+        self.mixer = mixer
         self.last_change = 0
 
         self.selection = 0
@@ -105,10 +108,11 @@ class Welcome(Screen):
     The Welcome of the game, gain time for loading things and getting name
 
     :param config: Config, The game configuration
+    :param mixer: Mixer, The game mixer for music and sounds
     """
 
-    def __init__(self, config: Config):
-        super().__init__(config)
+    def __init__(self, config: Config, mixer: Mixer):
+        super().__init__(config, mixer)
 
         self.title = Text("Omega Race", CEN_X, WIN_HEIGHT / 5, 90)
         self.input_text = Text("Enter your name:", CEN_X, CEN_Y, 40)
@@ -149,10 +153,11 @@ class Home(Screen):
     The Home of the game
 
     :param config: Config, The game configuration
+    :param mixer: Mixer, The game mixer for music and sounds
     """
 
-    def __init__(self, config: Config):
-        super().__init__(config)
+    def __init__(self, config: Config, mixer: Mixer):
+        super().__init__(config, mixer)
 
         self.title = Text("Omega Race", CEN_X, WIN_HEIGHT / 5, 90)
         self.play = Text("Play", CEN_X, CEN_Y - 50, 40, RED)
@@ -178,11 +183,12 @@ class Scores(Screen):
     The scores of the game
 
     :param config: Config, The game configuration
+    :param mixer: Mixer, The game mixer for music and sounds
     :param data: Data, The database for scores
     """
 
-    def __init__(self, config: Config, data: Data):
-        super().__init__(config)
+    def __init__(self, config: Config, mixer: Mixer, data: Data):
+        super().__init__(config, mixer)
         self.data = data
 
         self.title = Text("Scores", CEN_X, WIN_HEIGHT / 5, 90)
@@ -222,15 +228,18 @@ class Settings(Screen):
     The settings of the game
 
     :param config: Config, The game configuration
+    :param mixer: Mixer, The game mixer for music and sounds
     """
 
-    def __init__(self, config: Config):
-        super().__init__(config)
+    def __init__(self, config: Config, mixer: Mixer):
+        super().__init__(config, mixer)
 
         self.title = Text("Settings", CEN_X, WIN_HEIGHT / 5, 90)
 
         self.up_text = Text("UP", CEN_X - 150, CEN_Y - 160, anchor="left")
-        self.up_key = Text(name(self.config.keys["UP"]), CEN_X + 100, CEN_Y - 160, color=RED)
+        self.up_key = Text(
+            name(self.config.keys["UP"]), CEN_X + 100, CEN_Y - 160, color=RED
+        )
 
         self.down_text = Text("DOWN", CEN_X - 150, CEN_Y - 120, anchor="left")
         self.down_key = Text(name(self.config.keys["DOWN"]), CEN_X + 100, CEN_Y - 120)
@@ -345,8 +354,10 @@ class Settings(Screen):
             color=RED if self.selection == 4 else WHITE,
         )
 
-        self.volume.update(color=RED if self.selection == 5 else WHITE)
-        self.volume.update(content=f"< {int(self.config.volume*100)}% >")
+        self.volume.update(
+            content=f"< {round(self.config.volume*100)}% >",
+            color=RED if self.selection == 5 else WHITE,
+        )
 
         self.home.update(color=RED if self.selection == 6 else WHITE)
 
@@ -376,10 +387,11 @@ class GameOver(Screen):
     The GameOver in the game
 
     :param config: Config, The game configuration
+    :param mixer: Mixer, The game mixer for music and sounds
     """
 
-    def __init__(self, config: Config):
-        super().__init__(config)
+    def __init__(self, config: Config, mixer: Mixer):
+        super().__init__(config, mixer)
 
         self.title = Text("Game Over", CEN_X, WIN_HEIGHT / 5, 90)
         self.play = Text("Play Again", WIN_WIDTH / 4, WIN_HEIGHT * 3 / 4 + 50, 40, RED)
