@@ -230,8 +230,8 @@ class Settings(Screen):
 
         self.title = Text("Settings", CEN_X, WIN_HEIGHT / 5, 90)
 
-        self.up_text = Text("UP", CEN_X - 150, CEN_Y - 160, color=RED, anchor="left")
-        self.up_key = Text(name(self.config.keys["UP"]), CEN_X + 100, CEN_Y - 160)
+        self.up_text = Text("UP", CEN_X - 150, CEN_Y - 160, anchor="left")
+        self.up_key = Text(name(self.config.keys["UP"]), CEN_X + 100, CEN_Y - 160, color=RED)
 
         self.down_text = Text("DOWN", CEN_X - 150, CEN_Y - 120, anchor="left")
         self.down_key = Text(name(self.config.keys["DOWN"]), CEN_X + 100, CEN_Y - 120)
@@ -347,7 +347,7 @@ class Settings(Screen):
             color=RED if self.selection == 4 else WHITE,
         )
 
-        self.volume_text.update(color=RED if self.selection == 5 else WHITE)
+        self.volume.update(color=RED if self.selection == 5 else WHITE)
         self.volume.update(content=f"< {int(self.config.volume*100)}% >")
 
         self.home.update(color=RED if self.selection == 6 else WHITE)
