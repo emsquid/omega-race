@@ -28,7 +28,7 @@ class Game:
         pygame.init()
         pygame.mixer.init()
 
-        pygame.display.set_icon(pygame.image.load("assets/Icon.png"))
+        pygame.display.set_icon(pygame.image.load("assets/images/Icon.png"))
         pygame.display.set_caption("Omega Race")
 
         self.display = pygame.display.set_mode(
@@ -61,7 +61,7 @@ class Game:
 
         for obj in objects:
             obj.draw(self.background.image)
-        # Text(str(int(self.clock.get_fps())), 60, 40).draw(self.background.image)
+        Text(str(int(self.clock.get_fps())), 60, 40).draw(self.background.image)
         pygame.transform.smoothscale(
             self.background.image, self.display.get_size(), self.display
         )

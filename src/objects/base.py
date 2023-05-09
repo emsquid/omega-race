@@ -54,7 +54,7 @@ class Object:
         :param surface: pygame.Surface = None, The surface to use as an image
         """
         if filename is not None:
-            self.image = pygame.image.load(f"assets/{filename}").convert_alpha()
+            self.image = pygame.image.load(f"assets/images/{filename}").convert_alpha()
         elif surface is not None:
             self.image = surface.convert_alpha()
         else:
@@ -193,7 +193,7 @@ class Text(Object):
         anchor: str = "center",
     ):
         super().__init__(x, y, 0, 0)
-        self.font = pygame.font.Font("assets/font1.ttf", size)
+        self.font = pygame.font.Font("assets/fonts/font.ttf", size)
         self.anchor = anchor
         self.update(content, color)
 
@@ -237,11 +237,10 @@ class Explosion(Object):
 
     def __init__(self, x: int, y: int):
         super().__init__(x, y, 35, 35)
-        self.step = 1
+        self.step = 0
         self.last_update = 0
-        self.done = False
-        # sound = pygame.mixer.Sound("assets/Explosion.wav")
-        # sound.play()
+        sound = pygame.mixer.Sound("assets/sounds/Explosion.wav")
+        sound.play()
 
     def can_update(self) -> bool:
         """
@@ -249,7 +248,7 @@ class Explosion(Object):
 
         :return: bool, Whether it's been long enough or not
         """
-        return not self.done and time() - self.last_update > 0.1
+        return self.step < 6 and time() - self.last_update > 0.1
 
     def update(self):
         """
@@ -257,11 +256,9 @@ class Explosion(Object):
         """
         if not self.can_update():
             return
+        self.step += 1
         self.set_image(f"Explosion{self.step}.png")
         self.last_update = time()
-        self.step += 1
-        if self.step > 5:
-            self.done = True
 
     def draw(self, surface: pygame.Surface):
         """
@@ -269,6 +266,6 @@ class Explosion(Object):
 
         :param surface: pygame.Surface, The surface to draw the explosion on
         """
-        if self.done:
+        if self.step >= 6 and time() - self.last_update > 0.1:
             return
         super().draw(surface)

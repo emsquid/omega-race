@@ -372,14 +372,14 @@ class GameOver(Screen):
             and not keys[self.config.keys["RIGHT"]]
             and self.can_change()
         ):
-            self.selection = (self.selection - 1) % 2
+            self.selection = (self.selection - 1) % len(self.choices)
             self.last_change = time()
         if (
             keys[self.config.keys["RIGHT"]]
             and not keys[self.config.keys["LEFT"]]
             and self.can_change()
         ):
-            self.selection = (self.selection + 1) % 2
+            self.selection = (self.selection + 1) % len(self.choices)
             self.last_change = time()
 
     def update(self, dt: int):

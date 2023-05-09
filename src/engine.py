@@ -222,11 +222,11 @@ class Engine(Screen):
 
         self.objects = [
             self.force_field,
+            *self.player_lasers,
+            *self.enemies_lasers,
             *self.mines,
             *self.enemies,
             self.player,
-            *self.player_lasers,
-            *self.enemies_lasers,
             *self.explosions,
         ]
 
