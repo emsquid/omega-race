@@ -1,4 +1,5 @@
 import os
+import certifi
 from time import time
 from threading import Thread
 from dotenv import load_dotenv
@@ -47,12 +48,16 @@ class Data:
         try:
             uri = f"mongodb+srv://omegarace:{os.getenv('TOKEN')}@omegarace.1knm5ap.mongodb.net/?retryWrites=true&w=majority"
             client = MongoClient(
-                uri, server_api=ServerApi("1"), serverSelectionTimeoutMS=5000
+                uri,
+                server_api=ServerApi("1"),
+                tlsCAFile=certifi.where(),
+                serverSelectionTimeoutMS=5000,
             )
             self.db = client["Scores"]
             self.connected = True
             self.fetch()
-        except Exception:
+        except Exception as e:
+            print(e)
             self.connected = False
 
     def fetch(self):
@@ -65,7 +70,8 @@ class Data:
         try:
             self.scores = [doc for doc in self.db["Single"].find()]
             self.scores.sort(key=lambda doc: doc["score"], reverse=True)
-        except Exception:
+        except Exception as e:
+            print(e)
             self.connected = False
 
     def insert(self, doc: dict):
