@@ -1,5 +1,6 @@
 import os.path
 import pygame
+from src.const import WHITE
 
 
 class Config:
@@ -28,6 +29,7 @@ class Config:
                 self.keys = config["keys"]
                 self.volume = config["volume"]
                 self.fps = config["fps"]
+                self.color = config["color"]
         else:
             self.keys = {
                 "UP": pygame.K_UP,
@@ -39,6 +41,7 @@ class Config:
             }
             self.volume = 1
             self.fps = 120
+            self.color = WHITE
 
     def save(self):
         with open(".config", "w") as file:
@@ -46,5 +49,6 @@ class Config:
                 "keys": self.keys,
                 "volume": self.volume,
                 "fps": self.fps,
+                "color": self.color
             }
             file.write(str(config))
