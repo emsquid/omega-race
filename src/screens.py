@@ -20,7 +20,6 @@ from src.const import (
     BLACK,
     GREY,
     RED,
-    GREEN,
     PLAYER_COLOR,
 )
 
@@ -48,7 +47,7 @@ class Screen:
 
         :return: bool, Whether it's been long enough or not
         """
-        return time() - self.last_change >= 0.15
+        return time() - self.last_change >= 0.25
 
     def get_choice(self) -> int:
         """
@@ -271,7 +270,7 @@ class Settings(Screen):
         self.fps_text = Text("FPS :", CEN_X - 50, CEN_Y + 80, anchor="right")
         self.fps = Text(f"< {config.fps} >", CEN_X + 100, CEN_Y + 80)
 
-        self.color_text = Text("FPS :", CEN_X - 50, CEN_Y + 120, anchor="right")
+        self.color_text = Text("COLOR :", CEN_X - 50, CEN_Y + 120, anchor="right")
         self.color_arrows = Text("<       >", CEN_X + 100, CEN_Y + 120)
         self.color_circle = Object(CEN_X + 103, CEN_Y + 120, pygame.Surface((40, 40)))
 
@@ -318,7 +317,7 @@ class Settings(Screen):
                 self.config.fps = max(self.config.fps - 5, 30)
             if self.selection == 7:
                 self.config.color = PLAYER_COLOR[
-                    (PLAYER_COLOR.index(self.config.color) - 1) % 7
+                    (PLAYER_COLOR.index(self.config.color) - 1) % len(PLAYER_COLOR)
                 ]
             self.last_change = time()
         if (

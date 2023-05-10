@@ -105,7 +105,7 @@ class Panel:
         )
         self.score.update(content=str(score))
         self.highscore.update(content=str(highscore))
-
+        self.image = Player.create_image(self.config.color) 
 
 class Border(Object):
     """
