@@ -28,7 +28,7 @@ class Vector:
         elif isinstance(other, (int, float)):
             return Vector(self.x + other, self.y + other)
         else:
-            return self
+            raise TypeError(f"can't add '{type(other).__name__}' to Vector")
 
     def __sub__(self, other) -> Vector:
         """
@@ -44,7 +44,7 @@ class Vector:
         elif isinstance(other, (int, float)):
             return Vector(self.x - other, self.y - other)
         else:
-            return self
+            raise TypeError(f"can't substract '{type(other).__name__}' to Vector")
 
     def __mul__(self, other) -> Vector:
         """
@@ -60,7 +60,7 @@ class Vector:
         elif isinstance(other, (int, float)):
             return Vector(self.x * other, self.y * other)
         else:
-            return self
+            raise TypeError(f"can't multiply Vector by '{type(other).__name__}'")
 
     def __truediv__(self, other) -> Vector:
         """
@@ -76,7 +76,7 @@ class Vector:
         elif isinstance(other, (int, float)):
             return Vector(self.x / other, self.y / other)
         else:
-            return self
+            raise TypeError(f"can't divide Vector by '{type(other).__name__}'")
 
     @property
     def norm(self) -> float:
