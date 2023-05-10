@@ -67,7 +67,7 @@ class Panel:
         self.score = Text("0", 330, 360, anchor="topleft")
         self.highscore_text = Text("HIGHSCORE", 330, 415, anchor="topleft")
         self.highscore = Text("0", 330, 445, anchor="topleft")
-        self.image = pygame.image.load("assets/images/Player1.png")
+        self.image = Player.create_image(WHITE)
         self.lives = 3
 
     def draw(self, surface: pygame.Surface):

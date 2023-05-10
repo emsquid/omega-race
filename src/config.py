@@ -22,6 +22,9 @@ class Config:
             self.keys[action] = key
 
     def read(self):
+        """
+        Read the config from file if it exists, else use defaults
+        """
         if os.path.exists(".config"):
             with open(".config", "r") as file:
                 config = eval(file.read())
@@ -41,6 +44,9 @@ class Config:
             self.fps = 120
 
     def save(self):
+        """
+        Save the config in a file
+        """
         with open(".config", "w") as file:
             config = {
                 "keys": self.keys,
