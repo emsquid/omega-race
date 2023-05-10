@@ -14,38 +14,6 @@ class Vector:
         self.x = x
         self.y = y
 
-    def __mul__(self, other) -> Vector:
-        """
-        Get the product of a vector and another object
-
-        :param other: Any, The object to product with
-        :return: Vector, The resulting vector
-        """
-        if isinstance(other, Vector):
-            return Vector(self.x * other.x, self.y * other.y)
-        elif isinstance(other, (tuple, list)) and len(other) == 2:
-            return Vector(self.x * other[0], self.y * other[1])
-        elif isinstance(other, (int, float)):
-            return Vector(self.x * other, self.y * other)
-        else:
-            return self
-
-    def __truediv__(self, other) -> Vector:
-        """
-        Get the division of a vector by another object
-
-        :param other: Any, The object to divide by
-        :return: Vector, The resulting vector
-        """
-        if isinstance(other, Vector):
-            return Vector(self.x / other.x, self.y / other.y)
-        elif isinstance(other, (tuple, list)) and len(other) == 2:
-            return Vector(self.x / other[0], self.y / other[1])
-        elif isinstance(other, (int, float)):
-            return Vector(self.x / other, self.y / other)
-        else:
-            return self
-
     def __add__(self, other) -> Vector:
         """
         Get the sum of a vector and another object
@@ -78,6 +46,38 @@ class Vector:
         else:
             return self
 
+    def __mul__(self, other) -> Vector:
+        """
+        Get the product of a vector and another object
+
+        :param other: Any, The object to product with
+        :return: Vector, The resulting vector
+        """
+        if isinstance(other, Vector):
+            return Vector(self.x * other.x, self.y * other.y)
+        elif isinstance(other, (tuple, list)) and len(other) == 2:
+            return Vector(self.x * other[0], self.y * other[1])
+        elif isinstance(other, (int, float)):
+            return Vector(self.x * other, self.y * other)
+        else:
+            return self
+
+    def __truediv__(self, other) -> Vector:
+        """
+        Get the division of a vector by another object
+
+        :param other: Any, The object to divide by
+        :return: Vector, The resulting vector
+        """
+        if isinstance(other, Vector):
+            return Vector(self.x / other.x, self.y / other.y)
+        elif isinstance(other, (tuple, list)) and len(other) == 2:
+            return Vector(self.x / other[0], self.y / other[1])
+        elif isinstance(other, (int, float)):
+            return Vector(self.x / other, self.y / other)
+        else:
+            return self
+
     @property
     def norm(self) -> float:
         """
@@ -106,14 +106,12 @@ class Vector:
         return self.x * other.x + self.y * other.y
 
     def copy(self) -> Vector:
-        return Vector(self.x, self.y)
+        """
+        Get a copy of the vector
 
-    def normalize(self):
+        :return: Vector, A copy of the vector
         """
-        Normalize the vector
-        """
-        self.x /= self.norm
-        self.y /= self.norm
+        return Vector(self.x, self.y)
 
     def normalized(self) -> Vector:
         """

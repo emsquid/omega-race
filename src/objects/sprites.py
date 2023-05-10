@@ -19,7 +19,7 @@ class Laser(Entity):
     def __init__(self, x: int, y: int, direction: Vector):
         image = pygame.Surface((2, 15), pygame.SRCALPHA)
         image.fill(WHITE)
-        super().__init__(x, y, image, direction, direction, 0.4)
+        super().__init__(x, y, image, direction, direction, 0.3)
 
 
 class Player(Entity):
@@ -71,7 +71,7 @@ class Player(Entity):
         Thrust in the direction the player is pointing
         """
         self.set_direction(self.rotation)
-        self.speed = 0.25
+        self.speed = 0.2
         self.last_thrust = time()
 
     def shoot(self, lasers: list[Laser]):
@@ -170,6 +170,17 @@ class Ship(Entity):
         self.distance = randrange(50, 250)
         self.points = points
 
+    def can_see(self, entity: Entity) -> bool:
+        """
+        Check if the ship can see the player
+
+        :return: bool, Whether the ship can see the player or not
+        """
+
+        panel_x, panel_y = CEN_X - PAN_WIDTH / 2, CEN_Y - PAN_HEIGHT / 2
+        panel_rect = pygame.Rect(panel_x, panel_y, PAN_WIDTH, PAN_HEIGHT)
+        return len(panel_rect.clipline(self.x, self.y, entity.x, entity.y)) == 0
+
     def turn(self):
         """
         Change ship direction when reaching the right distance
@@ -178,28 +189,40 @@ class Ship(Entity):
         if (
             self.x + self.distance < CEN_X - PAN_WIDTH / 2
             and self.y < CEN_Y - PAN_HEIGHT / 2
+        ) or (
+            self.x < CEN_X - PAN_WIDTH / 2
+            and CEN_Y - PAN_HEIGHT / 2 < self.y < CEN_Y + PAN_HEIGHT / 2 + self.distance
         ):
             self.set_direction(Vector(0, 1))
         # top right
         if (
             self.x > CEN_X + PAN_WIDTH / 2
             and self.y + self.distance < CEN_Y - PAN_HEIGHT / 2
+        ) or (
+            CEN_X - PAN_WIDTH / 2 - self.distance < self.x < CEN_X + PAN_WIDTH / 2
+            and self.y < CEN_Y - PAN_HEIGHT / 2
         ):
             self.set_direction(Vector(-1, 0))
         # bottom right
         if (
             self.x - self.distance > CEN_X + PAN_WIDTH / 2
             and self.y > CEN_Y + PAN_HEIGHT / 2
+        ) or (
+            self.x > CEN_X + PAN_WIDTH / 2
+            and CEN_Y - PAN_HEIGHT / 2 - self.distance < self.y < CEN_Y + PAN_HEIGHT / 2
         ):
             self.set_direction(Vector(0, -1))
         # bottom left
         if (
             self.x < CEN_X - PAN_WIDTH / 2
             and self.y - self.distance > CEN_Y + PAN_HEIGHT / 2
+        ) or (
+            CEN_X - PAN_WIDTH / 2 < self.x < CEN_X + PAN_WIDTH / 2 + self.distance
+            and self.y > CEN_Y + PAN_HEIGHT / 2
         ):
             self.set_direction(Vector(1, 0))
 
-    def rotate(self, dt):
+    def rotate(self, dt: int):
         """
         Rotate the ship
 
@@ -218,7 +241,6 @@ class Ship(Entity):
         self.turn()
 
 
-# TODO: Follow player when possible
 class DroidShip(Ship):
     """
     The Droid Ship doesn't move a lot, but it can transfrom into a CommandShip
@@ -229,8 +251,17 @@ class DroidShip(Ship):
     """
 
     def __init__(self, x: int, y: int, level: int):
-        direction = Vector(0, 1)
+        direction = Vector(1, 0)
         super().__init__(x, y, "DroidShip.png", direction, 0.01, 1000, level)
+
+    def follow(self, player: Player):
+        """
+        Follow the player
+
+        :param player: Player, The player to follow
+        """
+        direction = Vector(player.x - self.x, player.y - self.y)
+        self.set_direction(direction)
 
 
 class CommandShip(Ship):
@@ -283,8 +314,8 @@ class CommandShip(Ship):
         :param player: Player, The player to shoot at
         :param lasers: list[Laser]: The lasers already in the game
         """
-        # TODO: Preshot player position
-        direction = Vector(player.y - self.y, player.x - self.x)
+        # TODO: Preshot player position, maybe shoot only when can see player
+        direction = Vector(player.x - self.x, player.y - self.y)
         lasers.append(Laser(self.x, self.y, direction))
         self.shoot_cooldown = randrange(3, 8)
         self.last_shoot = time()

@@ -47,7 +47,7 @@ class Screen:
 
         :return: bool, Whether it's been long enough or not
         """
-        return time() - self.last_change >= 0.25
+        return time() - self.last_change >= 0.2
 
     def get_choice(self) -> int:
         """

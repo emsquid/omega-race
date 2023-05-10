@@ -110,21 +110,23 @@ class Entity(Object):
         """
         Set the direction of the entity
 
-        :param direction: float, The direction (radians) the entity advances towards
+        :param direction: Vector, The direction the entity advances towards
         """
-        self.direction = direction.copy()
-        if self.direction.norm != 0:
-            self.direction.normalize()
+        if round(direction.norm, 5) != 0:
+            self.direction = direction.normalized()
+        else:
+            self.direction = direction.copy()
 
     def set_rotation(self, rotation: Vector):
         """
         Set the rotation of the entity
 
-        :param rotation: float, The rotation (radians) the entity has
+        :param rotation: Vector, The rotation the entity has
         """
-        self.rotation = rotation.copy()
-        if self.rotation.norm != 0:
-            self.rotation.normalize()
+        if round(rotation.norm, 5) != 0:
+            self.rotation = rotation.normalized()
+        else:
+            self.rotation = rotation.copy()
 
     def set_speed(self, speed: float):
         """

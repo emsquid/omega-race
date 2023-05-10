@@ -47,7 +47,7 @@ class Engine(Screen):
         self.enemies: list[Ship] = (
             [
                 DroidShip(
-                    randrange(200, WIN_WIDTH - 200),
+                    randrange(300, WIN_WIDTH - 300),
                     randrange(CEN_Y + PAN_HEIGHT / 2 + 50, WIN_HEIGHT - 50),
                     self.level,
                 )
@@ -55,7 +55,7 @@ class Engine(Screen):
             ]
             + [
                 CommandShip(
-                    randrange(200, WIN_WIDTH - 200),
+                    randrange(300, WIN_WIDTH - 300),
                     randrange(CEN_Y + PAN_HEIGHT / 2 + 50, WIN_HEIGHT - 50),
                     self.level,
                 )
@@ -63,7 +63,7 @@ class Engine(Screen):
             ]
             + [
                 DeathShip(
-                    randrange(200, WIN_WIDTH - 200),
+                    randrange(300, WIN_WIDTH - 300),
                     randrange(CEN_Y + PAN_HEIGHT / 2 + 50, WIN_HEIGHT - 50),
                     self.level,
                 )
@@ -168,7 +168,6 @@ class Engine(Screen):
                 enemy = self.enemies[i]
                 if enemy.alive and isinstance(enemy, DroidShip):
                     transform = CommandShip(enemy.x, enemy.y, self.level)
-                    transform.set_direction(enemy.direction)
                     self.enemies[i] = transform
                     break
         elif isinstance(ship, DeathShip):
@@ -209,6 +208,8 @@ class Engine(Screen):
                 self.player_death()
                 self.create_explosion(self.player.x, self.player.y)
                 self.score += enemy.points
+            if isinstance(enemy, DroidShip) and enemy.can_see(self.player):
+                enemy.follow(self.player)
             if isinstance(enemy, CommandShip) and enemy.can_shoot():
                 enemy.shoot(self.player, self.enemies_lasers)
                 self.mixer.play("Laser.wav", 0.15)
