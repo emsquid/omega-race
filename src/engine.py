@@ -128,6 +128,9 @@ class Engine(Screen):
         """
         Handle mouse use in the game
         """
+        if not self.config.mouse or self.paused:
+            return
+
         pos = pygame.mouse.get_pos()
         vector = Vector(pos[0] - self.player.x, pos[1] - self.player.y)
         angle = self.player.rotation.angle_to(vector)

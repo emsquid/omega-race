@@ -32,6 +32,7 @@ class Config:
                 self.volume = config["volume"]
                 self.fps = config["fps"]
                 self.color = config["color"]
+                self.mouse = config["mouse"]
         except Exception:
             self.name = ""
             self.keys = {
@@ -45,6 +46,7 @@ class Config:
             self.volume = 1
             self.fps = 120
             self.color = WHITE
+            self.mouse = False
 
     def save(self):
         """
@@ -57,5 +59,6 @@ class Config:
                 "volume": self.volume,
                 "fps": self.fps,
                 "color": self.color,
+                "mouse": self.mouse,
             }
             file.write(str(config))
