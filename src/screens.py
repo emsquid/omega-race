@@ -257,6 +257,9 @@ class Settings(Screen):
 
         self.fps_text = Text("FPS :", CEN_X - 50, CEN_Y + 80, anchor="right")
         self.fps = Text(f"< {config.fps} >", CEN_X + 100, CEN_Y + 80)
+         
+        self.color_text = Text("FPS :", CEN_X - 50, CEN_Y + 120, anchor="right")
+        self.color = Text("<         >", CEN_X + 100, CEN_Y + 120) 
 
         self.home = Text("HOME", WIN_WIDTH * 4 / 5, WIN_HEIGHT - 100, 40)
 
@@ -269,7 +272,7 @@ class Settings(Screen):
 
         self.popup_open = False
 
-        self.choices = [None, None, None, None, None, None, None, HOME]
+        self.choices = [None, None, None, None, None, None, None, None, HOME]
 
     def can_change(self) -> bool:
         """
@@ -371,9 +374,13 @@ class Settings(Screen):
         self.fps.update(
             content=f"< {self.config.fps} >",
             color=RED if self.selection == 6 else WHITE,
-        )
-
-        self.home.update(color=RED if self.selection == 7 else WHITE)
+        )               
+                        
+        self.color.update(
+            content="<        >",
+            color=RED if self.selection == 7 else WHITE,
+        )               
+        self.home.update(color=RED if self.selection == 8 else WHITE)
 
         self.objects = [
             self.title,
@@ -391,6 +398,8 @@ class Settings(Screen):
             self.volume,
             self.fps_text,
             self.fps,
+            self.color_text,
+            self.color,
             self.home,
         ]
 
