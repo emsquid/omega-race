@@ -24,14 +24,30 @@ class Laser(Entity):
 class Player(Entity):
     """
     It's you, you can move, rotate, thrust and shoot, good luck
+
+    :param color: tuple[int], The color of the player
     """
 
-    def __init__(self):
-        super().__init__(500, 200, "Player1.png", -pi / 2, -pi / 2, 0)
+    def __init__(self, color: tuple[int]):
+        super().__init__(500, 200, Player.create_image(color), -pi / 2, -pi / 2, 0)
         # LEFT | RIGHT
         self.rotating = ""
         self.last_collision = 0
         self.last_shoot = 0
+
+    def create_image(color: tuple[int], thrusting: bool = False) -> pygame.Surface:
+        """
+        Create the player image with the given color
+        """
+        details = pygame.image.load(
+            f"assets/images/PlayerDetails{2 if thrusting else 1}.png"
+        ).convert_alpha()
+        shell = pygame.image.load("assets/images/PlayerShell.png").convert_alpha()
+        color_mask = pygame.Surface(shell.get_size()).convert_alpha()
+        color_mask.fill(color)
+        shell.blit(color_mask, (0, 0), special_flags=pygame.BLEND_RGB_MULT)
+        shell.blit(details, (0, 0))
+        return shell
 
     def can_thrust(self) -> bool:
         """
@@ -201,6 +217,7 @@ class Ship(Entity):
         self.turn()
 
 
+# TODO: Follow player when possible
 class DroidShip(Ship):
     """
     The Droid Ship doesn't move a lot, but it can transfrom into a CommandShip
@@ -306,5 +323,4 @@ class DeathShip(Ship):
         self.last_drop = time()
 
     def turn(self):
-        # TODO: Follow player ?
         pass

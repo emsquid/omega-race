@@ -74,7 +74,7 @@ class Engine(Screen):
         self.player_lasers: list[Laser] = []
         self.enemies_lasers: list[Laser] = []
         self.explosions: list[Explosion] = []
-        self.player = Player()
+        self.player = Player(self.config.color)
 
         self.force_field = ForceField()
 
@@ -99,9 +99,9 @@ class Engine(Screen):
 
         if keys[self.config.keys["UP"]] and self.player.can_thrust():
             self.player.thrust()
-            self.player.set_image("Player2.png")
+            self.player.set_image(Player.create_image(self.config.color, True))
         else:
-            self.player.set_image("Player1.png")
+            self.player.set_image(Player.create_image(self.config.color))
 
         if keys[self.config.keys["SHOOT"]] and self.player.can_shoot():
             self.player.shoot(self.player_lasers)
