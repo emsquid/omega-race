@@ -3,7 +3,15 @@ from time import time
 from random import randrange
 from threading import Timer
 from src.objects.base import Explosion
-from src.objects.sprites import Player, Ship, DroidShip, CommandShip, DeathShip
+from src.objects.sprites import (
+    Player,
+    Ship,
+    DroidShip,
+    CommandShip,
+    DeathShip,
+    Mine,
+    Laser,
+)
 from src.objects.graphics import ForceField
 from src.screens import Screen
 from src.config import Config
@@ -36,7 +44,7 @@ class Engine(Screen):
         """
         Reset the game state, except for score and lives
         """
-        self.enemies = (
+        self.enemies: list[Ship] = (
             [
                 DroidShip(
                     randrange(200, WIN_WIDTH - 200),
@@ -62,10 +70,10 @@ class Engine(Screen):
                 for i in range(ENEMY_NUMBER["DeathShip"][min(self.level - 1, 4)])
             ]
         )
-        self.mines = []
-        self.player_lasers = []
-        self.enemies_lasers = []
-        self.explosions = []
+        self.mines: list[Mine] = []
+        self.player_lasers: list[Laser] = []
+        self.enemies_lasers: list[Laser] = []
+        self.explosions: list[Explosion] = []
         self.player = Player()
 
         self.force_field = ForceField()
@@ -201,14 +209,12 @@ class Engine(Screen):
                 self.player_death()
                 self.create_explosion(self.player.x, self.player.y)
                 self.score += enemy.points
-            if isinstance(enemy, (DroidShip, CommandShip)):
-                enemy.turn()
             if isinstance(enemy, CommandShip) and enemy.can_shoot():
                 enemy.shoot(self.player, self.enemies_lasers)
                 self.mixer.play("Laser.wav", 0.15)
             if isinstance(enemy, (CommandShip, DeathShip)) and enemy.can_drop():
                 enemy.drop_mine(self.mines)
-            enemy.move(dt)
+            enemy.update(dt)
 
     def update_mines(self, dt: int):
         """
@@ -239,14 +245,14 @@ class Engine(Screen):
                     self.create_explosion(enemy.x, enemy.y)
                     self.score += enemy.points
                     break
-            laser.move(dt)
+            laser.update(dt)
 
         for laser in self.enemies_lasers:
             if laser.collide(self.player):
                 laser.die()
                 self.player_death()
                 self.create_explosion(self.player.x, self.player.y)
-            laser.move(dt)
+            laser.update(dt)
 
     def update_explosions(self, dt: int):
         """
@@ -271,7 +277,7 @@ class Engine(Screen):
         self.update_lasers(dt)
         self.update_explosions(dt)
 
-        self.player.move(dt)
+        self.player.update(dt)
         self.force_field.update()
         self.force_field.bounce(
             self.player,

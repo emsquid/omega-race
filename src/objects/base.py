@@ -13,7 +13,7 @@ class Object:
     :param image: str | pygame.Surface, The image of the object
     """
 
-    def __init__(self, x: int, y: int, image):
+    def __init__(self, x: int, y: int, image: str | pygame.Surface):
         self.set_position(x, y)
         self.set_image(image)
 
@@ -27,7 +27,7 @@ class Object:
         self.x = x
         self.y = y
 
-    def set_image(self, image):
+    def set_image(self, image: str | pygame.Surface):
         """
         Set the image of the object,
 
@@ -82,7 +82,7 @@ class Entity(Object):
         self,
         x: int,
         y: int,
-        image,
+        image: str | pygame.Surface,
         direction: float,
         rotation: float,
         speed: float,
@@ -91,6 +91,7 @@ class Entity(Object):
         self.set_direction(direction)
         self.set_rotation(rotation)
         self.set_speed(speed)
+        self.original_image = self.image
         self.alive = True
 
     def set_direction(self, direction: float):
@@ -131,12 +132,7 @@ class Entity(Object):
         """
         if not self.alive:
             return
-        # Create the rotated image and center it properly
-        angle = -360 * (self.rotation + math.pi / 2) / (2 * math.pi)
-        rotated_image = pygame.transform.rotate(self.image, angle)
-        self.mask = pygame.mask.from_surface(rotated_image)
-        self.rect = rotated_image.get_rect(center=(self.x, self.y))
-        surface.blit(rotated_image, self.rect)
+        super().draw(surface)
 
     def move(self, dt: int):
         """
@@ -148,6 +144,21 @@ class Entity(Object):
             return
         self.x += math.cos(self.direction) * self.speed * dt
         self.y += math.sin(self.direction) * self.speed * dt
+
+    def update(self, dt: int):
+        """
+        Update the state of the entity
+
+        :param dt: int, The time delta between frames
+        """
+        if not self.alive:
+            return
+        self.move(dt)
+        # Create the rotated image and center it properly
+        angle = -360 * (self.rotation + math.pi / 2) / (2 * math.pi)
+        self.image = pygame.transform.rotate(self.original_image, angle)
+        self.mask = pygame.mask.from_surface(self.image)
+        self.rect = self.image.get_rect(center=(self.x, self.y))
 
 
 class Text(Object):
@@ -218,7 +229,6 @@ class Explosion(Object):
         super().__init__(x, y, "Explosion1.png")
         self.step = 0
         self.last_update = 0
-        
 
     def can_update(self) -> bool:
         """

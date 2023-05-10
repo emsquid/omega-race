@@ -18,7 +18,7 @@ class Laser(Entity):
     def __init__(self, x: int, y: int, direction: float):
         image = pygame.Surface((2, 15), pygame.SRCALPHA)
         image.fill(WHITE)
-        super().__init__(x, y, image, direction, direction, 0.3)
+        super().__init__(x, y, image, direction, direction, 0.4)
 
 
 class Player(Entity):
@@ -77,13 +77,13 @@ class Player(Entity):
         elif self.rotating == "RIGHT":
             self.rotation += dt * pi / 725
 
-    def move(self, dt: int):
+    def update(self, dt: int):
         """
-        Move and rotate if needed
+        Update the state of the player
 
         :param dt: int, The time delta between frames
         """
-        super().move(dt)
+        super().update(dt)
         self.rotate(dt)
 
 
@@ -97,7 +97,7 @@ class Mine(Entity):
     :param points: int, The points the mine is worth
     """
 
-    def __init__(self, x: int, y: int, image, points: int):
+    def __init__(self, x: int, y: int, image: str | pygame.Surface, points: int):
         super().__init__(x, y, image, -pi / 2, -pi / 2, 0)
         self.points = points
 
@@ -143,15 +143,15 @@ class Ship(Entity):
         self,
         x: int,
         y: int,
-        image,
+        image: str | pygame.Surface,
         direction: float,
         speed: float,
         points: int,
         level: int,
     ):
         super().__init__(x, y, image, direction, direction, speed * sqrt(level))
-        self.points = points
         self.distance = randrange(50, 250)
+        self.points = points
 
     def turn(self):
         """
@@ -190,14 +190,15 @@ class Ship(Entity):
         """
         self.rotation += pi * dt / 4096
 
-    def move(self, dt: int):
+    def update(self, dt: int):
         """
-        Move and also rotate
+        Update the state of the ship
 
         :param dt: int, The time delta between frames
         """
-        super().move(dt)
+        super().update(dt)
         self.rotate(dt)
+        self.turn()
 
 
 class DroidShip(Ship):
@@ -228,7 +229,6 @@ class CommandShip(Ship):
         self.last_drop = time()
         self.shoot_cooldown = randrange(3, 8)
         self.last_shoot = time()
-        self.distance = randrange(50, 250)
 
     def can_drop(self) -> bool:
         """
