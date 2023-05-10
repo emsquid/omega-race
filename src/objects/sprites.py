@@ -56,7 +56,7 @@ class Player(Entity):
 
         :return: bool, Whether you can thrust or not
         """
-        return self.alive and time() - self.last_collision >= 0.4
+        return self.alive and time() - self.last_collision >= 0.3
 
     def can_shoot(self) -> bool:
         """

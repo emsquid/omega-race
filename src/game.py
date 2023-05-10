@@ -91,8 +91,8 @@ class Game:
                 else:
                     self.screens[self.current].handle_event(event)
 
-        keys = pygame.key.get_pressed()
-        self.screens[self.current].handle_keys(keys)
+        self.screens[self.current].handle_keys()
+        self.screens[self.current].handle_mouse()
 
     def update(self):
         """

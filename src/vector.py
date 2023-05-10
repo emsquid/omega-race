@@ -96,6 +96,15 @@ class Vector:
         """
         return atan2(self.y, self.x)
 
+    def det(self, other: Vector) -> float:
+        """
+        Get the determinant of two vectors
+
+        :param other: Vector, The other vector
+        :return: float, The resulting determinant
+        """
+        return self.x * other.y - self.y * other.x
+
     def dot(self, other: Vector) -> float:
         """
         Get the dot product of two vectors
@@ -104,6 +113,15 @@ class Vector:
         :return: float, The resulting dot product
         """
         return self.x * other.x + self.y * other.y
+
+    def angle_to(self, other: Vector) -> float:
+        """
+        Get the angle to the other vector
+
+        :param other: Vector, The other vector
+        :return: float, The angle to the other vector
+        """
+        return atan2(self.det(other), self.dot(other))
 
     def copy(self) -> Vector:
         """

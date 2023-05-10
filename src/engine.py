@@ -1,4 +1,5 @@
 import pygame
+from math import pi, atan2
 from time import time
 from random import randrange
 from threading import Timer
@@ -16,6 +17,7 @@ from src.objects.graphics import ForceField
 from src.screens import Screen
 from src.config import Config
 from src.mixer import Mixer
+from src.vector import Vector
 from src.const import WIN_WIDTH, WIN_HEIGHT, CEN_Y, PAN_HEIGHT, ENEMY_NUMBER
 
 
@@ -80,16 +82,31 @@ class Engine(Screen):
 
         self.level_changed = False
 
-    def handle_keys(self, keys: pygame.key.ScancodeWrapper):
+    def handle_event(self, event: pygame.event.Event):
+        """
+        Handle a single user event
+
+        :param event: pygame.event.Event, The event (key) that was pressed
+        """
+        if (
+            not self.level_changed
+            and self.player.alive
+            and event.type == pygame.KEYDOWN
+            and event.key == self.config.keys["PAUSE"]
+        ):
+            if not self.paused:
+                self.pause()
+            else:
+                self.unpause()
+
+    def handle_keys(self):
         """
         Handle user inputs in the game
-
-        :param keys: pygame.key.ScancodeWrapper, The pressed keys
-        :param settings: Settings, The current keys settings
         """
         if self.paused:
             return
 
+        keys = pygame.key.get_pressed()
         if keys[self.config.keys["LEFT"]] and not keys[self.config.keys["RIGHT"]]:
             self.player.rotating = "LEFT"
         elif keys[self.config.keys["RIGHT"]] and not keys[self.config.keys["LEFT"]]:
@@ -107,22 +124,30 @@ class Engine(Screen):
             self.player.shoot(self.player_lasers)
             self.mixer.play("Laser.wav", 0.15)
 
-    def handle_event(self, event: pygame.event.Event):
+    def handle_mouse(self):
         """
-        Handle a single user event
+        Handle mouse use in the game
+        """
+        pos = pygame.mouse.get_pos()
+        vector = Vector(pos[0] - self.player.x, pos[1] - self.player.y)
+        angle = self.player.rotation.angle_to(vector)
+        if round(angle, 2) < 0 and vector.norm > 5:
+            self.player.rotating = "LEFT"
+        elif round(angle, 2) > 0 and vector.norm > 5:
+            self.player.rotating = "RIGHT"
+        else:
+            self.player.rotating = ""
 
-        :param event: pygame.event.Event, The event (key) that was pressed
-        """
-        if (
-            not self.level_changed
-            and self.player.alive
-            and event.type == pygame.KEYDOWN
-            and event.key == self.config.keys["PAUSE"]
-        ):
-            if not self.paused:
-                self.pause()
-            else:
-                self.unpause()
+        buttons = pygame.mouse.get_pressed()
+        if buttons[0] and self.player.can_thrust():
+            self.player.thrust()
+            self.player.set_image(Player.create_image(self.config.color, True))
+        else:
+            self.player.set_image(Player.create_image(self.config.color))
+
+        if buttons[2] and self.player.can_shoot():
+            self.player.shoot(self.player_lasers)
+            self.mixer.play("Laser.wav", 0.15)
 
     def pause(self):
         """

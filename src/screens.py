@@ -73,13 +73,11 @@ class Screen:
         """
         pass
 
-    def handle_keys(self, keys: pygame.key.ScancodeWrapper):
+    def handle_keys(self):
         """
-        Handle user inputs in the screen
-
-        :param keys: pygame.key.ScancodeWrapper, The pressed keys
-        :param settings: Settings, The current keys settings
+        Handle user key press in the screen
         """
+        keys = pygame.key.get_pressed()
         if (
             keys[self.config.keys["UP"]]
             and not keys[self.config.keys["DOWN"]]
@@ -95,12 +93,24 @@ class Screen:
             self.selection = (self.selection + 1) % len(self.choices)
             self.last_change = time()
 
-    def update_color(self, text: Text, selection: int):
+    def handle_mouse(self):
+        """
+        Handle user mouse press in the screen
+        """
+        pass
+
+    def update_color(self, text: Text, number: int):
+        """
+        Update the color of the text based on its number
+
+        :param text: Text, The text to update
+        :param number: int, The number of the text (selection)
+        """
         text.update(
             color=self.config.color
-            if self.selection == selection and self.config.color != WHITE
+            if self.selection == number and self.config.color != WHITE
             else RED
-            if self.selection == selection
+            if self.selection == number
             else WHITE,
         )
 
@@ -295,14 +305,12 @@ class Settings(Screen):
         """
         return not self.popup_open and super().can_change()
 
-    def handle_keys(self, keys: pygame.key.ScancodeWrapper):
+    def handle_keys(self):
         """
         Handle user inputs in the settings
-
-        :param keys: pygame.key.ScancodeWrapper, The pressed keys
-        :param settings: Settings, The current keys settings
         """
-        super().handle_keys(keys)
+        keys = pygame.key.get_pressed()
+        super().handle_keys()
         if keys[pygame.K_RETURN] and self.selection < 5 and self.can_change():
             self.popup_open = True
             self.last_change = time()
@@ -387,7 +395,8 @@ class Settings(Screen):
 
         self.update_color(self.home, 8)
 
-        pygame.draw.circle(self.color_circle.image, self.config.color, (20, 20), 20)
+        # self.color_circle.image.fill(self.config.color)
+        pygame.draw.circle(self.color_circle.image, self.config.color, (20, 20), 15)
 
         self.objects = [
             self.title,
@@ -439,13 +448,11 @@ class GameOver(Screen):
         self.choices = [PLAY, HOME]
         self.objects = [self.title, self.play, self.home, *self.borders]
 
-    def handle_keys(self, keys: pygame.key.ScancodeWrapper):
+    def handle_keys(self):
         """
         Handle user inputs in the game over
-
-        :param keys: pygame.key.ScancodeWrapper, The pressed keys
-        :param settings: Settings, The current keys settings
         """
+        keys = pygame.key.get_pressed()
         if (
             keys[self.config.keys["LEFT"]]
             and not keys[self.config.keys["RIGHT"]]
