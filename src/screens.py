@@ -21,6 +21,7 @@ from src.const import (
     GREY,
     RED,
     GREEN,
+    PLAYER_COLOR,
 )
 
 
@@ -95,6 +96,15 @@ class Screen:
             self.selection = (self.selection + 1) % len(self.choices)
             self.last_change = time()
 
+    def update_color(self, text: Text, selection: int):
+        text.update(
+            color=self.config.color
+            if self.selection == selection and self.config.color != WHITE
+            else RED
+            if self.selection == selection
+            else WHITE,
+        )
+
     def update(self, dt: int):
         """
         Update the situation of all objects
@@ -117,7 +127,7 @@ class Welcome(Screen):
 
         self.title = Text("Omega Race", CEN_X, WIN_HEIGHT / 5, 90)
         self.input_text = Text("Enter your name:", CEN_X, CEN_Y, 40)
-        self.input = Text(self.config.name, CEN_X, CEN_Y + 50, 40, GREEN)
+        self.input = Text(self.config.name, CEN_X, CEN_Y + 50, 40)
 
         self.choices = [HOME]
         self.objects = [self.title, self.input_text, self.input]
@@ -147,6 +157,7 @@ class Welcome(Screen):
         :param dt: int, The time delta between frames
         """
         self.input.update(content=self.config.name + ("_" if time() % 1 > 0.5 else " "))
+        self.update_color(self.input, 0)
 
 
 class Home(Screen):
@@ -174,9 +185,9 @@ class Home(Screen):
 
         :param dt: int, The time delta between frames
         """
-        self.play.update(color=RED if self.selection == 0 else WHITE)
-        self.scores.update(color=RED if self.selection == 1 else WHITE)
-        self.settings.update(color=RED if self.selection == 2 else WHITE)
+        self.update_color(self.play, 0)
+        self.update_color(self.scores, 1)
+        self.update_color(self.settings, 2)
 
 
 class Scores(Screen):
@@ -203,7 +214,7 @@ class Scores(Screen):
         self.levels = [
             Text("--", 800, 240 + i * 40, anchor="topright") for i in range(10)
         ]
-        self.home = Text("HOME", WIN_WIDTH * 4 / 5, WIN_HEIGHT - 100, 40, RED)
+        self.home = Text("HOME", WIN_WIDTH * 4 / 5, WIN_HEIGHT - 100, 40)
 
         self.choices = [HOME]
         self.objects = [self.title, *self.names, *self.scores, *self.levels, self.home]
@@ -219,6 +230,8 @@ class Scores(Screen):
                 self.names[i].update(content=f"{i+1}. {self.data.scores[i]['name']}")
                 self.scores[i].update(content=f"{self.data.scores[i]['score']}")
                 self.levels[i].update(content=f"{self.data.scores[i]['level']}")
+
+        self.update_color(self.home, 0)
 
 
 name = pygame.key.name
@@ -257,9 +270,10 @@ class Settings(Screen):
 
         self.fps_text = Text("FPS :", CEN_X - 50, CEN_Y + 80, anchor="right")
         self.fps = Text(f"< {config.fps} >", CEN_X + 100, CEN_Y + 80)
-         
+
         self.color_text = Text("FPS :", CEN_X - 50, CEN_Y + 120, anchor="right")
-        self.color = Text("<         >", CEN_X + 100, CEN_Y + 120) 
+        self.color_arrows = Text("<       >", CEN_X + 100, CEN_Y + 120)
+        self.color_circle = Object(CEN_X + 103, CEN_Y + 120, pygame.Surface((40, 40)))
 
         self.home = Text("HOME", WIN_WIDTH * 4 / 5, WIN_HEIGHT - 100, 40)
 
@@ -302,6 +316,10 @@ class Settings(Screen):
                 self.config.volume = max(self.config.volume - 0.05, 0)
             if self.selection == 6:
                 self.config.fps = max(self.config.fps - 5, 30)
+            if self.selection == 7:
+                self.config.color = PLAYER_COLOR[
+                    (PLAYER_COLOR.index(self.config.color) - 1) % 7
+                ]
             self.last_change = time()
         if (
             keys[self.config.keys["RIGHT"]]
@@ -312,6 +330,10 @@ class Settings(Screen):
                 self.config.volume = min(self.config.volume + 0.05, 1)
             if self.selection == 6:
                 self.config.fps = min(self.config.fps + 5, 240)
+            if self.selection == 7:
+                self.config.color = PLAYER_COLOR[
+                    (PLAYER_COLOR.index(self.config.color) + 1) % len(PLAYER_COLOR)
+                ]
             self.last_change = time()
 
     def handle_event(self, event: pygame.event.Event):
@@ -341,46 +363,32 @@ class Settings(Screen):
 
         :param dt: int, The time delta between frames
         """
-        self.up_key.update(
-            content=name(self.config.keys["UP"]),
-            color=RED if self.selection == 0 else WHITE,
-        )
+        self.up_key.update(content=name(self.config.keys["UP"]))
+        self.update_color(self.up_key, 0)
 
-        self.down_key.update(
-            content=name(self.config.keys["DOWN"]),
-            color=RED if self.selection == 1 else WHITE,
-        )
+        self.down_key.update(content=name(self.config.keys["DOWN"]))
+        self.update_color(self.down_key, 1)
 
-        self.left_key.update(
-            content=name(self.config.keys["LEFT"]),
-            color=RED if self.selection == 2 else WHITE,
-        )
+        self.left_key.update(content=name(self.config.keys["LEFT"]))
+        self.update_color(self.left_key, 2)
 
-        self.right_key.update(
-            content=name(self.config.keys["RIGHT"]),
-            color=RED if self.selection == 3 else WHITE,
-        )
+        self.right_key.update(content=name(self.config.keys["RIGHT"]))
+        self.update_color(self.right_key, 3)
 
-        self.shoot_key.update(
-            content=name(self.config.keys["SHOOT"]),
-            color=RED if self.selection == 4 else WHITE,
-        )
+        self.shoot_key.update(content=name(self.config.keys["SHOOT"]))
+        self.update_color(self.shoot_key, 4)
 
-        self.volume.update(
-            content=f"< {round(self.config.volume*100)}% >",
-            color=RED if self.selection == 5 else WHITE,
-        )
+        self.volume.update(content=f"< {round(self.config.volume*100)}% >")
+        self.update_color(self.volume, 5)
 
-        self.fps.update(
-            content=f"< {self.config.fps} >",
-            color=RED if self.selection == 6 else WHITE,
-        )               
-                        
-        self.color.update(
-            content="<        >",
-            color=RED if self.selection == 7 else WHITE,
-        )               
-        self.home.update(color=RED if self.selection == 8 else WHITE)
+        self.fps.update(content=f"< {self.config.fps} >")
+        self.update_color(self.fps, 6)
+
+        self.update_color(self.color_arrows, 7)
+
+        self.update_color(self.home, 8)
+
+        pygame.draw.circle(self.color_circle.image, self.config.color, (20, 20), 20)
 
         self.objects = [
             self.title,
@@ -399,7 +407,8 @@ class Settings(Screen):
             self.fps_text,
             self.fps,
             self.color_text,
-            self.color,
+            self.color_arrows,
+            self.color_circle,
             self.home,
         ]
 
@@ -459,7 +468,7 @@ class GameOver(Screen):
 
         :param dt: int, The time delta between frames
         """
-        self.play.update(color=RED if self.selection == 0 else WHITE)
-        self.home.update(color=RED if self.selection == 1 else WHITE)
+        self.update_color(self.play, 0)
+        self.update_color(self.home, 1)
         for border in self.borders:
             border.update()
