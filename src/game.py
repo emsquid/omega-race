@@ -36,12 +36,13 @@ class Game:
             (WIN_WIDTH, WIN_HEIGHT), pygame.RESIZABLE
         )
         self.clock = pygame.time.Clock()
-        self.background = Background()
-        self.panel = Panel()
 
         self.config = Config()
         self.data = Data()
         self.mixer = Mixer(self.config)
+
+        self.background = Background()
+        self.panel = Panel(self.config)
 
         self.screens = {
             WELCOME: Welcome(self.config, self.mixer),

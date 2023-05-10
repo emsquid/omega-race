@@ -31,17 +31,12 @@ class Object:
         """
         Set the image of the object,
 
-        :param filename: str = None, The file to retrieve the image from
-        :param surface: pygame.Surface = None, The surface to use as an image
+        :param image: str | pygame.Surface, The image of the object
         """
         if isinstance(image, str):
             self.image = pygame.image.load(f"assets/images/{image}").convert_alpha()
         elif isinstance(image, pygame.Surface):
             self.image = image.convert_alpha()
-        else:
-            # TODO: Default case for development, should throw an error
-            self.image = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
-            self.image.fill(RED)
         self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect(center=(self.x, self.y))
 
@@ -93,6 +88,22 @@ class Entity(Object):
         self.set_speed(speed)
         self.original_image = self.image
         self.alive = True
+
+    def set_image(self, image: str | pygame.Surface):
+        """
+        Set the image of the entity,
+
+        :param image: str | pygame.Surface, The image of the entity
+        """
+        if isinstance(image, str):
+            self.original_image = pygame.image.load(
+                f"assets/images/{image}"
+            ).convert_alpha()
+        elif isinstance(image, pygame.Surface):
+            self.original_image = image.convert_alpha()
+        self.image = self.original_image
+        self.mask = pygame.mask.from_surface(self.original_image)
+        self.rect = self.original_image.get_rect(center=(self.x, self.y))
 
     def set_direction(self, direction: float):
         """

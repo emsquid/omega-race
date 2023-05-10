@@ -39,11 +39,10 @@ class Player(Entity):
         """
         Create the player image with the given color
         """
-        details = pygame.image.load(
-            f"assets/images/PlayerDetails{2 if thrusting else 1}.png"
-        ).convert_alpha()
-        shell = pygame.image.load("assets/images/PlayerShell.png").convert_alpha()
-        color_mask = pygame.Surface(shell.get_size()).convert_alpha()
+        n_details = 2 if thrusting else 1
+        details = pygame.image.load(f"assets/images/PlayerDetails{n_details}.png")
+        shell = pygame.image.load("assets/images/PlayerShell.png")
+        color_mask = pygame.Surface(shell.get_size())
         color_mask.fill(color)
         shell.blit(color_mask, (0, 0), special_flags=pygame.BLEND_RGB_MULT)
         shell.blit(details, (0, 0))

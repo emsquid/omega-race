@@ -5,6 +5,7 @@ from math import pi, cos, sin
 from random import randrange, random
 from src.objects.base import Object, Entity, Text
 from src.objects.sprites import Player, Laser
+from src.config import Config
 from src.const import (
     WIN_WIDTH,
     WIN_HEIGHT,
@@ -59,15 +60,18 @@ class Background:
 class Panel:
     """
     The Panel is used to display scores and player lives
+
+    :param config: Config, The game configuration
     """
 
-    def __init__(self):
+    def __init__(self, config: Config):
+        self.config = config
         self.level = Text("LEVEL 1", 460, 325, color=GREEN, anchor="topleft")
         self.score_text = Text("SCORE", 330, 325, anchor="topleft")
         self.score = Text("0", 330, 360, anchor="topleft")
         self.highscore_text = Text("HIGHSCORE", 330, 415, anchor="topleft")
         self.highscore = Text("0", 330, 445, anchor="topleft")
-        self.image = Player.create_image(WHITE)
+        self.image = Player.create_image(self.config.color)
         self.lives = 3
 
     def draw(self, surface: pygame.Surface):
