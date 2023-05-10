@@ -133,6 +133,6 @@ class Game:
         """
         Close the window and exit the program
         """
-        # TODO: Save config
+        self.config.save()
         pygame.quit()
         os._exit(0)
