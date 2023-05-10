@@ -319,15 +319,15 @@ class Settings(Screen):
         """
         if self.popup_open and event.type == pygame.KEYDOWN:
             if self.selection == 0:
-                self.config.update_key("UP :", event.key)
+                self.config.update_key("UP", event.key)
             elif self.selection == 1:
-                self.config.update_key("DOWN :", event.key)
+                self.config.update_key("DOWN", event.key)
             elif self.selection == 2:
-                self.config.update_key("LEFT :", event.key)
+                self.config.update_key("LEFT", event.key)
             elif self.selection == 3:
-                self.config.update_key("RIGHT :", event.key)
+                self.config.update_key("RIGHT", event.key)
             elif self.selection == 4:
-                self.config.update_key("SHOOT :", event.key)
+                self.config.update_key("SHOOT", event.key)
 
             self.popup_open = False
             self.last_change = time()
