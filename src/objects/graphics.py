@@ -5,6 +5,7 @@ from math import pi, cos, sin
 from random import randrange, random
 from src.objects.base import Object, Entity, Text
 from src.objects.sprites import Player, Laser
+from src.vector import Vector
 from src.config import Config
 from src.const import (
     WIN_WIDTH,
@@ -115,12 +116,12 @@ class Border(Object):
     :param y: int, The y coordinate of the border
     :param width: int, The width of the border
     :param height: int, The height of the border
-    :param normal: float, The normal (radians) of the border (to bounce)
+    :param normal: Vector, The normal of the border (to bounce)
     :param visible: bool, Whether the border is usually visible or not
     """
 
     def __init__(
-        self, x: int, y: int, width: int, height: int, normal: float, visible: bool
+        self, x: int, y: int, width: int, height: int, normal: Vector, visible: bool
     ):
         super().__init__(x, y, pygame.Surface((width, height)))
         self.normal = normal
@@ -171,15 +172,9 @@ class Border(Object):
 
         :param entity: Entity, The entity to bounce
         """
-        dot = cos(self.normal) * cos(entity.direction) + sin(self.normal) * sin(
-            entity.direction
-        )
         # We use dot product to know if the object should bounce on the collided border
-        if entity.collide(self) and dot < 0:
-            if round(cos(self.normal), 5) != 0:
-                entity.set_direction(pi - entity.direction)
-            else:
-                entity.set_direction(-entity.direction)
+        if entity.collide(self) and self.normal.dot(entity.direction) < 0:
+            entity.set_direction(entity.direction.reflect(self.normal))
             # Slow player
             if isinstance(entity, Player):
                 entity.set_speed(entity.speed * 0.75)
@@ -196,25 +191,107 @@ class ForceField:
     """
 
     def __init__(self):
-        # Border for the boundaries of the game field
+        # TODO: Look for improvements here
         self.borders = [
             # Left and right borders
-            Border(20, WIN_HEIGHT / 4 + 10, 3, CEN_Y - 17, 0, False),
-            Border(20, WIN_HEIGHT * 3 / 4 - 10, 3, CEN_Y - 17, 0, False),
-            Border(WIN_WIDTH - 20, WIN_HEIGHT / 4 + 10, 3, CEN_Y - 17, pi, False),
-            Border(WIN_WIDTH - 20, WIN_HEIGHT * 3 / 4 - 10, 3, CEN_Y - 17, pi, False),
-            # Top and bottom borders
-            Border(WIN_WIDTH / 4 + 10, 20, CEN_X - 17, 3, pi / 2, False),
-            Border(WIN_WIDTH * 3 / 4 - 10, 20, CEN_X - 17, 3, pi / 2, False),
-            Border(WIN_WIDTH / 4 + 10, WIN_HEIGHT - 20, CEN_X - 17, 3, -pi / 2, False),
             Border(
-                WIN_WIDTH * 3 / 4 - 10, WIN_HEIGHT - 20, CEN_X - 17, 3, -pi / 2, False
+                20,
+                WIN_HEIGHT / 4 + 10,
+                3,
+                CEN_Y - 17,
+                Vector(1, 0),
+                False,
+            ),
+            Border(
+                20,
+                WIN_HEIGHT * 3 / 4 - 10,
+                3,
+                CEN_Y - 17,
+                Vector(1, 0),
+                False,
+            ),
+            Border(
+                WIN_WIDTH - 20,
+                WIN_HEIGHT / 4 + 10,
+                3,
+                CEN_Y - 17,
+                Vector(-1, 0),
+                False,
+            ),
+            Border(
+                WIN_WIDTH - 20,
+                WIN_HEIGHT * 3 / 4 - 10,
+                3,
+                CEN_Y - 17,
+                Vector(-1, 0),
+                False,
+            ),
+            # Top and bottom borders
+            Border(
+                WIN_WIDTH / 4 + 10,
+                20,
+                CEN_X - 17,
+                3,
+                Vector(0, 1),
+                False,
+            ),
+            Border(
+                WIN_WIDTH * 3 / 4 - 10,
+                20,
+                CEN_X - 17,
+                3,
+                Vector(0, 1),
+                False,
+            ),
+            Border(
+                WIN_WIDTH / 4 + 10,
+                WIN_HEIGHT - 20,
+                CEN_X - 17,
+                3,
+                Vector(0, -1),
+                False,
+            ),
+            Border(
+                WIN_WIDTH * 3 / 4 - 10,
+                WIN_HEIGHT - 20,
+                CEN_X - 17,
+                3,
+                Vector(0, -1),
+                False,
             ),
             # Border for the display panel
-            Border(CEN_X - PAN_WIDTH / 2, CEN_Y, 3, PAN_HEIGHT + 3, pi, True),
-            Border(CEN_X + PAN_WIDTH / 2, CEN_Y, 3, PAN_HEIGHT + 3, 0, True),
-            Border(CEN_X, CEN_Y - PAN_HEIGHT / 2, PAN_WIDTH + 3, 3, -pi / 2, True),
-            Border(CEN_X, CEN_Y + PAN_HEIGHT / 2, PAN_WIDTH + 3, 3, pi / 2, True),
+            Border(
+                CEN_X - PAN_WIDTH / 2,
+                CEN_Y,
+                3,
+                PAN_HEIGHT + 3,
+                Vector(-1, 0),
+                True,
+            ),
+            Border(
+                CEN_X + PAN_WIDTH / 2,
+                CEN_Y,
+                3,
+                PAN_HEIGHT + 3,
+                Vector(1, 0),
+                True,
+            ),
+            Border(
+                CEN_X,
+                CEN_Y - PAN_HEIGHT / 2,
+                PAN_WIDTH + 3,
+                3,
+                Vector(0, -1),
+                True,
+            ),
+            Border(
+                CEN_X,
+                CEN_Y + PAN_HEIGHT / 2,
+                PAN_WIDTH + 3,
+                3,
+                Vector(0, 1),
+                True,
+            ),
         ]
 
     def draw(self, surface: pygame.Surface):

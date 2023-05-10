@@ -1,7 +1,8 @@
 import math
 import pygame
 from time import time
-from src.const import WHITE, RED
+from src.vector import Vector
+from src.const import WHITE
 
 
 class Object:
@@ -68,8 +69,8 @@ class Entity(Object):
     :param x: int, The x coordinate of the entity
     :param y: int, The y coordinate of the entity
     :param image: str | pygame.Surface, The image of the entity
-    :param direction: float, The direction (radians) the entity advances towards
-    :param rotation: float, The rotation (radians) the entity has
+    :param direction: Vector, The direction the entity advances towards
+    :param rotation: Vector, The rotation the entity has
     :param speed: float, The speed at which the entity advances
     """
 
@@ -78,8 +79,8 @@ class Entity(Object):
         x: int,
         y: int,
         image: str | pygame.Surface,
-        direction: float,
-        rotation: float,
+        direction: Vector,
+        rotation: Vector,
         speed: float,
     ):
         super().__init__(x, y, image)
@@ -105,21 +106,25 @@ class Entity(Object):
         self.mask = pygame.mask.from_surface(self.original_image)
         self.rect = self.original_image.get_rect(center=(self.x, self.y))
 
-    def set_direction(self, direction: float):
+    def set_direction(self, direction: Vector):
         """
         Set the direction of the entity
 
         :param direction: float, The direction (radians) the entity advances towards
         """
-        self.direction = direction
+        self.direction = direction.copy()
+        if self.direction.norm != 0:
+            self.direction.normalize()
 
-    def set_rotation(self, rotation: float):
+    def set_rotation(self, rotation: Vector):
         """
         Set the rotation of the entity
 
         :param rotation: float, The rotation (radians) the entity has
         """
-        self.rotation = rotation
+        self.rotation = rotation.copy()
+        if self.rotation.norm != 0:
+            self.rotation.normalize()
 
     def set_speed(self, speed: float):
         """
@@ -153,8 +158,8 @@ class Entity(Object):
         """
         if not self.alive:
             return
-        self.x += math.cos(self.direction) * self.speed * dt
-        self.y += math.sin(self.direction) * self.speed * dt
+        self.x += self.direction.x * self.speed * dt
+        self.y += self.direction.y * self.speed * dt
 
     def update(self, dt: int):
         """
@@ -166,7 +171,7 @@ class Entity(Object):
             return
         self.move(dt)
         # Create the rotated image and center it properly
-        angle = -360 * (self.rotation + math.pi / 2) / (2 * math.pi)
+        angle = -math.degrees(self.rotation.angle + math.pi / 2)
         self.image = pygame.transform.rotate(self.original_image, angle)
         self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect(center=(self.x, self.y))

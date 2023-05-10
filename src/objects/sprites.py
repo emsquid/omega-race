@@ -1,8 +1,9 @@
 import pygame
 from time import time
-from math import pi, atan2, sqrt
+from math import pi, sqrt
 from random import randrange, random
 from src.objects.base import Entity
+from src.vector import Vector
 from src.const import CEN_X, CEN_Y, PAN_WIDTH, PAN_HEIGHT, WHITE
 
 
@@ -12,10 +13,10 @@ class Laser(Entity):
 
     :param x: int, The x coordinate of the laser
     :param y: int, The x coordinate of the laser
-    :param direction: float, The direction (radians)
+    :param direction: Vector, The direction
     """
 
-    def __init__(self, x: int, y: int, direction: float):
+    def __init__(self, x: int, y: int, direction: Vector):
         image = pygame.Surface((2, 15), pygame.SRCALPHA)
         image.fill(WHITE)
         super().__init__(x, y, image, direction, direction, 0.4)
@@ -29,7 +30,8 @@ class Player(Entity):
     """
 
     def __init__(self, color: tuple[int]):
-        super().__init__(500, 200, Player.create_image(color), -pi / 2, -pi / 2, 0)
+        direction = Vector(0, -1)
+        super().__init__(500, 200, Player.create_image(color), direction, direction, 0)
         # LEFT | RIGHT
         self.rotating = ""
         self.last_collision = 0
@@ -68,8 +70,8 @@ class Player(Entity):
         """
         Thrust in the direction the player is pointing
         """
-        self.speed = 0.2
-        self.direction = self.rotation
+        self.set_direction(self.rotation)
+        self.speed = 0.25
         self.last_thrust = time()
 
     def shoot(self, lasers: list[Laser]):
@@ -88,9 +90,9 @@ class Player(Entity):
         :param dt: int, The time delta between frames
         """
         if self.rotating == "LEFT":
-            self.rotation -= dt * pi / 725
+            self.set_rotation(self.rotation.rotate(-dt * pi / 725))
         elif self.rotating == "RIGHT":
-            self.rotation += dt * pi / 725
+            self.set_rotation(self.rotation.rotate(dt * pi / 725))
 
     def update(self, dt: int):
         """
@@ -113,7 +115,7 @@ class Mine(Entity):
     """
 
     def __init__(self, x: int, y: int, image: str | pygame.Surface, points: int):
-        super().__init__(x, y, image, -pi / 2, -pi / 2, 0)
+        super().__init__(x, y, image, Vector(0, 0), Vector(0, -1), 0)
         self.points = points
 
 
@@ -148,7 +150,7 @@ class Ship(Entity):
     :param x: int, The x coordinate of the ship
     :param y: int, The y coordinate of the ship
     :param image: str | pygame.Surface, The image of the ship
-    :param direction: float, The direction the ship advances towards
+    :param direction: Vector, The direction the ship advances towards
     :param speed: float, The speed of the ship
     :param points: int, The points the ship is worth
     :param level: int, The level the ship is at (increases speed)
@@ -159,7 +161,7 @@ class Ship(Entity):
         x: int,
         y: int,
         image: str | pygame.Surface,
-        direction: float,
+        direction: Vector,
         speed: float,
         points: int,
         level: int,
@@ -177,25 +179,25 @@ class Ship(Entity):
             self.x + self.distance < CEN_X - PAN_WIDTH / 2
             and self.y < CEN_Y - PAN_HEIGHT / 2
         ):
-            self.set_direction(pi / 2)
+            self.set_direction(Vector(0, 1))
         # top right
         if (
             self.x > CEN_X + PAN_WIDTH / 2
             and self.y + self.distance < CEN_Y - PAN_HEIGHT / 2
         ):
-            self.set_direction(pi)
+            self.set_direction(Vector(-1, 0))
         # bottom right
         if (
             self.x - self.distance > CEN_X + PAN_WIDTH / 2
             and self.y > CEN_Y + PAN_HEIGHT / 2
         ):
-            self.set_direction(-pi / 2)
+            self.set_direction(Vector(0, -1))
         # bottom left
         if (
             self.x < CEN_X - PAN_WIDTH / 2
             and self.y - self.distance > CEN_Y + PAN_HEIGHT / 2
         ):
-            self.set_direction(0)
+            self.set_direction(Vector(1, 0))
 
     def rotate(self, dt):
         """
@@ -203,7 +205,7 @@ class Ship(Entity):
 
         :param dt: int, The time delta between frames
         """
-        self.rotation += pi * dt / 4096
+        self.set_rotation(self.rotation.rotate(pi * dt / 4096))
 
     def update(self, dt: int):
         """
@@ -227,7 +229,8 @@ class DroidShip(Ship):
     """
 
     def __init__(self, x: int, y: int, level: int):
-        super().__init__(x, y, "DroidShip.png", 0, 0.01, 1000, level)
+        direction = Vector(0, 1)
+        super().__init__(x, y, "DroidShip.png", direction, 0.01, 1000, level)
 
 
 class CommandShip(Ship):
@@ -240,7 +243,8 @@ class CommandShip(Ship):
     """
 
     def __init__(self, x: int, y: int, level: int):
-        super().__init__(x, y, "CommandShip.png", 0, 0.05, 1500, level)
+        direction = Vector(1, 0)
+        super().__init__(x, y, "CommandShip.png", direction, 0.05, 1500, level)
         self.drop_cooldown = randrange(10, 20)
         self.last_drop = time()
         self.shoot_cooldown = randrange(3, 8)
@@ -279,7 +283,8 @@ class CommandShip(Ship):
         :param player: Player, The player to shoot at
         :param lasers: list[Laser]: The lasers already in the game
         """
-        direction = atan2(player.y - self.y, player.x - self.x)
+        # TODO: Preshot player position
+        direction = Vector(player.y - self.y, player.x - self.x)
         lasers.append(Laser(self.x, self.y, direction))
         self.shoot_cooldown = randrange(3, 8)
         self.last_shoot = time()
@@ -295,7 +300,8 @@ class DeathShip(Ship):
     """
 
     def __init__(self, x: int, y: int, level: int):
-        super().__init__(x, y, "DeathShip.png", random() * pi * 2, 0.2, 2000, level)
+        direction = Vector(random(), random())
+        super().__init__(x, y, "DeathShip.png", direction, 0.2, 2000, level)
         self.drop_cooldown = randrange(10, 20)
         self.last_drop = time()
 
