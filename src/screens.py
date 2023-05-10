@@ -38,8 +38,8 @@ class Screen:
         self.last_change = 0
 
         self.selection = 0
-        self.choices = []
-        self.objects = []
+        self.choices: list[str] = []
+        self.objects: list[Object] = []
 
     def can_change(self) -> bool:
         """
@@ -293,7 +293,7 @@ class Settings(Screen):
 
         self.popup_open = False
 
-        self.choices = [None, None, None, None, None, None, None, None, None, HOME]
+        self.choices = [None] * 9 + [HOME]
 
     def can_change(self) -> bool:
         """

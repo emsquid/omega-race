@@ -103,7 +103,7 @@ class Engine(Screen):
         """
         Handle user inputs in the game
         """
-        if self.paused:
+        if self.config.mouse or self.paused:
             return
 
         keys = pygame.key.get_pressed()
@@ -131,8 +131,9 @@ class Engine(Screen):
         if not self.config.mouse or self.paused:
             return
 
-        pos = pygame.mouse.get_pos()
-        vector = Vector(pos[0] - self.player.x, pos[1] - self.player.y)
+        pos = Vector(*pygame.mouse.get_pos())
+        scaled_pos = pos * (WIN_WIDTH, WIN_HEIGHT) / pygame.display.get_window_size()
+        vector = Vector(scaled_pos.x - self.player.x, scaled_pos.y - self.player.y)
         angle = self.player.rotation.angle_to(vector)
         if round(angle, 2) < 0 and vector.norm > 5:
             self.player.rotating = "LEFT"

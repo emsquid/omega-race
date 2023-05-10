@@ -17,7 +17,7 @@ class Config:
         :param action: str, The action to change the key for
         :param key: int, The new key
         """
-        if key != pygame.K_RETURN and key not in self.keys.values():
+        if key not in list(self.keys.values()) + [pygame.K_RETURN, pygame.K_ESCAPE]:
             self.keys[action] = key
 
     def read(self):
