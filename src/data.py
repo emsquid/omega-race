@@ -22,6 +22,15 @@ class Data:
         self.connected = False
         Thread(target=self.connect).start()
 
+    @property
+    def highscore(self) -> int:
+        """
+        Get the highscore from the database
+
+        :return: int, The highscore
+        """
+        return self.scores[0]["score"] if len(self.scores) > 0 else 0
+
     def can_connect(self) -> bool:
         """
         Check if we should try to connect
@@ -56,8 +65,7 @@ class Data:
             self.db = client["Scores"]
             self.connected = True
             self.fetch()
-        except Exception as e:
-            print(e)
+        except Exception:
             self.connected = False
 
     def fetch(self):
@@ -70,8 +78,7 @@ class Data:
         try:
             self.scores = [doc for doc in self.db["Single"].find()]
             self.scores.sort(key=lambda doc: doc["score"], reverse=True)
-        except Exception as e:
-            print(e)
+        except Exception:
             self.connected = False
 
     def insert(self, doc: dict):
@@ -101,14 +108,6 @@ class Data:
             self.scores.sort(key=lambda doc: doc["score"], reverse=True)
 
             Thread(target=self.insert, args=[doc]).start()
-
-    def highscore(self) -> int:
-        """
-        Get the highscore from the database
-
-        :return: int, The highscore
-        """
-        return self.scores[0]["score"] if len(self.scores) > 0 else 0
 
     def update(self):
         """

@@ -1,6 +1,5 @@
 import os
 import pygame
-from src.objects.base import Text
 from src.objects.graphics import Background, Panel
 from src.screens import Welcome, Home, Scores, Settings, GameOver
 from src.engine import Engine
@@ -43,6 +42,7 @@ class Game:
         self.background = Background()
         self.panel = Panel(self.config)
 
+        self.current = None
         self.screens = {
             WELCOME: Welcome(self.config, self.mixer),
             HOME: Home(self.config, self.mixer),
@@ -51,22 +51,6 @@ class Game:
             SETTINGS: Settings(self.config, self.mixer),
             GAMEOVER: GameOver(self.config, self.mixer),
         }
-        self.current = WELCOME
-
-    def draw(self):
-        """
-        Draw the game objects on top of the background and display it
-        """
-        objects = self.screens[self.current].get_objects()
-        if self.current in [PLAY, GAMEOVER]:
-            objects = objects + (self.panel,)
-
-        for obj in objects:
-            obj.draw(self.background.image)
-        Text(str(int(self.clock.get_fps())), 60, 40).draw(self.background.image)
-        pygame.transform.smoothscale(
-            self.background.image, self.display.get_size(), self.display
-        )
 
     def handle_inputs(self):
         """
@@ -82,16 +66,17 @@ class Game:
         self.screens[self.current].handle_keys()
         self.screens[self.current].handle_mouse()
 
-        choice = self.screens[self.current].get_choice()
+        choice = self.screens[self.current].choice
         if choice is not None:
-            self.current = choice
-            self.screens[self.current].reset()
             if choice == PLAY:
                 self.mixer.music("Battle.wav", 0.3)
+            elif self.current == PLAY:
+                self.mixer.music("Menu.wav", 1)
             elif choice == GAMEOVER:
                 score, level = self.screens[PLAY].score, self.screens[PLAY].level
                 self.data.add_score(self.config.name, score, level)
-                self.mixer.music("Menu.wav", 1)
+            self.current = choice
+            self.screens[self.current].reset()
 
     def update(self):
         """
@@ -106,17 +91,25 @@ class Game:
 
         if self.current == PLAY:
             engine = self.screens[PLAY]
-            self.panel.update(
-                engine.lives,
-                engine.level,
-                engine.score,
-                max(engine.score, self.data.highscore()),
-            )
+            lives, level, score = engine.lives, engine.level, engine.score
+            self.panel.update(lives, level, score, max(score, self.data.highscore))
+
+    def draw(self):
+        """
+        Draw the game objects on top of the background and display it
+        """
+        self.screens[self.current].draw(self.background.image)
+        if self.current in [PLAY, GAMEOVER]:
+            self.panel.draw(self.background.image)
+
+        size = self.display.get_size()
+        pygame.transform.smoothscale(self.background.image, size, self.display)
 
     def run(self):
         """
         Run the game instance
         """
+        self.current = WELCOME
         self.mixer.music("Menu.wav", 1)
         while True:
             self.handle_inputs()

@@ -82,18 +82,24 @@ class Engine(Screen):
 
         self.level_changed = False
 
+    def can_change(self) -> bool:
+        """
+        Check if the engine can change
+
+        :return: bool, Whether it's possible or not
+        """
+        return super().can_change() and not self.paused
+
     def handle_event(self, event: pygame.event.Event):
         """
         Handle a single user event
 
-        :param event: pygame.event.Event, The event (key) that was pressed
+        :param event: pygame.event.Event, The event that happened
         """
-        if (
-            not self.level_changed
-            and self.player.alive
-            and event.type == pygame.KEYDOWN
-            and event.key == self.config.keys["PAUSE"]
-        ):
+        if self.level_changed or not self.player.alive:
+            return
+
+        if event.type == pygame.KEYDOWN and event.key == self.config.keys["PAUSE"]:
             if not self.paused:
                 self.pause()
             else:
@@ -103,14 +109,14 @@ class Engine(Screen):
         """
         Handle user inputs in the game
         """
-        if self.config.mouse or not self.can_change() or self.paused:
+        if self.config.mouse or not self.can_change():
             return
 
         keys = pygame.key.get_pressed()
         if keys[self.config.keys["LEFT"]] and not keys[self.config.keys["RIGHT"]]:
-            self.player.rotating = "LEFT"
+            self.player.rotating = "left"
         elif keys[self.config.keys["RIGHT"]] and not keys[self.config.keys["LEFT"]]:
-            self.player.rotating = "RIGHT"
+            self.player.rotating = "right"
         else:
             self.player.rotating = ""
 
@@ -128,17 +134,17 @@ class Engine(Screen):
         """
         Handle mouse use in the game
         """
-        if not self.config.mouse or not self.can_change() or self.paused:
+        if not self.config.mouse or not self.can_change():
             return
 
         pos = Vector(*pygame.mouse.get_pos())
         scaled_pos = pos * (WIN_WIDTH, WIN_HEIGHT) / pygame.display.get_window_size()
         vector = Vector(scaled_pos.x - self.player.x, scaled_pos.y - self.player.y)
         angle = self.player.rotation.angle_to(vector)
-        if round(angle, 2) < 0 and vector.norm > 5:
-            self.player.rotating = "LEFT"
-        elif round(angle, 2) > 0 and vector.norm > 5:
-            self.player.rotating = "RIGHT"
+        if round(angle, 2) < 0:
+            self.player.rotating = "left"
+        elif round(angle, 2) > 0:
+            self.player.rotating = "right"
         else:
             self.player.rotating = ""
 
@@ -183,7 +189,7 @@ class Engine(Screen):
         :param y: int, The y coordinate of the explosion
         """
         self.explosions.append(Explosion(x, y))
-        self.mixer.play("Explosion.wav", 1)
+        self.mixer.play("Explosion.wav", 1.2)
 
     def ship_death(self, ship: Ship):
         """
@@ -232,6 +238,7 @@ class Engine(Screen):
         :param dt: int, The time delta between frames
         """
         for enemy in self.enemies:
+            enemy.update(dt)
             if enemy.collide(self.player):
                 enemy.die()
                 self.player_death()
@@ -244,7 +251,6 @@ class Engine(Screen):
                 self.mixer.play("Laser.wav", 0.15)
             if isinstance(enemy, (CommandShip, DeathShip)) and enemy.can_drop():
                 enemy.drop_mine(self.mines)
-            enemy.update(dt)
 
     def update_mines(self, dt: int):
         """
@@ -266,23 +272,23 @@ class Engine(Screen):
         :param dt: int, The time delta between frames
         """
         for laser in self.player_lasers:
+            laser.update(dt)
             for enemy in self.enemies + self.mines:
                 if laser.collide(enemy):
                     laser.die()
                     enemy.die()
-                    if enemy in self.enemies:
+                    if isinstance(enemy, Ship):
                         self.ship_death(enemy)
                     self.create_explosion(enemy.x, enemy.y)
                     self.score += enemy.points
                     break
-            laser.update(dt)
 
         for laser in self.enemies_lasers:
+            laser.update(dt)
             if laser.collide(self.player):
                 laser.die()
                 self.player_death()
                 self.create_explosion(self.player.x, self.player.y)
-            laser.update(dt)
 
     def update_explosions(self, dt: int):
         """
@@ -302,12 +308,12 @@ class Engine(Screen):
         if self.paused:
             return
 
+        self.player.update(dt)
         self.update_enemies(dt)
         self.update_mines(dt)
         self.update_lasers(dt)
         self.update_explosions(dt)
 
-        self.player.update(dt)
         self.force_field.update()
         self.force_field.bounce(
             self.player,

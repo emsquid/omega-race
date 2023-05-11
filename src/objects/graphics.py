@@ -1,7 +1,6 @@
 import pygame
 from time import time
 from threading import Timer
-from math import pi, cos, sin
 from random import randrange, random
 from src.objects.base import Object, Entity, Text
 from src.objects.sprites import Player, Laser
@@ -30,7 +29,7 @@ class Background:
     """
 
     def __init__(self):
-        self.image = pygame.Surface((WIN_WIDTH, WIN_HEIGHT))
+        self.image = pygame.Surface((WIN_WIDTH, WIN_HEIGHT)).convert_alpha()
         self.stars = [
             [
                 randrange(WIN_WIDTH),
@@ -46,9 +45,9 @@ class Background:
 
         :param dt: int, The time delta between frames
         """
-        # test = pygame.Surface((WIN_WIDTH, WIN_HEIGHT)).convert_alpha()
-        # test.fill((0, 0, 0, min(int(dt * 3), 255)))
-        # self.image.blit(test, (0, 0))
+        # alpha = pygame.Surface((WIN_WIDTH, WIN_HEIGHT)).convert_alpha()
+        # alpha.fill((0, 0, 0, min(int(dt * 3), 255)))
+        # self.image.blit(alpha, (0, 0))
         self.image.fill(BLACK)
         for star in self.stars:
             pygame.draw.line(self.image, WHITE, (star[0], star[1]), (star[0], star[1]))
@@ -67,11 +66,11 @@ class Panel:
 
     def __init__(self, config: Config):
         self.config = config
-        self.level = Text("LEVEL 1", 460, 325, color=GREEN, anchor="topleft")
-        self.score_text = Text("SCORE", 330, 325, anchor="topleft")
-        self.score = Text("0", 330, 360, anchor="topleft")
-        self.highscore_text = Text("HIGHSCORE", 330, 415, anchor="topleft")
-        self.highscore = Text("0", 330, 445, anchor="topleft")
+        self.level = Text("LEVEL 1", 460, 340, color=GREEN, anchor="left")
+        self.score_text = Text("SCORE", 330, 340, anchor="left")
+        self.score = Text("0", 330, 375, anchor="left")
+        self.highscore_text = Text("HIGHSCORE", 330, 415, anchor="left")
+        self.highscore = Text("0", 330, 450, anchor="left")
         self.image = Player.create_image(self.config.color)
         self.lives = 3
 
@@ -105,7 +104,8 @@ class Panel:
         )
         self.score.update(content=str(score))
         self.highscore.update(content=str(highscore))
-        self.image = Player.create_image(self.config.color) 
+        self.image = Player.create_image(self.config.color)
+
 
 class Border(Object):
     """
@@ -127,6 +127,7 @@ class Border(Object):
         self.normal = normal
         self.visible = visible
         self.changed = True
+        self.update()
 
     def show(self):
         """
@@ -157,6 +158,7 @@ class Border(Object):
         """
         if not self.changed:
             return
+
         image = pygame.Surface((self.rect.width, self.rect.height))
         if self.visible:
             image.fill(WHITE)
@@ -191,107 +193,26 @@ class ForceField:
     """
 
     def __init__(self):
-        # TODO: Look for improvements here
+        left = Vector(-1, 0)
+        right = Vector(1, 0)
+        top = Vector(0, -1)
+        bottom = Vector(0, 1)
         self.borders = [
             # Left and right borders
-            Border(
-                20,
-                WIN_HEIGHT / 4 + 10,
-                3,
-                CEN_Y - 17,
-                Vector(1, 0),
-                False,
-            ),
-            Border(
-                20,
-                WIN_HEIGHT * 3 / 4 - 10,
-                3,
-                CEN_Y - 17,
-                Vector(1, 0),
-                False,
-            ),
-            Border(
-                WIN_WIDTH - 20,
-                WIN_HEIGHT / 4 + 10,
-                3,
-                CEN_Y - 17,
-                Vector(-1, 0),
-                False,
-            ),
-            Border(
-                WIN_WIDTH - 20,
-                WIN_HEIGHT * 3 / 4 - 10,
-                3,
-                CEN_Y - 17,
-                Vector(-1, 0),
-                False,
-            ),
+            Border(20, WIN_HEIGHT / 4 + 10, 3, CEN_Y - 17, right, False),
+            Border(20, WIN_HEIGHT * 3 / 4 - 10, 3, CEN_Y - 17, right, False),
+            Border(WIN_WIDTH - 20, WIN_HEIGHT / 4 + 10, 3, CEN_Y - 17, left, False),
+            Border(WIN_WIDTH - 20, WIN_HEIGHT * 3 / 4 - 10, 3, CEN_Y - 17, left, False),
             # Top and bottom borders
-            Border(
-                WIN_WIDTH / 4 + 10,
-                20,
-                CEN_X - 17,
-                3,
-                Vector(0, 1),
-                False,
-            ),
-            Border(
-                WIN_WIDTH * 3 / 4 - 10,
-                20,
-                CEN_X - 17,
-                3,
-                Vector(0, 1),
-                False,
-            ),
-            Border(
-                WIN_WIDTH / 4 + 10,
-                WIN_HEIGHT - 20,
-                CEN_X - 17,
-                3,
-                Vector(0, -1),
-                False,
-            ),
-            Border(
-                WIN_WIDTH * 3 / 4 - 10,
-                WIN_HEIGHT - 20,
-                CEN_X - 17,
-                3,
-                Vector(0, -1),
-                False,
-            ),
+            Border(WIN_WIDTH / 4 + 10, 20, CEN_X - 17, 3, bottom, False),
+            Border(WIN_WIDTH * 3 / 4 - 10, 20, CEN_X - 17, 3, bottom, False),
+            Border(WIN_WIDTH / 4 + 10, WIN_HEIGHT - 20, CEN_X - 17, 3, top, False),
+            Border(WIN_WIDTH * 3 / 4 - 10, WIN_HEIGHT - 20, CEN_X - 17, 3, top, False),
             # Border for the display panel
-            Border(
-                CEN_X - PAN_WIDTH / 2,
-                CEN_Y,
-                3,
-                PAN_HEIGHT + 3,
-                Vector(-1, 0),
-                True,
-            ),
-            Border(
-                CEN_X + PAN_WIDTH / 2,
-                CEN_Y,
-                3,
-                PAN_HEIGHT + 3,
-                Vector(1, 0),
-                True,
-            ),
-            Border(
-                CEN_X,
-                CEN_Y - PAN_HEIGHT / 2,
-                PAN_WIDTH + 3,
-                3,
-                Vector(0, -1),
-                True,
-            ),
-            Border(
-                CEN_X,
-                CEN_Y + PAN_HEIGHT / 2,
-                PAN_WIDTH + 3,
-                3,
-                Vector(0, 1),
-                True,
-            ),
+            Border(CEN_X - PAN_WIDTH / 2, CEN_Y, 3, PAN_HEIGHT + 3, left, True),
+            Border(CEN_X + PAN_WIDTH / 2, CEN_Y, 3, PAN_HEIGHT + 3, right, True),
+            Border(CEN_X, CEN_Y - PAN_HEIGHT / 2, PAN_WIDTH + 3, 3, top, True),
+            Border(CEN_X, CEN_Y + PAN_HEIGHT / 2, PAN_WIDTH + 3, 3, bottom, True),
         ]
 
     def draw(self, surface: pygame.Surface):

@@ -32,7 +32,7 @@ class Player(Entity):
     def __init__(self, color: tuple[int]):
         direction = Vector(0, -1)
         super().__init__(500, 200, Player.create_image(color), direction, direction, 0)
-        # LEFT | RIGHT
+        # left | right
         self.rotating = ""
         self.last_collision = 0
         self.last_shoot = 0
@@ -89,9 +89,9 @@ class Player(Entity):
 
         :param dt: int, The time delta between frames
         """
-        if self.rotating == "LEFT":
+        if self.rotating == "left":
             self.set_rotation(self.rotation.rotate(-dt * pi / 725))
-        elif self.rotating == "RIGHT":
+        elif self.rotating == "right":
             self.set_rotation(self.rotation.rotate(dt * pi / 725))
 
     def update(self, dt: int):
@@ -179,12 +179,14 @@ class Ship(Entity):
 
         panel_x, panel_y = CEN_X - PAN_WIDTH / 2, CEN_Y - PAN_HEIGHT / 2
         panel_rect = pygame.Rect(panel_x, panel_y, PAN_WIDTH, PAN_HEIGHT)
-        return len(panel_rect.clipline(self.x, self.y, entity.x, entity.y)) == 0
+        intersections = panel_rect.clipline(self.x, self.y, entity.x, entity.y)
+        return self.alive and len(intersections) == 0
 
     def turn(self):
         """
         Change ship direction when reaching the right distance
         """
+        # TODO: Look for improvements here
         # top left
         if (
             self.x + self.distance < CEN_X - PAN_WIDTH / 2
@@ -314,7 +316,6 @@ class CommandShip(Ship):
         :param player: Player, The player to shoot at
         :param lasers: list[Laser]: The lasers already in the game
         """
-        # TODO: Preshot player position, maybe shoot only when can see player
         direction = Vector(player.x - self.x, player.y - self.y)
         lasers.append(Laser(self.x, self.y, direction))
         self.shoot_cooldown = randrange(3, 8)

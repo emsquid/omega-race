@@ -26,17 +26,17 @@ class Mixer:
         :param file: str, The filename of the music
         :param volume: float, The volume to play the music at
         """
-        pygame.mixer.music.load(f"assets/sounds/{file}")
-        pygame.mixer.music.set_volume(volume * self.config.volume)
-        pygame.mixer.music.play(-1)
         self.music_volume = volume
+        pygame.mixer.music.load(f"assets/sounds/{file}")
+        pygame.mixer.music.set_volume(self.music_volume * self.config.volume)
+        pygame.mixer.music.play(-1)
 
     def play(self, file: str, volume: float):
         """
         Play a sound effect
 
         :param file: str, The filename of the sound
-        :param volume: float, The volume to play the music at
+        :param volume: float, The volume to play the sound at
         """
         sound = pygame.mixer.Sound(f"assets/sounds/{file}")
         sound.set_volume(volume * self.config.volume)

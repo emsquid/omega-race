@@ -29,10 +29,10 @@ class Config:
                 config = eval(file.read())
                 self.name = config["name"]
                 self.keys = config["keys"]
+                self.mouse = config["mouse"]
                 self.volume = config["volume"]
                 self.fps = config["fps"]
                 self.color = config["color"]
-                self.mouse = config["mouse"]
         except Exception:
             self.name = ""
             self.keys = {
@@ -43,10 +43,10 @@ class Config:
                 "SHOOT": pygame.K_SPACE,
                 "PAUSE": pygame.K_p,
             }
+            self.mouse = False
             self.volume = 1
             self.fps = 120
             self.color = WHITE
-            self.mouse = False
 
     def save(self):
         """
@@ -57,8 +57,8 @@ class Config:
                 "name": self.name,
                 "keys": self.keys,
                 "volume": self.volume,
+                "mouse": self.mouse,
                 "fps": self.fps,
                 "color": self.color,
-                "mouse": self.mouse,
             }
             file.write(str(config))

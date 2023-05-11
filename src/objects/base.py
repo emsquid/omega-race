@@ -1,6 +1,7 @@
-import math
+from __future__ import annotations
 import pygame
 from time import time
+from math import pi, degrees
 from src.vector import Vector
 from src.const import WHITE
 
@@ -38,6 +39,8 @@ class Object:
             self.image = pygame.image.load(f"assets/images/{image}").convert_alpha()
         elif isinstance(image, pygame.Surface):
             self.image = image.convert_alpha()
+        else:
+            raise TypeError(f"'{type(image).__name__} can't be used as an image")
         self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect(center=(self.x, self.y))
 
@@ -49,7 +52,7 @@ class Object:
         """
         surface.blit(self.image, self.rect)
 
-    def collide(self, other) -> bool:
+    def collide(self, other: Object) -> bool:
         """
         Check for collision with any other object
 
@@ -87,7 +90,6 @@ class Entity(Object):
         self.set_direction(direction)
         self.set_rotation(rotation)
         self.set_speed(speed)
-        self.original_image = self.image
         self.alive = True
 
     def set_image(self, image: str | pygame.Surface):
@@ -97,14 +99,12 @@ class Entity(Object):
         :param image: str | pygame.Surface, The image of the entity
         """
         if isinstance(image, str):
-            self.original_image = pygame.image.load(
-                f"assets/images/{image}"
-            ).convert_alpha()
+            self.image = pygame.image.load(f"assets/images/{image}").convert_alpha()
         elif isinstance(image, pygame.Surface):
-            self.original_image = image.convert_alpha()
-        self.image = self.original_image
-        self.mask = pygame.mask.from_surface(self.original_image)
-        self.rect = self.original_image.get_rect(center=(self.x, self.y))
+            self.image = image.convert_alpha()
+        self.base_image = self.image
+        self.mask = pygame.mask.from_surface(self.image)
+        self.rect = self.image.get_rect(center=(self.x, self.y))
 
     def set_direction(self, direction: Vector):
         """
@@ -173,8 +173,8 @@ class Entity(Object):
             return
         self.move(dt)
         # Create the rotated image and center it properly
-        angle = -math.degrees(self.rotation.angle + math.pi / 2)
-        self.image = pygame.transform.rotate(self.original_image, angle)
+        angle = -degrees(self.rotation.angle + pi / 2)
+        self.image = pygame.transform.rotate(self.base_image, angle)
         self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect(center=(self.x, self.y))
 
@@ -201,11 +201,11 @@ class Text(Object):
         anchor: str = "center",
     ):
         self.font = pygame.font.Font("assets/fonts/font.ttf", size)
-        self.anchor = anchor
-        self.update(content, color)
+        self.image = self.font.render(content, True, color).convert_alpha()
         super().__init__(x, y, self.image)
+        self.update(content, color, anchor)
 
-    def update(self, content: str = None, color: tuple = None):
+    def update(self, content: str = None, color: tuple = None, anchor: str = None):
         """
         Update the text image
 
@@ -214,25 +214,14 @@ class Text(Object):
         """
         self.content = content if content is not None else self.content
         self.color = color if color is not None else self.color
+        self.anchor = anchor if anchor is not None else self.anchor
         self.image = self.font.render(self.content, True, self.color).convert_alpha()
-
-    def draw(self, surface: pygame.Surface):
-        """
-        Draw the text on the surface
-
-        :param surface: pygame.Surface, The surface to draw the text on
-        """
-        width, height = self.image.get_size()
         if self.anchor == "center":
-            surface.blit(self.image, (self.x - width / 2, self.y - height / 2))
+            self.rect = self.image.get_rect(center=(self.x, self.y))
         elif self.anchor == "left":
-            surface.blit(self.image, (self.x, self.y - height / 2))
+            self.rect = self.image.get_rect(midleft=(self.x, self.y))
         elif self.anchor == "right":
-            surface.blit(self.image, (self.x - width, self.y - height / 2))
-        elif self.anchor == "topleft":
-            surface.blit(self.image, (self.x, self.y))
-        elif self.anchor == "topright":
-            surface.blit(self.image, (self.x - width, self.y))
+            self.rect = self.image.get_rect(midright=(self.x, self.y))
 
 
 class Explosion(Object):
@@ -244,9 +233,9 @@ class Explosion(Object):
     """
 
     def __init__(self, x: int, y: int):
+        self.step = 1
+        self.last_update = time()
         super().__init__(x, y, "Explosion1.png")
-        self.step = 0
-        self.last_update = 0
 
     def can_update(self) -> bool:
         """
@@ -263,8 +252,8 @@ class Explosion(Object):
         if not self.can_update():
             return
         self.step += 1
-        self.set_image(f"Explosion{self.step}.png")
         self.last_update = time()
+        self.set_image(f"Explosion{self.step}.png")
 
     def draw(self, surface: pygame.Surface):
         """
