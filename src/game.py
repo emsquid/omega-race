@@ -1,6 +1,5 @@
 import os
 import pygame
-from time import time
 from src.objects.base import Text
 from src.objects.graphics import Background, Panel
 from src.screens import Welcome, Home, Scores, Settings, GameOver
@@ -77,7 +76,7 @@ class Game:
         for event in events:
             if event.type == pygame.QUIT:
                 self.exit()
-            elif event.type == pygame.KEYDOWN:
+            else:
                 self.screens[self.current].handle_event(event)
 
         self.screens[self.current].handle_keys()

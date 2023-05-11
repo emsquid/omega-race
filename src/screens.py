@@ -163,7 +163,7 @@ class Welcome(Screen):
 
         self.title = Text("Omega Race", CEN_X, WIN_HEIGHT / 5, 90)
         self.input_text = Text("Enter your name:", CEN_X, CEN_Y, 40)
-        self.input = Text(self.config.name, CEN_X, CEN_Y + 50, 40)
+        self.input = Text(self.config.name, CEN_X, CEN_Y + 50, 40, self.config.color)
 
         self.objects = [self.title, self.input_text, self.input]
         self.choices = [(self.input, HOME)]
@@ -181,7 +181,9 @@ class Welcome(Screen):
         :param event: pygame.event.Event, The event (key) that was pressed
         """
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_BACKSPACE:
+            if event.key == pygame.K_RETURN:
+                self.choice = HOME
+            elif event.key == pygame.K_BACKSPACE:
                 self.config.name = self.config.name[:-1]
             elif event.unicode.isalnum() and len(self.config.name) < 10:
                 self.config.name += event.unicode.upper()
@@ -193,7 +195,6 @@ class Welcome(Screen):
         :param dt: int, The time delta between frames
         """
         self.input.update(content=self.config.name + ("_" if time() % 1 > 0.5 else " "))
-        self.update_color(self.input, 0)
 
 
 class Home(Screen):
@@ -305,18 +306,21 @@ class Settings(Screen):
         self.shoot_text = Text("SHOOT :", CEN_X - 50, CEN_Y, anchor="right")
         self.shoot_key = Text(name(self.config.keys["SHOOT"]), CEN_X + 100, CEN_Y)
 
-        self.mouse_text = Text("MOUSE :", CEN_X - 50, CEN_Y + 40, anchor="right")
-        self.mouse = Text("OFF", CEN_X + 100, CEN_Y + 40)
+        self.pause_text = Text("PAUSE :", CEN_X - 50, CEN_Y + 40, anchor="right")
+        self.pause_key = Text(name(self.config.keys["PAUSE"]), CEN_X + 100, CEN_Y + 40)
 
-        self.volume_text = Text("VOLUME :", CEN_X - 50, CEN_Y + 80, anchor="right")
-        self.volume = Text(f"< {config.volume*100}% >", CEN_X + 100, CEN_Y + 80)
+        self.mouse_text = Text("MOUSE :", CEN_X - 50, CEN_Y + 80, anchor="right")
+        self.mouse = Text("OFF", CEN_X + 100, CEN_Y + 80)
 
-        self.fps_text = Text("FPS :", CEN_X - 50, CEN_Y + 120, anchor="right")
-        self.fps = Text(f"< {config.fps} >", CEN_X + 100, CEN_Y + 120)
+        self.volume_text = Text("VOLUME :", CEN_X - 50, CEN_Y + 120, anchor="right")
+        self.volume = Text(f"< {config.volume*100}% >", CEN_X + 100, CEN_Y + 120)
 
-        self.color_text = Text("COLOR :", CEN_X - 50, CEN_Y + 160, anchor="right")
-        self.color_arrows = Text("<       >", CEN_X + 100, CEN_Y + 160)
-        self.color_circle = Object(CEN_X + 103, CEN_Y + 160, pygame.Surface((40, 40)))
+        self.fps_text = Text("FPS :", CEN_X - 50, CEN_Y + 160, anchor="right")
+        self.fps = Text(f"< {config.fps} >", CEN_X + 100, CEN_Y + 160)
+
+        self.color_text = Text("COLOR :", CEN_X - 50, CEN_Y + 200, anchor="right")
+        self.color_arrows = Text("<       >", CEN_X + 100, CEN_Y + 200)
+        self.color_circle = Object(CEN_X + 103, CEN_Y + 200, pygame.Surface((40, 40)))
 
         self.home = Text("HOME", WIN_WIDTH * 4 / 5, WIN_HEIGHT - 100, 40)
 
@@ -335,6 +339,7 @@ class Settings(Screen):
             (self.left_key, None),
             (self.right_key, None),
             (self.shoot_key, None),
+            (self.pause_key, None),
             (self.mouse, None),
             (self.volume, None),
             (self.fps, None),
@@ -360,29 +365,29 @@ class Settings(Screen):
         super().handle_keys()
         keys = pygame.key.get_pressed()
         if keys[pygame.K_RETURN]:
-            if self.selection < 5:
+            if self.selection < 6:
                 self.popup_open = True
-            elif self.selection == 5:
+            elif self.selection == 6:
                 self.config.mouse = not self.config.mouse
             self.last_change = time()
 
         if keys[self.config.keys["LEFT"]] and not keys[self.config.keys["RIGHT"]]:
-            if self.selection == 6:
-                self.config.volume = max(self.config.volume - 0.05, 0)
             if self.selection == 7:
-                self.config.fps = max(self.config.fps - 5, 30)
+                self.config.volume = max(self.config.volume - 0.05, 0)
             if self.selection == 8:
+                self.config.fps = max(self.config.fps - 5, 30)
+            if self.selection == 9:
                 self.config.color = PLAYER_COLOR[
                     (PLAYER_COLOR.index(self.config.color) - 1) % len(PLAYER_COLOR)
                 ]
             self.last_change = time()
 
         if keys[self.config.keys["RIGHT"]] and not keys[self.config.keys["LEFT"]]:
-            if self.selection == 6:
-                self.config.volume = min(self.config.volume + 0.05, 1)
             if self.selection == 7:
-                self.config.fps = min(self.config.fps + 5, 240)
+                self.config.volume = min(self.config.volume + 0.05, 1)
             if self.selection == 8:
+                self.config.fps = min(self.config.fps + 5, 240)
+            if self.selection == 9:
                 self.config.color = PLAYER_COLOR[
                     (PLAYER_COLOR.index(self.config.color) + 1) % len(PLAYER_COLOR)
                 ]
@@ -398,9 +403,9 @@ class Settings(Screen):
         super().handle_mouse()
         buttons = pygame.mouse.get_pressed()
         if buttons[0]:
-            if 0 <= self.selection < 5:
+            if 0 <= self.selection < 6:
                 self.popup_open = True
-            elif self.selection == 5:
+            elif self.selection == 6:
                 self.config.mouse = not self.config.mouse
             self.last_change = time()
 
@@ -408,7 +413,7 @@ class Settings(Screen):
         """
         Handle a user event when the popup is open
 
-        :param event: pygame.event.Event, The event (key) that was pressed
+        :param event: pygame.event.Event, The event that was pressed
         """
         if self.popup_open and event.type == pygame.KEYDOWN:
             if self.selection == 0:
@@ -421,9 +426,22 @@ class Settings(Screen):
                 self.config.update_key("RIGHT", event.key)
             elif self.selection == 4:
                 self.config.update_key("SHOOT", event.key)
+            elif self.selection == 5:
+                self.config.update_key("PAUSE", event.key)
 
             self.popup_open = False
             self.last_change = time()
+
+        if self.config.mouse and event.type == pygame.MOUSEWHEEL:
+            if self.selection == 7:
+                self.config.volume = min(max(self.config.volume + 0.05 * event.y, 0), 1)
+            if self.selection == 8:
+                self.config.fps = min(max(self.config.fps + 5 * event.y, 30), 240)
+            if self.selection == 9:
+                self.config.color = PLAYER_COLOR[
+                    (PLAYER_COLOR.index(self.config.color) + event.y)
+                    % len(PLAYER_COLOR)
+                ]
 
     def update(self, dt: int):
         """
@@ -446,18 +464,21 @@ class Settings(Screen):
         self.shoot_key.update(content=name(self.config.keys["SHOOT"]))
         self.update_color(self.shoot_key, 4)
 
+        self.pause_key.update(content=name(self.config.keys["PAUSE"]))
+        self.update_color(self.pause_key, 5)
+
         self.mouse.update(content="ON" if self.config.mouse else "OFF")
-        self.update_color(self.mouse, 5)
+        self.update_color(self.mouse, 6)
 
         self.volume.update(content=f"< {round(self.config.volume*100)}% >")
-        self.update_color(self.volume, 6)
+        self.update_color(self.volume, 7)
 
         self.fps.update(content=f"< {self.config.fps} >")
-        self.update_color(self.fps, 7)
+        self.update_color(self.fps, 8)
 
-        self.update_color(self.color_arrows, 8)
+        self.update_color(self.color_arrows, 9)
 
-        self.update_color(self.home, 9)
+        self.update_color(self.home, 10)
 
         pygame.draw.circle(self.color_circle.image, self.config.color, (20, 20), 15)
 
@@ -473,6 +494,8 @@ class Settings(Screen):
             self.right_key,
             self.shoot_text,
             self.shoot_key,
+            self.pause_text,
+            self.pause_key,
             self.mouse_text,
             self.mouse,
             self.volume_text,
