@@ -268,19 +268,22 @@ class Settings(Screen):
 
         self.shoot_text = Text("SHOOT :", CEN_X - 50, CEN_Y, anchor="right")
         self.shoot_key = Text(name(self.config.keys["SHOOT"]), CEN_X + 100, CEN_Y)
+        
+        self.pause_text = Text("PAUSE :", CEN_X - 50, CEN_Y +40, anchor="right")
+        self.pause_key = Text(name(self.config.keys["PAUSE"]), CEN_X + 100, CEN_Y+40)
+         
+        self.mouse_text = Text("MOUSE :", CEN_X - 50, CEN_Y + 80, anchor="right")
+        self.mouse = Text("OFF", CEN_X + 100, CEN_Y + 80)
 
-        self.mouse_text = Text("MOUSE :", CEN_X - 50, CEN_Y + 40, anchor="right")
-        self.mouse = Text("OFF", CEN_X + 100, CEN_Y + 40)
+        self.volume_text = Text("VOLUME :", CEN_X - 50, CEN_Y + 120, anchor="right")
+        self.volume = Text(f"< {config.volume*100}% >", CEN_X + 100, CEN_Y + 120)
 
-        self.volume_text = Text("VOLUME :", CEN_X - 50, CEN_Y + 80, anchor="right")
-        self.volume = Text(f"< {config.volume*100}% >", CEN_X + 100, CEN_Y + 80)
+        self.fps_text = Text("FPS :", CEN_X - 50, CEN_Y + 160, anchor="right")
+        self.fps = Text(f"< {config.fps} >", CEN_X + 100, CEN_Y + 160)
 
-        self.fps_text = Text("FPS :", CEN_X - 50, CEN_Y + 120, anchor="right")
-        self.fps = Text(f"< {config.fps} >", CEN_X + 100, CEN_Y + 120)
-
-        self.color_text = Text("COLOR :", CEN_X - 50, CEN_Y + 160, anchor="right")
-        self.color_arrows = Text("<       >", CEN_X + 100, CEN_Y + 160)
-        self.color_circle = Object(CEN_X + 103, CEN_Y + 160, pygame.Surface((40, 40)))
+        self.color_text = Text("COLOR :", CEN_X - 50, CEN_Y + 200, anchor="right")
+        self.color_arrows = Text("<       >", CEN_X + 100, CEN_Y + 200)
+        self.color_circle = Object(CEN_X + 103, CEN_Y + 200, pygame.Surface((40, 40)))
 
         self.home = Text("HOME", WIN_WIDTH * 4 / 5, WIN_HEIGHT - 100, 40)
 
@@ -293,7 +296,7 @@ class Settings(Screen):
 
         self.popup_open = False
 
-        self.choices = [None] * 9 + [HOME]
+        self.choices = [None] * 10 + [HOME]
 
     def can_change(self) -> bool:
         """
@@ -313,29 +316,29 @@ class Settings(Screen):
         keys = pygame.key.get_pressed()
         super().handle_keys()
         if keys[pygame.K_RETURN]:
-            if self.selection < 5:
+            if self.selection < 6:
                 self.popup_open = True
-            elif self.selection == 5:
+            elif self.selection == 6:
                 self.config.mouse = not self.config.mouse
             self.last_change = time()
 
         if keys[self.config.keys["LEFT"]] and not keys[self.config.keys["RIGHT"]]:
-            if self.selection == 6:
-                self.config.volume = max(self.config.volume - 0.05, 0)
             if self.selection == 7:
-                self.config.fps = max(self.config.fps - 5, 30)
+                self.config.volume = max(self.config.volume - 0.05, 0)
             if self.selection == 8:
+                self.config.fps = max(self.config.fps - 5, 30)
+            if self.selection == 9:
                 self.config.color = PLAYER_COLOR[
                     (PLAYER_COLOR.index(self.config.color) - 1) % len(PLAYER_COLOR)
                 ]
             self.last_change = time()
 
         if keys[self.config.keys["RIGHT"]] and not keys[self.config.keys["LEFT"]]:
-            if self.selection == 6:
-                self.config.volume = min(self.config.volume + 0.05, 1)
             if self.selection == 7:
-                self.config.fps = min(self.config.fps + 5, 240)
+                self.config.volume = min(self.config.volume + 0.05, 1)
             if self.selection == 8:
+                self.config.fps = min(self.config.fps + 5, 240)
+            if self.selection == 9:
                 self.config.color = PLAYER_COLOR[
                     (PLAYER_COLOR.index(self.config.color) + 1) % len(PLAYER_COLOR)
                 ]
@@ -357,7 +360,10 @@ class Settings(Screen):
             elif self.selection == 3:
                 self.config.update_key("RIGHT", event.key)
             elif self.selection == 4:
-                self.config.update_key("SHOOT", event.key)
+                self.config.update_key("SHOOT", event.key) 
+            elif self.selection == 5:
+                self.config.update_key("PAUSE", event.key) 
+             
 
             self.popup_open = False
             self.last_change = time()
@@ -383,18 +389,21 @@ class Settings(Screen):
         self.shoot_key.update(content=name(self.config.keys["SHOOT"]))
         self.update_color(self.shoot_key, 4)
 
+        self.pause_key.update(content=name(self.config.keys["PAUSE"]))
+        self.update_color(self.pause_key, 5)
+ 
         self.mouse.update(content="ON" if self.config.mouse else "OFF")
-        self.update_color(self.mouse, 5)
+        self.update_color(self.mouse, 6)
 
         self.volume.update(content=f"< {round(self.config.volume*100)}% >")
-        self.update_color(self.volume, 6)
+        self.update_color(self.volume, 7)
 
         self.fps.update(content=f"< {self.config.fps} >")
-        self.update_color(self.fps, 7)
+        self.update_color(self.fps, 8)
 
-        self.update_color(self.color_arrows, 8)
+        self.update_color(self.color_arrows, 9)
 
-        self.update_color(self.home, 9)
+        self.update_color(self.home, 10)
 
         pygame.draw.circle(self.color_circle.image, self.config.color, (20, 20), 15)
 
@@ -410,6 +419,8 @@ class Settings(Screen):
             self.right_key,
             self.shoot_text,
             self.shoot_key,
+            self.pause_text,
+            self.pause_key,
             self.mouse_text,
             self.mouse,
             self.volume_text,
