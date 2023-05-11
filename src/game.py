@@ -78,21 +78,21 @@ class Game:
             if event.type == pygame.QUIT:
                 self.exit()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    choice = self.screens[self.current].get_choice()
-                    if choice is not None:
-                        if choice == PLAY:
-                            self.mixer.music("Battle.wav", 0.3)
-                            self.screens[PLAY].start()
-                        # TODO: Not clean ;(
-                        elif choice == SETTINGS:
-                            self.screens[SETTINGS].last_change = time()
-                        self.current = choice
-                else:
-                    self.screens[self.current].handle_event(event)
+                self.screens[self.current].handle_event(event)
 
         self.screens[self.current].handle_keys()
         self.screens[self.current].handle_mouse()
+
+        choice = self.screens[self.current].get_choice()
+        if choice is not None:
+            self.current = choice
+            self.screens[self.current].reset()
+            if choice == PLAY:
+                self.mixer.music("Battle.wav", 0.3)
+            elif choice == GAMEOVER:
+                score, level = self.screens[PLAY].score, self.screens[PLAY].level
+                self.data.add_score(self.config.name, score, level)
+                self.mixer.music("Menu.wav", 1)
 
     def update(self):
         """
@@ -107,17 +107,12 @@ class Game:
 
         if self.current == PLAY:
             engine = self.screens[PLAY]
-            if engine.running():
-                self.panel.update(
-                    engine.lives,
-                    engine.level,
-                    engine.score,
-                    max(engine.score, self.data.highscore()),
-                )
-            else:
-                self.data.add_score(self.config.name, engine.score, engine.level)
-                self.current = GAMEOVER
-                self.mixer.music("Menu.wav", 1)
+            self.panel.update(
+                engine.lives,
+                engine.level,
+                engine.score,
+                max(engine.score, self.data.highscore()),
+            )
 
     def run(self):
         """

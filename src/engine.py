@@ -1,5 +1,4 @@
 import pygame
-from math import pi, atan2
 from time import time
 from random import randrange
 from threading import Timer
@@ -18,7 +17,7 @@ from src.screens import Screen
 from src.config import Config
 from src.mixer import Mixer
 from src.vector import Vector
-from src.const import WIN_WIDTH, WIN_HEIGHT, CEN_Y, PAN_HEIGHT, ENEMY_NUMBER
+from src.const import WIN_WIDTH, WIN_HEIGHT, CEN_Y, PAN_HEIGHT, GAMEOVER, ENEMY_NUMBER
 
 
 class Engine(Screen):
@@ -32,17 +31,18 @@ class Engine(Screen):
     def __init__(self, config: Config, mixer: Mixer):
         super().__init__(config, mixer)
 
-    def start(self):
+    def reset(self):
         """
         Completely start the game
         """
+        super().reset()
         self.level = 1
         self.lives = 3
         self.score = 0
         self.paused = False
-        self.reset()
+        self.restart()
 
-    def reset(self):
+    def restart(self):
         """
         Reset the game state, except for score and lives
         """
@@ -103,7 +103,7 @@ class Engine(Screen):
         """
         Handle user inputs in the game
         """
-        if self.config.mouse or self.paused:
+        if self.config.mouse or not self.can_change() or self.paused:
             return
 
         keys = pygame.key.get_pressed()
@@ -128,7 +128,7 @@ class Engine(Screen):
         """
         Handle mouse use in the game
         """
-        if not self.config.mouse or self.paused:
+        if not self.config.mouse or not self.can_change() or self.paused:
             return
 
         pos = Vector(*pygame.mouse.get_pos())
@@ -214,7 +214,7 @@ class Engine(Screen):
         if not self.level_changed and self.player.alive:
             self.lives -= 1
             self.player.die()
-            Timer(0.7, self.reset).start()
+            Timer(0.7, self.restart).start()
 
     def change_level(self):
         """
@@ -223,7 +223,7 @@ class Engine(Screen):
         if not self.level_changed and self.player.alive:
             self.level += 1
             self.level_changed = True
-            Timer(0.7, self.reset).start()
+            Timer(0.7, self.restart).start()
 
     def update_enemies(self, dt: int):
         """
@@ -326,13 +326,10 @@ class Engine(Screen):
             *self.explosions,
         ]
 
+        # Level cleared
         if all(not enemy.alive for enemy in self.enemies):
             self.change_level()
 
-    def running(self) -> bool:
-        """
-        Check if the game is still considered running
-
-        :return: bool, Whether the game is running or not
-        """
-        return self.lives >= 0 or not self.player.alive
+        # Gameover
+        if self.lives < 0 and self.player.alive:
+            self.choice = GAMEOVER

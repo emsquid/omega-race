@@ -5,6 +5,7 @@ from src.objects.graphics import Border
 from src.config import Config
 from src.data import Data
 from src.mixer import Mixer
+from src.vector import Vector
 from src.const import (
     WIN_WIDTH,
     WIN_HEIGHT,
@@ -35,11 +36,18 @@ class Screen:
     def __init__(self, config: Config, mixer: Mixer):
         self.config = config
         self.mixer = mixer
-        self.last_change = 0
 
-        self.selection = 0
-        self.choices: list[str] = []
         self.objects: list[Object] = []
+        self.choices: list[tuple[Object, int]] = []
+        self.reset()
+
+    def reset(self):
+        """
+        Reset the state of the screen
+        """
+        self.last_change = time()
+        self.choice = None
+        self.selection = 0 if not self.config.mouse else -1
 
     def can_change(self) -> bool:
         """
@@ -53,9 +61,7 @@ class Screen:
         """
         Get the currently selectionned choice
         """
-        return (
-            self.choices[self.selection] if self.selection < len(self.choices) else None
-        )
+        return self.choice
 
     def get_objects(self) -> tuple[Object]:
         """
@@ -77,10 +83,16 @@ class Screen:
         """
         Handle user key press in the screen
         """
-        if not self.can_change():
+        if self.config.mouse or not self.can_change():
             return
 
         keys = pygame.key.get_pressed()
+        if keys[pygame.K_RETURN]:
+            self.choice = (
+                self.choices[self.selection][1]
+                if 0 <= self.selection < len(self.choices)
+                else None
+            )
         if keys[self.config.keys["UP"]] and not keys[self.config.keys["DOWN"]]:
             self.selection = (self.selection - 1) % len(self.choices)
             self.last_change = time()
@@ -92,7 +104,27 @@ class Screen:
         """
         Handle user mouse press in the screen
         """
-        pass
+        if not self.config.mouse or not self.can_change():
+            return
+
+        buttons = pygame.mouse.get_pressed()
+        if buttons[0]:
+            self.choice = (
+                self.choices[self.selection][1]
+                if 0 <= self.selection < len(self.choices)
+                else None
+            )
+            self.last_change = time()
+
+        pos = Vector(*pygame.mouse.get_pos())
+        scaled_pos = pos * (WIN_WIDTH, WIN_HEIGHT) / pygame.display.get_window_size()
+        selected = False
+        for i in range(len(self.choices)):
+            if self.choices[i][0].rect.collidepoint(scaled_pos.x, scaled_pos.y):
+                self.selection = i
+                selected = True
+
+        self.selection = self.selection if selected else -1
 
     def update_color(self, text: Text, number: int):
         """
@@ -133,14 +165,14 @@ class Welcome(Screen):
         self.input_text = Text("Enter your name:", CEN_X, CEN_Y, 40)
         self.input = Text(self.config.name, CEN_X, CEN_Y + 50, 40)
 
-        self.choices = [HOME]
         self.objects = [self.title, self.input_text, self.input]
+        self.choices = [(self.input, HOME)]
 
     def get_choice(self) -> int:
         """
         Get the currently selectionned choice
         """
-        return super().get_choice() if self.config.name != "" else None
+        return self.choice if self.config.name != "" else None
 
     def handle_event(self, event: pygame.event.Event):
         """
@@ -176,12 +208,16 @@ class Home(Screen):
         super().__init__(config, mixer)
 
         self.title = Text("Omega Race", CEN_X, WIN_HEIGHT / 5, 90)
-        self.play = Text("Play", CEN_X, CEN_Y - 50, 40, RED)
+        self.play = Text("Play", CEN_X, CEN_Y - 50, 40)
         self.scores = Text("Scores", CEN_X, CEN_Y + 50, 40)
         self.settings = Text("Settings", CEN_X, CEN_Y + 150, 40)
 
-        self.choices = [PLAY, SCORES, SETTINGS]
         self.objects = [self.title, self.play, self.scores, self.settings]
+        self.choices = [
+            (self.play, PLAY),
+            (self.scores, SCORES),
+            (self.settings, SETTINGS),
+        ]
 
     def update(self, dt: int):
         """
@@ -220,8 +256,8 @@ class Scores(Screen):
         ]
         self.home = Text("HOME", WIN_WIDTH * 4 / 5, WIN_HEIGHT - 100, 40)
 
-        self.choices = [HOME]
         self.objects = [self.title, *self.names, *self.scores, *self.levels, self.home]
+        self.choices = [(self.home, HOME)]
 
     def update(self, dt: int):
         """
@@ -293,7 +329,18 @@ class Settings(Screen):
 
         self.popup_open = False
 
-        self.choices = [None] * 9 + [HOME]
+        self.choices = [
+            (self.up_key, None),
+            (self.down_key, None),
+            (self.left_key, None),
+            (self.right_key, None),
+            (self.shoot_key, None),
+            (self.mouse, None),
+            (self.volume, None),
+            (self.fps, None),
+            (self.color_arrows, None),
+            (self.home, HOME),
+        ]
 
     def can_change(self) -> bool:
         """
@@ -307,11 +354,11 @@ class Settings(Screen):
         """
         Handle user inputs in the settings
         """
-        if not self.can_change():
+        if self.config.mouse or not self.can_change():
             return
 
-        keys = pygame.key.get_pressed()
         super().handle_keys()
+        keys = pygame.key.get_pressed()
         if keys[pygame.K_RETURN]:
             if self.selection < 5:
                 self.popup_open = True
@@ -339,6 +386,22 @@ class Settings(Screen):
                 self.config.color = PLAYER_COLOR[
                     (PLAYER_COLOR.index(self.config.color) + 1) % len(PLAYER_COLOR)
                 ]
+            self.last_change = time()
+
+    def handle_mouse(self):
+        """
+        Handle mouse use in the settings
+        """
+        if not self.config.mouse or not self.can_change():
+            return
+
+        super().handle_mouse()
+        buttons = pygame.mouse.get_pressed()
+        if buttons[0]:
+            if 0 <= self.selection < 5:
+                self.popup_open = True
+            elif self.selection == 5:
+                self.config.mouse = not self.config.mouse
             self.last_change = time()
 
     def handle_event(self, event: pygame.event.Event):
@@ -438,7 +501,7 @@ class GameOver(Screen):
         super().__init__(config, mixer)
 
         self.title = Text("Game Over", CEN_X, WIN_HEIGHT / 5, 90)
-        self.play = Text("Play Again", WIN_WIDTH / 4, WIN_HEIGHT * 3 / 4 + 50, 40, RED)
+        self.play = Text("Play Again", WIN_WIDTH / 4, WIN_HEIGHT * 3 / 4 + 50, 40)
         self.home = Text("Home", WIN_WIDTH * 3 / 4, WIN_HEIGHT * 3 / 4 + 50, 40)
         self.borders = [
             Border(CEN_X - PAN_WIDTH / 2, CEN_Y, 3, PAN_HEIGHT + 3, 0, True),
@@ -447,14 +510,14 @@ class GameOver(Screen):
             Border(CEN_X, CEN_Y + PAN_HEIGHT / 2, PAN_WIDTH + 3, 3, 0, True),
         ]
 
-        self.choices = [PLAY, HOME]
         self.objects = [self.title, self.play, self.home, *self.borders]
+        self.choices = [(self.play, PLAY), (self.home, HOME)]
 
     def handle_keys(self):
         """
         Handle user inputs in the game over
         """
-        if not self.can_change():
+        if self.config.mouse or not self.can_change():
             return
 
         keys = pygame.key.get_pressed()
