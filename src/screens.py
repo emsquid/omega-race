@@ -316,10 +316,10 @@ class Settings(Screen):
 
         self.home = Text("HOME", WIN_WIDTH * 4 / 5, WIN_HEIGHT - 100, 40)
 
-        popup_image = pygame.Surface((WIN_WIDTH / 2, WIN_HEIGHT / 4))
+        popup_image = pygame.Surface((WIN_WIDTH / 2, WIN_HEIGHT / 4)).convert_alpha()
         popup_image.fill(GREY)
-        Text("Please choose", CEN_X / 2, CEN_Y / 8 - 20, 40, BLACK).draw(popup_image)
-        Text("the new key", CEN_X / 2, CEN_Y / 8 + 20, 40, BLACK).draw(popup_image)
+        Text("Please choose", CEN_X / 2, CEN_Y / 4 - 20, 40, BLACK).draw(popup_image)
+        Text("the new key", CEN_X / 2, CEN_Y / 4 + 20, 40, BLACK).draw(popup_image)
         self.popup = Object(CEN_X, CEN_Y, popup_image)
 
         self.popup_open = False
