@@ -544,6 +544,12 @@ class GameOver(Screen):
             return
 
         keys = pygame.key.get_pressed()
+        if keys[pygame.K_RETURN]:
+            self.choice = (
+                self.choices[self.selection][1]
+                if 0 <= self.selection < len(self.choices)
+                else None
+            )
         if keys[self.config.keys["LEFT"]] and not keys[self.config.keys["RIGHT"]]:
             self.selection = (self.selection - 1) % len(self.choices)
             self.last_change = time()
