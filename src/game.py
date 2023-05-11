@@ -70,9 +70,9 @@ class Game:
         if choice is not None:
             if choice == PLAY:
                 self.mixer.music("Battle.wav", 0.3)
-            elif self.current == PLAY:
+            if self.current == PLAY:
                 self.mixer.music("Menu.wav", 1)
-            elif choice == GAMEOVER:
+            if choice == GAMEOVER:
                 score, level = self.screens[PLAY].score, self.screens[PLAY].level
                 self.data.add_score(self.config.name, score, level)
             self.current = choice

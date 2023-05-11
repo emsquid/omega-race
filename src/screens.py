@@ -124,7 +124,7 @@ class Screen:
         for obj in self.objects:
             obj.draw(surface)
 
-    def update_color(self, text: Text, number: int): #:)
+    def update_color(self, text: Text, number: int):
         """
         Update the color of the text based on its number
 
