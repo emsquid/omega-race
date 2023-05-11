@@ -5,11 +5,9 @@
 This is our first year final project, the goal here is to make a modern version of [Omega Race](https://en.wikipedia.org/wiki/Omega_Race)
 Here is how the old version looks
 
-- Image/Video here
+![Old version](https://github.com/emsquid/omega-race/blob/main/examples/omega_race_old.png)
 
-And here is how our version looks
-
-- Image/Video here
+![New version](https://github.com/emsquid/omega-race/blob/main/examples/omega_race_new.png)
 
 ## Installation
 
