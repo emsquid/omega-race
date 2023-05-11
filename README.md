@@ -7,6 +7,8 @@ Here is how the old version looks
 
 ![Old version](https://github.com/emsquid/omega-race/blob/main/examples/omega_race_old.png)
 
+And here is how our version looks
+
 ![New version](https://github.com/emsquid/omega-race/blob/main/examples/omega_race_new.png)
 
 ## Installation
