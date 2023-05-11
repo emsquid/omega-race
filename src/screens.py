@@ -151,7 +151,7 @@ class Welcome(Screen):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_BACKSPACE:
                 self.config.name = self.config.name[:-1]
-            elif event.unicode.isalnum() and len(self.config.name) < 15:
+            elif event.unicode.isalnum() and len(self.config.name) < 10:
                 self.config.name += event.unicode.upper()
 
     def update(self, dt: int):
