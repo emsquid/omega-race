@@ -17,7 +17,7 @@ class Config:
         :param action: str, The action to change the key for
         :param key: int, The new key
         """
-        if key not in list(self.keys.values()) + [pygame.K_RETURN, pygame.K_ESCAPE]:
+        if key not in list(self.keys.values()) + [pygame.K_RETURN]:
             self.keys[action] = key
 
     def read(self):
@@ -41,7 +41,7 @@ class Config:
                 "LEFT": pygame.K_LEFT,
                 "RIGHT": pygame.K_RIGHT,
                 "SHOOT": pygame.K_SPACE,
-                "PAUSE": pygame.K_p,
+                "PAUSE": pygame.K_ESCAPE,
             }
             self.mouse = False
             self.volume = 1
