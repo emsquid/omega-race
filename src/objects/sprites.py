@@ -178,7 +178,9 @@ class Ship(Entity):
         """
 
         panel_x, panel_y = CEN_X - PAN_WIDTH / 2, CEN_Y - PAN_HEIGHT / 2
-        panel_rect = pygame.Rect(panel_x, panel_y, PAN_WIDTH, PAN_HEIGHT)
+        panel_rect = pygame.Rect(
+            panel_x - 10, panel_y - 10, PAN_WIDTH + 10, PAN_HEIGHT + 10
+        )
         intersections = panel_rect.clipline(self.x, self.y, entity.x, entity.y)
         return self.alive and len(intersections) == 0
 

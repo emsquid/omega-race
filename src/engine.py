@@ -144,9 +144,9 @@ class Engine(Screen):
         scaled_pos = pos * (WIN_WIDTH, WIN_HEIGHT) / pygame.display.get_window_size()
         vector = Vector(scaled_pos.x - self.player.x, scaled_pos.y - self.player.y)
         angle = self.player.rotation.angle_to(vector)
-        if round(angle, 2) < 0:
+        if round(angle, 1) < 0:
             self.player.rotating = "left"
-        elif round(angle, 2) > 0:
+        elif round(angle, 1) > 0:
             self.player.rotating = "right"
         else:
             self.player.rotating = ""
@@ -323,13 +323,13 @@ class Engine(Screen):
         )
 
         self.objects = [
-            self.force_field,
             *self.player_lasers,
             *self.enemies_lasers,
             *self.mines,
             *self.enemies,
             self.player,
             *self.explosions,
+            self.force_field,
         ]
 
         # Level cleared
