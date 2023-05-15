@@ -17,6 +17,7 @@ from src.const import (
     SETTINGS,
     PAUSE,
     GAMEOVER,
+    EXIT,
 )
 
 
@@ -82,6 +83,8 @@ class Game:
             if choice == GAMEOVER:
                 score, level = self.screens[PLAY].score, self.screens[PLAY].level
                 self.data.add_score(self.config.name, score, level)
+            if choice == EXIT:
+                self.exit()
             self.current = choice
             self.screens[self.current].reset()
 

@@ -54,6 +54,7 @@ SCORES = 3
 SETTINGS = 4
 PAUSE = 5
 GAMEOVER = 6
+EXIT = 7
 
 ENEMY_NUMBER = {
     "DroidShip": [5, 5, 6, 7, 7],

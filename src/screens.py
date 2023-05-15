@@ -17,6 +17,7 @@ from src.const import (
     PLAY,
     SCORES,
     SETTINGS,
+    EXIT,
     WHITE,
     BLACK,
     GREY,
@@ -207,15 +208,17 @@ class Home(Screen):
         super().__init__(config, mixer)
 
         self.title = Text("Omega Race", CEN_X, WIN_HEIGHT / 5, 90)
-        self.play = Text("Play", CEN_X, CEN_Y - 50, 40)
-        self.scores = Text("Scores", CEN_X, CEN_Y + 50, 40)
-        self.settings = Text("Settings", CEN_X, CEN_Y + 150, 40)
+        self.play = Text("Play", CEN_X, CEN_Y - 70, 40)
+        self.scores = Text("Scores", CEN_X, CEN_Y + 30, 40)
+        self.settings = Text("Settings", CEN_X, CEN_Y + 130, 40)
+        self.exit = Text("Exit", CEN_X, CEN_Y + 230, 40)
 
-        self.objects = [self.title, self.play, self.scores, self.settings]
+        self.objects = [self.title, self.play, self.scores, self.settings, self.exit]
         self.choices = [
             (self.play, PLAY),
             (self.scores, SCORES),
             (self.settings, SETTINGS),
+            (self.exit, EXIT),
         ]
 
     def update(self, dt: int):
@@ -227,6 +230,7 @@ class Home(Screen):
         self.update_color(self.play, 0)
         self.update_color(self.scores, 1)
         self.update_color(self.settings, 2)
+        self.update_color(self.exit, 3)
 
 
 class Scores(Screen):
