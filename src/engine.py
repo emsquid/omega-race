@@ -162,6 +162,9 @@ class Engine(Screen):
             self.player.shoot(self.player_lasers)
             self.mixer.play("Laser.wav", 0.15)
 
+        if not pygame.mouse.get_focused():
+            self.pause()
+
     def pause(self):
         """
         Pause the game
