@@ -1,5 +1,6 @@
 import os
 import pygame
+from src.objects.base import Text
 from src.objects.graphics import Background, Panel
 from src.screens import Welcome, Home, Scores, Settings, GameOver
 from src.engine import Engine
@@ -101,7 +102,7 @@ class Game:
         self.screens[self.current].draw(self.background.image)
         if self.current in [PLAY, GAMEOVER]:
             self.panel.draw(self.background.image)
-
+        Text(str(int(self.clock.get_fps())), 50, 50).draw(self.background.image)
         size = self.display.get_size()
         pygame.transform.smoothscale(self.background.image, size, self.display)
 
