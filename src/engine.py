@@ -17,7 +17,15 @@ from src.screens import Screen
 from src.config import Config
 from src.mixer import Mixer
 from src.vector import Vector
-from src.const import WIN_WIDTH, WIN_HEIGHT, CEN_Y, PAN_HEIGHT, GAMEOVER, ENEMY_NUMBER
+from src.const import (
+    WIN_WIDTH,
+    WIN_HEIGHT,
+    CEN_Y,
+    PAN_HEIGHT,
+    PAUSE,
+    GAMEOVER,
+    ENEMY_NUMBER,
+)
 
 
 class Engine(Screen):
@@ -31,15 +39,13 @@ class Engine(Screen):
     def __init__(self, config: Config, mixer: Mixer):
         super().__init__(config, mixer)
 
-    def reset(self):
+    def start(self):
         """
         Completely start the game
         """
-        super().reset()
         self.level = 1
         self.lives = 3
         self.score = 0
-        self.paused = False
         self.restart()
 
     def restart(self):
@@ -88,7 +94,7 @@ class Engine(Screen):
 
         :return: bool, Whether it's possible or not
         """
-        return super().can_change() and not self.paused
+        return super().can_change()
 
     def handle_event(self, event: pygame.event.Event):
         """
@@ -100,10 +106,7 @@ class Engine(Screen):
             return
 
         if event.type == pygame.KEYDOWN and event.key == self.config.keys["PAUSE"]:
-            if not self.paused:
-                self.pause()
-            else:
-                self.unpause()
+            self.pause()
 
     def handle_keys(self):
         """
@@ -163,7 +166,7 @@ class Engine(Screen):
         """
         Pause the game
         """
-        self.paused = True
+        self.choice = PAUSE
         for enemy in self.enemies:
             if isinstance(enemy, CommandShip):
                 enemy.shoot_cooldown_pause = time() - enemy.last_shoot
@@ -174,7 +177,6 @@ class Engine(Screen):
         """
         Unpause the game
         """
-        self.paused = False
         for enemy in self.enemies:
             if isinstance(enemy, CommandShip):
                 enemy.last_shoot = time() - enemy.shoot_cooldown_pause
@@ -305,8 +307,6 @@ class Engine(Screen):
 
         :param dt: int, The time delta between frames
         """
-        if self.paused:
-            return
 
         self.player.update(dt)
         self.update_enemies(dt)

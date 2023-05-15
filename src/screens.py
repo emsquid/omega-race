@@ -498,6 +498,54 @@ class Settings(Screen):
         if self.popup_open:
             self.objects.append(self.popup)
 
+class Pause(Screen):
+    """
+
+    :param config: Config, The game configuration
+    :param mixer: Mixer, The game mixer for music and sounds
+    """
+
+    def __init__(self, config: Config, mixer: Mixer):
+        super().__init__(config, mixer)
+
+        self.title = Text("Pause", CEN_X, WIN_HEIGHT / 5, 90)
+        self.play = Text("Resume", WIN_WIDTH / 4, WIN_HEIGHT * 3 / 4 + 50, 40)
+        self.home = Text("Home", WIN_WIDTH * 3 / 4, WIN_HEIGHT * 3 / 4 + 50, 40)
+        self.borders = [
+            Border(CEN_X - PAN_WIDTH / 2, CEN_Y, 3, PAN_HEIGHT + 3, Vector(0, 0), True),
+            Border(CEN_X + PAN_WIDTH / 2, CEN_Y, 3, PAN_HEIGHT + 3, Vector(0, 0), True),
+            Border(CEN_X, CEN_Y - PAN_HEIGHT / 2, PAN_WIDTH + 3, 3, Vector(0, 0), True),
+            Border(CEN_X, CEN_Y + PAN_HEIGHT / 2, PAN_WIDTH + 3, 3, Vector(0, 0), True),
+        ]
+
+        self.objects = [self.title, self.play, self.home, *self.borders]
+        self.choices = [(self.play, PLAY), (self.home, HOME)]
+
+    def handle_keys(self):
+        """
+        Handle user inputs in the pause
+        """
+        if self.config.mouse or not self.can_change():
+            return
+
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_RETURN]:
+            self.choice = self.get_choice()
+        if keys[self.config.keys["LEFT"]] and not keys[self.config.keys["RIGHT"]]:
+            self.selection = (self.selection - 1) % len(self.choices)
+            self.last_change = time()
+        if keys[self.config.keys["RIGHT"]] and not keys[self.config.keys["LEFT"]]:
+            self.selection = (self.selection + 1) % len(self.choices)
+            self.last_change = time()
+
+    def update(self, dt: int):
+        """
+        Update the situation of all objects
+
+        :param dt: int, The time delta between frames
+        """
+        self.update_color(self.play, 0)
+        self.update_color(self.home, 1) 
 
 class GameOver(Screen):
     """

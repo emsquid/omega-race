@@ -1,7 +1,7 @@
 import os
 import pygame
 from src.objects.graphics import Background, Panel
-from src.screens import Welcome, Home, Scores, Settings, GameOver
+from src.screens import Welcome, Home, Scores, Settings, Pause, GameOver
 from src.engine import Engine
 from src.config import Config
 from src.mixer import Mixer
@@ -14,6 +14,7 @@ from src.const import (
     PLAY,
     SCORES,
     SETTINGS,
+    PAUSE,
     GAMEOVER,
 )
 
@@ -49,6 +50,7 @@ class Game:
             PLAY: Engine(self.config, self.mixer),
             SCORES: Scores(self.config, self.mixer, self.data),
             SETTINGS: Settings(self.config, self.mixer),
+            PAUSE: Pause(self.config, self.mixer),
             GAMEOVER: GameOver(self.config, self.mixer),
         }
 
@@ -70,9 +72,13 @@ class Game:
         if choice is not None:
             if choice == PLAY:
                 self.mixer.music("Battle.wav", 0.3)
-            elif self.current == PLAY:
+                if self.current == PAUSE:
+                    self.screens[PLAY].unpause()
+                else:
+                    self.screens[PLAY].start()
+            if self.current == PLAY:
                 self.mixer.music("Menu.wav", 1)
-            elif choice == GAMEOVER:
+            if choice == GAMEOVER:
                 score, level = self.screens[PLAY].score, self.screens[PLAY].level
                 self.data.add_score(self.config.name, score, level)
             self.current = choice
@@ -99,7 +105,7 @@ class Game:
         Draw the game objects on top of the background and display it
         """
         self.screens[self.current].draw(self.background.image)
-        if self.current in [PLAY, GAMEOVER]:
+        if self.current in [PLAY, PAUSE, GAMEOVER]:
             self.panel.draw(self.background.image)
 
         size = self.display.get_size()

@@ -52,7 +52,8 @@ HOME = 1
 PLAY = 2
 SCORES = 3
 SETTINGS = 4
-GAMEOVER = 5
+PAUSE = 5
+GAMEOVER = 6
 
 ENEMY_NUMBER = {
     "DroidShip": [5, 5, 6, 7, 7],
