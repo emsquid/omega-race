@@ -22,7 +22,7 @@ from src.const import (
     BLACK,
     GREY,
     RED,
-    PLAYER_COLOR,
+    PLAYER_COLORS,
 )
 
 
@@ -380,8 +380,8 @@ class Settings(Screen):
             if self.selection == 8:
                 self.config.fps = min(max(self.config.fps + 5 * scroll, 30), 240)
             if self.selection == 9:
-                index = PLAYER_COLOR.index(self.config.color)
-                self.config.color = PLAYER_COLOR[(index + scroll) % len(PLAYER_COLOR)]
+                index = PLAYER_COLORS.index(self.config.color)
+                self.config.color = PLAYER_COLORS[(index + scroll) % len(PLAYER_COLORS)]
 
     def handle_keys(self):
         """
@@ -405,8 +405,8 @@ class Settings(Screen):
             if self.selection == 8:
                 self.config.fps = max(self.config.fps - 5, 30)
             if self.selection == 9:
-                index = PLAYER_COLOR.index(self.config.color)
-                self.config.color = PLAYER_COLOR[(index - 1) % len(PLAYER_COLOR)]
+                index = PLAYER_COLORS.index(self.config.color)
+                self.config.color = PLAYER_COLORS[(index - 1) % len(PLAYER_COLORS)]
             self.last_change = time()
 
         if keys[self.config.keys["RIGHT"]] and not keys[self.config.keys["LEFT"]]:
@@ -415,8 +415,8 @@ class Settings(Screen):
             if self.selection == 8:
                 self.config.fps = min(self.config.fps + 5, 240)
             if self.selection == 9:
-                index = PLAYER_COLOR.index(self.config.color)
-                self.config.color = PLAYER_COLOR[(index + 1) % len(PLAYER_COLOR)]
+                index = PLAYER_COLORS.index(self.config.color)
+                self.config.color = PLAYER_COLORS[(index + 1) % len(PLAYER_COLORS)]
             self.last_change = time()
 
     def handle_mouse(self):
@@ -502,6 +502,7 @@ class Settings(Screen):
         if self.popup_open:
             self.objects.append(self.popup)
 
+
 class Pause(Screen):
     """
 
@@ -549,7 +550,8 @@ class Pause(Screen):
         :param dt: int, The time delta between frames
         """
         self.update_color(self.play, 0)
-        self.update_color(self.home, 1) 
+        self.update_color(self.home, 1)
+
 
 class GameOver(Screen):
     """

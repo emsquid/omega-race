@@ -27,7 +27,7 @@ DARK_PINK = (230, 44, 120)
 GREY = (94, 93, 93)
 BROWN = (133, 83, 61)
 
-PLAYER_COLOR = [
+PLAYER_COLORS = [
     GREY,
     WHITE,
     PURPLE,

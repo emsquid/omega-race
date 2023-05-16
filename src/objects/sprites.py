@@ -1,7 +1,7 @@
 import pygame
 from time import time
 from math import pi, sqrt
-from random import randrange, random
+from random import randrange, random, choice
 from src.objects.base import Entity
 from src.vector import Vector
 from src.const import CEN_X, CEN_Y, PAN_WIDTH, PAN_HEIGHT, WHITE
@@ -179,7 +179,7 @@ class Ship(Entity):
 
         panel_x, panel_y = CEN_X - PAN_WIDTH / 2, CEN_Y - PAN_HEIGHT / 2
         panel_rect = pygame.Rect(
-            panel_x - 10, panel_y - 10, PAN_WIDTH + 10, PAN_HEIGHT + 10
+            panel_x - 10, panel_y - 10, PAN_WIDTH + 20, PAN_HEIGHT + 20
         )
         intersections = panel_rect.clipline(self.x, self.y, entity.x, entity.y)
         return self.alive and len(intersections) == 0
@@ -284,6 +284,7 @@ class CommandShip(Ship):
         self.last_drop = time()
         self.shoot_cooldown = randrange(3, 8)
         self.last_shoot = time()
+        self.init = time()
 
     def can_drop(self) -> bool:
         """
@@ -323,6 +324,16 @@ class CommandShip(Ship):
         self.shoot_cooldown = randrange(3, 8)
         self.last_shoot = time()
 
+    def update(self, dt):
+        self.set_image(
+            "DroidShip.png"
+            if time() - self.init < 2 and time() % 1 < 0.5
+            else "Transformation1.png"
+            if time() - self.init < 2
+            else "CommandShip.png"
+        )
+        super().update(dt)
+
 
 class DeathShip(Ship):
     """
@@ -338,6 +349,7 @@ class DeathShip(Ship):
         super().__init__(x, y, "DeathShip.png", direction, 0.2, 2000, level)
         self.drop_cooldown = randrange(10, 20)
         self.last_drop = time()
+        self.init = time()
 
     def can_drop(self) -> bool:
         """
@@ -353,13 +365,19 @@ class DeathShip(Ship):
 
         :param enemies: list[Mine], The mines already in the game
         """
-        mine_type = randrange(0, 2)
-        if mine_type == 1:
-            mines.insert(0, VaporMine(self.x, self.y))
-        else:
-            mines.insert(0, PhotonMine(self.x, self.y))
+        mines.insert(0, choice((VaporMine, PhotonMine))(self.x, self.y))
         self.drop_cooldown = randrange(10, 20)
         self.last_drop = time()
 
     def turn(self):
         pass
+
+    def update(self, dt):
+        self.set_image(
+            "CommandShip.png"
+            if time() - self.init < 2 and time() % 1 < 0.5
+            else "Transformation2.png"
+            if time() - self.init < 2
+            else "DeathShip.png"
+        )
+        super().update(dt)

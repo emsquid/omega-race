@@ -1,6 +1,5 @@
 import os
 import pygame
-from src.objects.base import Text
 from src.objects.graphics import Background, Panel
 from src.screens import Welcome, Home, Scores, Settings, Pause, GameOver
 from src.engine import Engine
@@ -74,10 +73,10 @@ class Game:
         if choice is not None:
             if choice == PLAY:
                 self.mixer.music("Battle.wav", 0.3)
-                if self.current == PAUSE:
-                    self.screens[PLAY].unpause()
-                else:
+                if self.current != PAUSE:
                     self.screens[PLAY].start()
+                else:
+                    self.screens[PLAY].unpause()
             if self.current == PLAY:
                 self.mixer.music("Menu.wav", 1)
             if choice == GAMEOVER:
@@ -111,7 +110,6 @@ class Game:
         self.screens[self.current].draw(self.background.image)
         if self.current in [PLAY, PAUSE, GAMEOVER]:
             self.panel.draw(self.background.image)
-        Text(str(int(self.clock.get_fps())), 50, 50).draw(self.background.image)
         size = self.display.get_size()
         pygame.transform.smoothscale(self.background.image, size, self.display)
 

@@ -41,7 +41,7 @@ class Config:
                 "LEFT": pygame.K_LEFT,
                 "RIGHT": pygame.K_RIGHT,
                 "SHOOT": pygame.K_SPACE,
-                "PAUSE": pygame.K_ESCAPE,
+                "PAUSE": pygame.K_p,
             }
             self.mouse = False
             self.volume = 1
