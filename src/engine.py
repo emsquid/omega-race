@@ -88,11 +88,20 @@ class Engine(Screen):
 
         self.level_changed = False
 
+    def handle_event(self, event: pygame.event.Event):
+        """
+        Handle a single user event
+
+        :param event: pygame.event.Event, The event to handle
+        """
+        if event.type == pygame.KEYDOWN and event.key == self.config.keys["PAUSE"]:
+            self.pause()
+
     def handle_keys(self):
         """
         Handle user inputs in the game
         """
-        if self.config.mouse:
+        if self.config.mouse or not self.can_change():
             return
 
         keys = pygame.key.get_pressed()
@@ -113,14 +122,11 @@ class Engine(Screen):
             self.player.shoot(self.player_lasers)
             self.mixer.play("Laser.wav", 0.15)
 
-        if keys[self.config.keys["PAUSE"]]:
-            self.pause()
-
     def handle_mouse(self):
         """
         Handle mouse use in the game
         """
-        if not self.config.mouse:
+        if not self.config.mouse or not self.can_change():
             return
 
         pos = Vector(*pygame.mouse.get_pos())
