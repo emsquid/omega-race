@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="fr-FR">
+
+<head>
+    <meta charset="utf-8" />
+    <title>omega race</title>
+    <link rel="stylesheet" type="text/css" href="../css/page_secondaire.css" />
+</head>
+
+<body>
+    <h1>
+        Developpement
+    </h1>
+    <div class="para">
+        <h2>Structure :</h2>
+        <div>
+            <br>
+            <br>
+            <br>
+            TODO
+            <br>
+            <br>
+            <br>
+        </div>
+    </div>
+    <div class="para">
+        <h2>Classes :</h2>
+        <!-- c'est moche au pire je referait un truc en mode déroulant qui marche cette fois -->
+        <div>
+            <ul>
+                <li>
+                    Object
+                    <ul class="sous1">
+                        <li>Entity
+                            <ul>
+                                <li>
+                                    Ship
+                                    <ul class="sous2">
+                                        <li>DroidShip</li>
+                                        <li>CommandShip</li>
+                                        <li>DeathShip</li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    Mine
+                                    <ul class="sous2">
+                                        <li>VaporMine</li>
+                                        <li>PhotonMine</li>
+                                    </ul>
+                                </li>
+                                <li>Player</li>
+                                <li>Laser</li>
+                            </ul>
+                        </li>
+                        <li>Text</li>
+                        <li>Explosion</li>
+                        <li>Border</li>
+                    </ul>
+                </li>
+                <li>Background</li>
+                <li>ForceField</li>
+                <li>Panel</li>
+                <li>Vector</li>
+                <li>
+                    Screen
+                    <ul class="sous1">
+                        <li>Welcome</li>
+                        <li>Home</li>
+                        <li>Scores</li>
+                        <li>Settings</li>
+                        <li>Pause</li>
+                        <li>GameOver</li>
+                        <li>Engine</li>
+                    </ul>
+
+                </li>
+                <li>Data</li>
+                <li>Mixer</li>
+            </ul>
+        
+            <dl>
+                <dt>Object</dt>
+                <dd class="sous"><em>pygame</em><br>
+                    C'est la classe de base de tout les objets qui serons affichés.
+                    <ul>
+                        <li>__init__</li>
+                        <li>set_position</li>
+                        <li>set_image</li>
+                        <li>draw</li>
+                        <li>collide</li>
+                    </ul>
+                </dd>
+                <dt>Entity</dt>
+                <dd class="sous">
+                    <em>pygame math Vector</em><br>
+                    Cette classe permet de définir les objects qui meurt et/ou ce déplacent.
+                    <ul>
+                        <li>__init__</li>
+                        <li>set_image</li>
+                        <li>set_direction</li>
+                        <li>set_rotation</li>
+                        <li>set_speed</li>
+                        <li>die</li>
+                        <li>draw</li>
+                        <li>move</li>
+                        <li>update</li>
+                    </ul>
+                </dd>
+                <dt>Ship</dt>
+                <dd>
+                    <em>pygame math</em>
+                    <ul>
+                        <li>__init__</li>
+                        <li>can_see</li>
+                        <li>turn</li>
+                        <li>rotate</li>
+                        <li>update</li>
+                    </ul>
+                </dd>
+                <!-- a completer c'est chiant et pour les def j'aimerais
+                les cacher et un bouton pour afficher il faudras faire du js 
+                (c'est ps tres dur)-->
+                <dt>DroidShip</dt>
+                <dd>
+                    Cette classe créer les Droidship. Ses vaisseaux sont les plus lents
+                    mais ils suivent le joueurs.
+                    <ul>
+                        <li>__init__</li>
+                        <li>follow</li>
+                    </ul>
+                </dd>
+                <dt>CommandShip</dt>
+                <dd>
+                    <em>random time</em> <br>
+                    Cette classes permet de créer des CommandShip. Ses vaisseaux peuvent
+                    tirer sur le joueur et déposer des VaporMine.
+                    <ul>
+                        <li>__init__</li>
+                        <li>can_drop</li>
+                        <li>can_shoot</li>
+                        <li>drop_mine</li>
+                        <li>shoot</li>
+                        <li>update</li>
+                    </ul>
+                </dd>
+                <dt>DeathShip</dt>
+                <dd>
+                    <em>random time</em> <br>
+                    Cette classe permet de créer de DeathShip. Ses vaisseaux peuvent
+                    lancer des 2 types de mines, ils sont également les plus rapide.
+                    <ul>
+                        <li>__init__</li>
+                        <li>can_drop</li>
+                        <li>drop_mine</li>
+                        <li>turn</li>
+                        <li>update</li>
+                    </ul>
+                </dd>
+                <dt>Mine</dt>
+                <dd>
+                    Cette classe permet de créer une mine.
+                    <ul>
+                        <li>__init__</li>
+                    </ul>
+                </dd>
+                <dt>PhotonMine</dt>
+                <dd>
+                    Cette classe permet de créer une PhotonMine.
+                    Ces mines sont les plus petites.
+                    <ul>
+                        <li>__init__</li>
+                    </ul>
+                </dd>
+                <dt>VaporMine</dt>
+                <dd>
+                    Cette classe permet de créer une VaporMine.
+                    Ces mines sont les plus grandes.
+                    <ul>
+                        <li>__init__</li>
+                    </ul>
+                </dd>
+                <dt>Player</dt>
+                <dd>
+                    <em>pygame time</em> <br>
+                    Cette classe permet de créer le Player. Un joueur doit pouvoir 
+                    se déplacer et tirer.
+                    <ul>
+                        <li>__init__</li>
+                        <li>create_image</li>
+                        <li> can_thrust</li>
+                        <li>can_shoot</li>
+                        <li>thrust</li>
+                        <li>shoot</li>
+                        <li>rotate</li>
+                        <li>update</li>
+                    </ul>
+                </dd>
+                <dt>Laser</dt>
+                <dd>
+                     <em>pygame</em><br>
+                     Cette classe permet de créer un laser qui peut etre tirer par 
+                     un ennemi ou le joueur.
+                     <ul>
+                         <li>__init__</li>
+                     </ul>
+                </dd>
+                <dt>Background</dt>
+                <dd>
+                    <em>pygame</em><br>
+                    Cette classe permet de faire le fond du jeu.
+                    On peut y voir des etoiles s'y déplacer.
+                    <ul>
+                        <li>__init__</li>
+                        <li>update</li>
+                    </ul>
+                </dd>
+                <dt>Panel</dt>
+                <dd>
+                    Cette classe permet de créer le contenue du rectangle au milieu de 
+                    l'écran durant le jeu. C'est a dire le score du joueur, le meilleur
+                    score, le niveau et le nombre de vies restantes au joueur.
+                    <ul>
+                        <li>__init__</li>
+                        <li>draw</li>
+                        <li>update</li>
+                    </ul>
+                </dd>
+                <dt>Border</dt>
+                <dd>
+                    <em>threading</em><br>
+                    Cette classe permet de créer un bord.
+                    <ul>
+                        <li>__init__</li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                    </ul>
+                </dd>
+                <dd></dd>
+                <dd></dd>                                       
+                <dd></dd>
+                <dd></dd>
+                <dd></dd>
+                <dd></dd>
+                <dd></dd>
+                <dd></dd>
+                <dd></dd>
+                <dd></dd>
+                <dd></dd>
+                <dd></dd>
+                <dd></dd>
+                <dd></dd>
+                <dd></dd>
+                <dd></dd>
+            </dl>
+        </div>
+    </div>
+    <div class="para">
+        <h2>Graphismes :</h2>
+        <div>
+            <p>Entités:</p>
+            <ul>
+                <li>
+                    <img src="../../assets/images/DroidShip.png" alt="DroidShip">
+                    DroidShip
+                </li>
+                <li>
+                    <img src="../../assets/images/CommandShip.png" alt="CommandShip">
+                    CommandShip
+                </li>
+                <li>
+                    <img src="../../assets/images/DeathShip.png" alt="DeathShip">
+                    DeathShip
+                </li>
+                <li>
+                    <img src="../../assets/images/VaporMine.png" alt="VaporMine">
+                    VaporMine
+                </li>
+                <li>
+                    <img src="../../assets/images/PhotonMine.png" alt="PhotonMine">
+                    PhotonMine
+                </li>
+                <li>
+
+                    <img src="../../assets/images/PlayerDetails1.png" alt="Player">
+                    Player (change de couleur)
+                </li>
+            </ul>
+            <!-- on pourras enlever si on met une video -->
+            <p>Ecran d'accueil :</p>
+            <img src="../../assets/images/Welcome.png" alt="Welcome" class="ecran">
+            <br>
+            <p>Menu : </p>
+            <img src="../../assets/images/Home.png" alt="Home" class="ecran">
+            <br>
+            <p>Ecran pendant le jeu :</p>
+            <img src="../../assets/images/Game.png" alt="Game" class="ecran">
+            <br>
+            <p>Ecran du GameOver :</p>
+            <img src="../../assets/images/GameOver.png" alt="GameOver" class="ecran">
+            <br>
+
+            <p>Ecran des scores :</p>
+            <img src="../../assets/images/Scores.png" alt="Scores" class="ecran">
+            <br>
+            <p>Ecran des paramètres :</p>
+            <img src="../../assets/images/Settings.png" alt="Settings" class="ecran">
+            <br>
+
+
+            <br>
+
+
+        </div>
+    </div>
+    <div class="para">
+        <h2>fonctions clefs :</h2>
+        <div>
+            <br>
+            <br>
+            <br>
+            jcp quoi choisir
+            <br>
+            <br>
+            <br>
+        </div>
+    </div>
+    <div class="para">
+        <h2>Videos :</h2>
+        <div>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+        </div>
+    </div>
+    <a href="../index.html" class="home">Home</a>
+</body>

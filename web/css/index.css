@@ -1,0 +1,30 @@
+@font-face {
+  font-family: "font";
+  src: url("../../assets/fonts/font.ttf")
+}
+
+
+body{
+    background-color: black;
+    font-family: "font";
+    text-align: center;
+    color: white; 
+}
+
+h1{
+    font-size: 100px;
+}
+
+div{
+    margin:50px;
+}
+
+a{
+    color: white;
+    text-decoration-line: none;
+    font-size: 60px; 
+}
+
+a:hover{
+    color: red;
+}

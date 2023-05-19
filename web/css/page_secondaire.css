@@ -1,0 +1,95 @@
+@font-face {
+  font-family: "font";
+  src: url("../../assets/fonts/font.ttf")
+}
+
+@font-face {
+  font-family: "test";
+  src: url("../../assets/fonts/test.otf")
+}
+   
+
+
+
+body{
+    background-color: black;
+    font-family: "font";
+    color: white;
+}
+
+h1{
+    font-size: 100px;
+    text-align: center;
+} 
+
+h2{
+    font-size: 40px;
+    margin: 35px;
+    margin-bottom: 15px;
+}
+
+.para{
+    margin: auto;
+    width: 90% ;
+}
+
+.para{
+    margin-top: 10px;
+    padding: 30px;  
+    border: solid 2px white;
+}
+
+a{
+    float: right;
+    color: white;
+    text-decoration-line: none;
+    font-size: 40px; 
+    margin: 30px;
+}
+
+a:hover{
+    color: red;
+} 
+  
+dt, p, ul{
+    font-family: "test";
+    font-size: 30px;
+
+}
+
+.old_enemy{
+    height: 35px;
+}
+
+.ecran{
+    display: block;
+    margin:auto;
+    width: 550px;
+}
+
+
+dd, dd ul{
+    font-family: "test";
+    font-size: 25px;
+}
+/* TODO c'est nul pour le moment */
+ .sous1, .sous2, .def{ 
+    display: none;   
+}       
+
+ul li:hover .sous1{
+    display:block;
+ } 
+ 
+ul li li li:hover .sous2{
+    display:block;
+ } 
+
+ div:hover .def{
+     display: block;
+ }
+
+
+
+
+
