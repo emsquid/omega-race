@@ -1,95 +1,91 @@
 @font-face {
-  font-family: "font";
-  src: url("../../assets/fonts/font.ttf")
+    font-family: "font";
+    src: url("../../assets/fonts/font.ttf");
 }
 
 @font-face {
-  font-family: "test";
-  src: url("../../assets/fonts/test.otf")
+    font-family: "test";
+    src: url("../../assets/fonts/test.otf");
 }
-   
 
-
-
-body{
+body {
     background-color: black;
     font-family: "font";
     color: white;
 }
 
-h1{
+h1 {
     font-size: 100px;
     text-align: center;
-} 
+}
 
-h2{
+h2 {
     font-size: 40px;
     margin: 35px;
     margin-bottom: 15px;
 }
 
-.para{
+.para {
     margin: auto;
-    width: 90% ;
+    width: 90%;
 }
 
-.para{
+.para {
     margin-top: 10px;
-    padding: 30px;  
+    padding: 30px;
     border: solid 2px white;
 }
 
-a{
+a {
     float: right;
     color: white;
     text-decoration-line: none;
-    font-size: 40px; 
+    font-size: 40px;
     margin: 30px;
 }
 
-a:hover{
+a:hover {
     color: red;
-} 
-  
-dt, p, ul{
-    font-family: "test";
-    font-size: 30px;
-
 }
 
-.old_enemy{
+dt,
+p,
+ul {
+    font-family: "test";
+    font-size: 30px;
+}
+
+.old_enemy {
     height: 35px;
 }
 
-.ecran{
+.ecran {
     display: block;
-    margin:auto;
+    margin: auto;
     width: 550px;
 }
 
-
-dd, dd ul{
+dd,
+dd ul {
     font-family: "test";
     font-size: 25px;
 }
 /* TODO c'est nul pour le moment */
- .sous1, .sous2, .def{ 
-    display: none;   
-}       
+/* Oui */
+.sous1,
+.sous2,
+.def {
+    display: none;
+}
 
-ul li:hover .sous1{
-    display:block;
- } 
- 
-ul li li li:hover .sous2{
-    display:block;
- } 
+ul li:hover .sous1 {
+    display: block;
+}
 
- div:hover .def{
-     display: block;
- }
+ul li li li:hover .sous2 {
+    display: block;
+}
 
-
-
-
-
+div:hover .def {
+    display: block;
+}
