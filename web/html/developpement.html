@@ -27,57 +27,58 @@
         <h2>Classes :</h2>
         <!-- c'est moche au pire je referait un truc en mode déroulant qui marche cette fois -->
         <div>
-            <ul>
-                <li>
-                    Object
-                    <ul class="sous1">
-                        <li>Entity
-                            <ul>
-                                <li>
-                                    Ship
-                                    <ul class="sous2">
-                                        <li>DroidShip</li>
-                                        <li>CommandShip</li>
-                                        <li>DeathShip</li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    Mine
-                                    <ul class="sous2">
-                                        <li>VaporMine</li>
-                                        <li>PhotonMine</li>
-                                    </ul>
-                                </li>
-                                <li>Player</li>
-                                <li>Laser</li>
-                            </ul>
-                        </li>
-                        <li>Text</li>
-                        <li>Explosion</li>
-                        <li>Border</li>
-                    </ul>
-                </li>
-                <li>Background</li>
-                <li>ForceField</li>
-                <li>Panel</li>
+            <ul class="classes">
                 <li>Vector</li>
                 <li>
-                    Screen
+                    <a href="classes.html#Object">Object</a>
                     <ul class="sous1">
-                        <li>Welcome</li>
-                        <li>Home</li>
-                        <li>Scores</li>
-                        <li>Settings</li>
-                        <li>Pause</li>
-                        <li>GameOver</li>
-                        <li>Engine</li>
+                        <li> <a href="classes.html#Entity">Entity</a>
+                            <ul>
+                                <li><a href="classes.html#Laser">Laser</a> </li>
+                                <li>
+                                    <a href="classes.html#Ship">Ship</a>
+                                    <ul class="sous2">
+                                        <li><a href="classes.html#DroidShip">DroidShip</a> </li>
+                                        <li><a href="classes.html#CommandShip">CommandShip</a> </li>
+                                        <li><a href="classes.html#DeathShip">DeathShip</a> </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="classes.html#Mine">Mine</a>
+                                    <ul class="sous2">
+                                        <li><a href="classes.html#VaporMine">VaporMine</a> </li>
+                                        <li><a href="classes.html#PhotonMine">PhotonMine</a> </li>
+                                    </ul>
+                                </li>
+                                <li><a href="classes.html#Player">Player</a> </li>
+                            </ul>
+                        </li>
+                        <li><a href="classes.html#Text">Text</a></li>
+                        <li><a href="classes.html#Explosion">Explosion</a></li>
+                        <li><a href="classes.html#Border">Border</a></li>
                     </ul>
-
                 </li>
-                <li>Data</li>
-                <li>Mixer</li>
+                <li><a href="classes.html#Background">Background</a></li>
+                <li><a href="classes.html#ForceField">ForceField</a></li>
+                <li><a href="classes.html#Panel">Panel</a></li>
+                <li><a href="classes.html#Config">Config</a></li>
+                <li><a href="classes.html#Data">Data</a></li>
+                <li><a href="classes.html#Mixer">Mixer</a></li>
+                <li>
+                    <a href="classes.html#Screen">Screen</a>
+                    <ul class="sous1">
+                        <li><a href="classes.html#Welcome">Welcome</a></li>
+                        <li><a href="classes.html#Home">Home</a></li>
+                        <li><a href="classes.html#Scores">Scores</a></li>
+                        <li><a href="classes.html#Settings">Settings</a></li>
+                        <li><a href="classes.html#Pause">Pause</a></li>
+                        <li><a href="classes.html#GameOver">GameOver</a></li>
+                        <li><a href="classes.html#Engine">Engine</a></li>
+                    </ul>
+                </li>
+                <li><a href="classes.html#Game">Game</a></li>
             </ul>
-
+            <!--
             <dl>
                 <dt>Object</dt>
                 <dd class="sous"><em>pygame</em><br>
@@ -120,7 +121,7 @@
                 <!-- a completer c'est chiant et pour les def j'aimerais
                 les cacher et un bouton pour afficher il faudras faire du js 
                 (c'est ps tres dur)-->
-                <dt>DroidShip</dt>
+            <!--             <dt>DroidShip</dt>
                 <dd>
                     Cette classe créer les Droidship. Ses vaisseaux sont les plus lents
                     mais ils suivent le joueurs.
@@ -255,66 +256,10 @@
                 <dd></dd>
                 <dd></dd>
             </dl>
+-->
         </div>
     </div>
-    <div class="para">
-        <h2>Graphismes :</h2>
-        <div>
-            <p>Entités:</p>
-            <ul>
-                <li>
-                    <img src="../../assets/images/DroidShip.png" alt="DroidShip">
-                    DroidShip
-                </li>
-                <li>
-                    <img src="../../assets/images/CommandShip.png" alt="CommandShip">
-                    CommandShip
-                </li>
-                <li>
-                    <img src="../../assets/images/DeathShip.png" alt="DeathShip">
-                    DeathShip
-                </li>
-                <li>
-                    <img src="../../assets/images/VaporMine.png" alt="VaporMine">
-                    VaporMine
-                </li>
-                <li>
-                    <img src="../../assets/images/PhotonMine.png" alt="PhotonMine">
-                    PhotonMine
-                </li>
-                <li>
 
-                    <img src="../../assets/images/PlayerDetails1.png" alt="Player">
-                    Player (change de couleur)
-                </li>
-            </ul>
-            <!-- on pourras enlever si on met une video -->
-            <p>Ecran d'accueil :</p>
-            <img src="../../assets/images/Welcome.png" alt="Welcome" class="ecran">
-            <br>
-            <p>Menu : </p>
-            <img src="../../assets/images/Home.png" alt="Home" class="ecran">
-            <br>
-            <p>Ecran pendant le jeu :</p>
-            <img src="../../assets/images/Game.png" alt="Game" class="ecran">
-            <br>
-            <p>Ecran du GameOver :</p>
-            <img src="../../assets/images/GameOver.png" alt="GameOver" class="ecran">
-            <br>
-
-            <p>Ecran des scores :</p>
-            <img src="../../assets/images/Scores.png" alt="Scores" class="ecran">
-            <br>
-            <p>Ecran des paramètres :</p>
-            <img src="../../assets/images/Settings.png" alt="Settings" class="ecran">
-            <br>
-
-
-            <br>
-
-
-        </div>
-    </div>
     <div class="para">
         <h2>fonctions clefs :</h2>
         <div>

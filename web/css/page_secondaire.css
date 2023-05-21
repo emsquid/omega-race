@@ -24,6 +24,33 @@ h2 {
     margin: 35px;
     margin-bottom: 15px;
 }
+ 
+em{
+    color: lightgreen;
+}
+ 
+a{
+    color: white;
+    text-decoration-line: none;
+    font-size: 40px;
+}
+
+a:hover {
+    color: red;
+} 
+
+dt,
+p,
+ul, li a{
+    font-family: "test";
+    font-size: 30px;
+}
+
+dd,
+dd ul{
+    font-family: "test";
+    font-size: 25px;
+}
 
 .para {
     margin: auto;
@@ -36,23 +63,9 @@ h2 {
     border: solid 2px white;
 }
 
-a {
+.home{
     float: right;
-    color: white;
-    text-decoration-line: none;
-    font-size: 40px;
     margin: 30px;
-}
-
-a:hover {
-    color: red;
-}
-
-dt,
-p,
-ul {
-    font-family: "test";
-    font-size: 30px;
 }
 
 .old_enemy {
@@ -65,13 +78,11 @@ ul {
     width: 550px;
 }
 
-dd,
-dd ul {
-    font-family: "test";
-    font-size: 25px;
-}
 /* TODO c'est nul pour le moment */
 /* Oui */
+.classes li{
+    list-style-type: none;
+}
 .sous1,
 .sous2,
 .def {
