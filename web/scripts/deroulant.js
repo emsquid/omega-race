@@ -41,3 +41,4 @@ object1_1_2.onclick = function() {
 object2.onclick = function() {
     sous_classe(object2, liste2)
 };          
+
