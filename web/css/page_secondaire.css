@@ -51,6 +51,7 @@ dd ul{
     font-size: 25px;
 }
 
+
 .para {
     margin: auto;
     width: 90%;
@@ -97,4 +98,22 @@ dd ul{
     width: fit-content;
 
 }
+
+#s1,
+#s1_1,
+#s1_1_1,
+#s1_1_2,
+#s2{
+    display:inline-block;
+    font-size: 20px;
+}
+
+.s1,
+.s1_1,
+.s1_1_1,
+.s1_1_2,
+.s2{
+    display: none;
+}  
+
 
