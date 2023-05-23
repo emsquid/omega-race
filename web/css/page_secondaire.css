@@ -32,7 +32,6 @@ em{
 a{
     color: white;
     text-decoration-line: none;
-    font-size: 40px;
 }
 
 a:hover {
@@ -66,6 +65,7 @@ dd ul{
 .home{
     float: right;
     margin: 30px;
+    font-size: 40px;
 }
 
 .old_enemy {
@@ -81,6 +81,18 @@ dd ul{
     border: solid 3px white;
 }
 
+.portrait{
+    float: left;
+    display: inline;
+    margin: 35px 35px 10px 5px;
+    margin-bottom: 10px;
+    border: solid 3px white;
+    width:130px;
+    image-rendering:pixelated;
+}
+
+/* TODO c'est nul pour le moment */
+/* Oui */
 .classes li{
     width: fit-content;
 
