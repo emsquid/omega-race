@@ -76,8 +76,8 @@
                     <em>math</em>
                 </dd>
                 <dd>
-                    Cette classe permet de créer des vecteurs. Cette classe seras tres
-                    utile pour orienté les différents objets.
+                    Cette classe permet de créer des vecteurs. Elle est très
+                    utile pour orienter les différents objets.
                     <ul>
                         <li>__add__</li>
                         <li>__sub__</li>
@@ -101,7 +101,7 @@
                 </dd>
                 <dd>
                     Cette classe permet de créer, gérer et enregistrer la configuration
-                    du jeu (nom, couleur, volume sonore...).
+                    du joueur (nom, couleur, volume...).
                     <ul>
                         <li>update_key</li>
                         <li>read</li>
@@ -114,8 +114,9 @@
                         pymongo</em>
                 </dd>
                 <dd>
-                    Cette classe permet de gerer les scores et de stocker les 10 meilleurs scores dans une bases de
-                    donnée. <ul>
+                    Cette classe permet de gérer les scores et de stocker les 10 meilleurs dans une base de
+                    données.
+                    <ul>
                         <li>highscore</li>
                         <li>can_connect</li>
                         <li>can_fetch</li>
@@ -131,7 +132,7 @@
                     <em>pygame</em>
                 </dd>
                 <dd>
-                    Cette classe permet de gerer le son du jeu.
+                    Cette classe permet de gérer le son du jeu.
                     <ul>
                         <li>update</li>
                         <li>music</li>
@@ -143,7 +144,7 @@
                     <em>pygame</em>
                 </dd>
                 <dd>
-                    C'est la classe de base de tout les objets qui serons affichés.
+                    C'est la classe de base pour tous les objets qui seront affichés.
                     <ul>
                         <li>set_position</li>
                         <li>set_image</li>
@@ -156,7 +157,7 @@
                     <em>pygame math</em>
                 </dd>
                 <dd>
-                    Cette classe permet de définir les objects qui meurt et/ou ce déplacent.
+                    Cette classe permet de définir les objets qui meurent et/ou se déplacent.
                     <ul>
                         <li>set_image</li>
                         <li>set_direction</li>
@@ -173,7 +174,7 @@
                     <em>pygame</em>
                 </dd>
                 <dd>
-                    Cette classe permet de créer un laser qui peut etre tirer par
+                    Cette classe permet de créer un laser qui peut être tiré par
                     un ennemi ou le joueur.
                 </dd>
                 <dt id="Player">Player</dt>
@@ -181,11 +182,10 @@
                     <em>pygame time</em>
                 </dd>
                 <dd>
-                    Cette classe permet de créer le Player. Un joueur doit pouvoir
-                    se déplacer et tirer.
+                    Cette classe permet de créer le joueur. Il peut se déplacer et tirer.
                     <ul>
                         <li>create_image</li>
-                        <li> can_thrust</li>
+                        <li>can_thrust</li>
                         <li>can_shoot</li>
                         <li>thrust</li>
                         <li>shoot</li>
@@ -198,6 +198,7 @@
                     <em>pygame math</em>
                 </dd>
                 <dd>
+                    Cette classe permet de créer un vaisseau ennemi.
                     <ul>
                         <li>can_see</li>
                         <li>turn</li>
@@ -207,8 +208,8 @@
                 </dd>
                 <dt id="DroidShip">DroidShip</dt>
                 <dd>
-                    Cette classe créer les Droidship. Ses vaisseaux sont les plus lents
-                    mais ils suivent le joueurs.
+                    Cette classe créer un DroidShip. Ces vaisseaux sont les plus lents
+                    mais ils suivent le joueur.
                     <ul>
                         <li>follow</li>
                     </ul>
@@ -218,8 +219,8 @@
                     <em>random time</em>
                 </dd>
                 <dd>
-                    Cette classes permet de créer des CommandShip. Ses vaisseaux peuvent
-                    tirer sur le joueur et déposer des VaporMine.
+                    Cette classe créer un CommandShip. Ces vaisseaux peuvent
+                    tirer sur le joueur et déposer des mines.
                     <ul>
                         <li>can_drop</li>
                         <li>can_shoot</li>
@@ -233,8 +234,8 @@
                     <em>random time</em>
                 </dd>
                 <dd>
-                    Cette classe permet de créer de DeathShip. Ses vaisseaux peuvent
-                    lancer des 2 types de mines, ils sont également les plus rapide.
+                    Cette classe permet de créer un DeathShip. Ces vaisseaux peuvent
+                    déposer les deux types de mines, ils sont également les plus rapides.
                     <ul>
                         <li>can_drop</li>
                         <li>drop_mine</li>
@@ -261,7 +262,7 @@
                     <em>pygame</em>
                 </dd>
                 <dd>
-                    Cette classe permet de créer tout du texte qui seras affiché dans
+                    Cette classe permet de créer un texte qui sera affiché dans
                     le jeu.
                     <ul>
                         <li>update</li>
@@ -272,7 +273,7 @@
                     <em>time</em>
                 </dd>
                 <dd>
-                    Cette classe permet de créer une explosion. Celle-ci est
+                    Cette classe permet de créer une explosion. Elle est
                     composée de 6 images différentes et dure 0.6 sec.
                     <ul>
                         <li>can_update</li>
@@ -285,7 +286,7 @@
                     <em>threading</em>
                 </dd>
                 <dd>
-                    Cette classe permet de créer un bord.
+                    Cette classe permet de créer un bord, il fait rebondir les ennemis et arrête les missiles.
                     <ul>
                         <li>show</li>
                         <li>hide</li>
@@ -300,16 +301,16 @@
                 </dd>
                 <dd>
                     Cette classe permet de faire le fond du jeu.
-                    On peut y voir des etoiles s'y déplacer.
+                    On peut y voir des étoiles s'y déplacer.
                     <ul>
                         <li>update</li>
                     </ul>
                 </dd>
                 <dt id="Panel">Panel</dt>
                 <dd>
-                    Cette classe permet de créer le contenue du rectangle au milieu de
-                    l'écran durant le jeu. C'est a dire le score du joueur, le meilleur
-                    score, le niveau et le nombre de vies restantes au joueur.
+                    Cette classe permet de créer le contenu du rectangle au milieu de
+                    l'écran durant le jeu. C'est à dire le score du joueur, le meilleur
+                    score, le niveau et le nombre de vies restantes.
                     <ul>
                         <li>draw</li>
                         <li>update</li>
@@ -317,8 +318,8 @@
                 </dd>
                 <dt id="ForceField">ForceField</dt>
                 <dd>
-                    Cette classe permet d'affichée l'ensemble des bords/champs de forces.
-                    Ceux-ci doivent s'allumer lorsque le joueur ou un ennemi rentre dedans.
+                    Cette classe permet d'afficher l'ensemble des bords/champs de force.
+                    Ceux-ci s'allument lorsque le joueur ou un ennemi rentre dedans.
                     <ul>
                         <li>draw</li>
                         <li>update</li>
@@ -330,8 +331,8 @@
                     <em>pygame time</em>
                 </dd>
                 <dd>
-                    Cette classe permet de créer un écran du jeu. Elle seras ensuite
-                    déclinée en plusieur sous classe.
+                    Cette classe permet de créer un écran du jeu. Elle sera ensuite
+                    déclinée en plusieurs sous classes.
                     <ul>
                         <li>reset</li>
                         <li>can_change</li>
@@ -347,7 +348,7 @@
                 <dt id="Welcome">Welcome</dt>
                 <dd>
                     Cette classe permet de créer le premier écran visible lors de
-                    l'ouverture du jeu. On peut y renter son nom.
+                    l'ouverture du jeu. On peut y rentrer son prénom.
                     <ul>
                         <li>get_choice</li>
                         <li>handle_event</li>
@@ -356,23 +357,22 @@
                 </dd>
                 <dt id="Home">Home</dt>
                 <dd>
-                    Cette classe permet de créer l'écran d'accueil. On peut y selectionner
-                    ce que l'on souhaite faire
-                    (jouer, regarder les scores, parametrer, partir).
+                    Cette classe permet de créer l'écran d'accueil. On peut y sélectionner
+                    ce que l'on souhaite faire (jouer, regarder les scores, paramétrer, partir).
                     <ul>
                         <li>update</li>
                     </ul>
                 </dd>
                 <dt id="Scores">Scores</dt>
                 <dd>
-                    Cette classe permet d'afficher la page des scores.
+                    Cette classe permet d'afficher l'écran des scores.
                     <ul>
                         <li>update</li>
                     </ul>
                 </dd>
                 <dt id="Settings">Settings</dt>
                 <dd>
-                    Cette classe permet d'afficher la page des paramètres et a les modifier
+                    Cette classe permet d'afficher la page des paramètres et à les modifier
                     dans la configuration.
                     <ul>
                         <li>can_change</li>
@@ -385,7 +385,7 @@
                 <dt id="Pause">Pause</dt>
                 <dd>
                     Cette classe permet d'afficher l'écran de pause où on peut choisir
-                    soit de reprendre le jeu soit de retourner a l'acceuil.
+                    soit de reprendre le jeu soit de retourner a l'accueil.
                     <ul>
                         <li>handle_keys</li>
                         <li>update</li>
@@ -393,10 +393,10 @@
                 </dd>
                 <dt id="GameOver">GameOver</dt>
                 <dd>
-                    Cette classe permet d'afficher l'écran apres avoir perdu.
-                    Cette page nous montre notre score le meilleur score, notre niveau
-                    lors du decès et on peut choisir si on veut rejouer ou retourner
-                    à l'acceuil.
+                    Cette classe permet d'afficher l'écran après avoir perdu.
+                    Cette page nous montre notre score, le meilleur score, notre niveau
+                    lors du décès et on peut choisir si on veut rejouer ou retourner
+                    à l'accueil.
                     <ul>
                         <li>handle_keys</li>
                         <li>update</li>
@@ -408,7 +408,7 @@
                 </dd>
                 <dd>
                     Cette classe permet d'afficher le jeu et d'y jouer.
-                    voir <a href="sujet.html">sujet</a> pour les règles.
+                    Voir <a href="sujet.html">sujet</a> pour les règles.
                     <ul>
                         <li>start</li>
                         <li>restart</li>
@@ -433,7 +433,7 @@
                     <em>os pygame</em>
                 </dd>
                 <dd>
-                    Cette classe gère le jeu ainsi que les entrés et sorties.
+                    Cette classe gère le jeu ainsi que les entrées et affichages.
                     <ul>
                         <li>handle_inputs</li>
                         <li>update</li>
@@ -446,8 +446,8 @@
             </dl>
         </div>
     </div>
-
     <a href="../index.html" class="home">Accueil</a>
+    <script src="../scripts/background.js" defer></script>
 </body>
 <script src="script.js" defer></script>
 </html>
