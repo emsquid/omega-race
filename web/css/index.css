@@ -9,8 +9,8 @@ html {
 }
 
 body {
-    font-family: "font";
     background-color: black;
+    font-family: "font";
     text-align: center;
     color: white;
 }
@@ -19,14 +19,12 @@ h1 {
     font-size: 100px;
 }
 
-div {
-    margin: 50px 0;
-}
-
 a {
+    display: block;
     color: white;
     text-decoration-line: none;
     font-size: 60px;
+    margin: 50px;
 }
 
 a:hover {
