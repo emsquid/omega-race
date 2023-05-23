@@ -17,6 +17,7 @@ const createStar = () => {
 const updateStar = (star) => {
     star.y -= star.speed
     if (star.y < 0) {
+        star.x = random(0, 100)
         star.y = 100
         star.speed = random(0, 0.05)
     }
@@ -34,4 +35,4 @@ setInterval(() => {
     for (let i = 0; i < 128; i++) {
         updateStar(stars[i])
     }
-}, 0.1)
+}, 10)
