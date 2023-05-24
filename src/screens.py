@@ -526,6 +526,16 @@ class Pause(Screen):
         self.objects = [self.title, self.play, self.home, *self.borders]
         self.choices = [(self.play, PLAY), (self.home, HOME)]
 
+    def handle_event(self, event: pygame.event.Event):
+        """
+        Handle a single user event
+
+        :param event: pygame.event.Event, The event that happened
+        """
+        if event.type == pygame.KEYDOWN and event.key == self.config.keys["PAUSE"]:
+            self.choice = PLAY
+            self.last_change = time()
+
     def handle_keys(self):
         """
         Handle user inputs in the pause
