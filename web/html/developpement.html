@@ -20,27 +20,32 @@
                 <li><a href="#Data">Data</a></li>
                 <li><a href="#Mixer">Mixer</a></li>
                 <li>
-                    <a href="#Object">Object </a> <div id="s1">▼</div> 
-                    <ul class="sous1">
-                        <li class="s1"> <a href="#Entity" >Entity</a> <div id="s1_1">▼</div>
+                    <a href="#Object">Object </a>
+                    <div id="s1">▼</div>
+                    <ul>
+                        <li class="s1"> <a href="#Entity">Entity</a>
+                            <div id="s1_1">▼</div>
                             <ul>
                                 <li class="s1_1"><a href="#Laser">Laser</a> </li>
                                 <li class="s1_1"><a href="#Player">Player</a> </li>
                                 <li class="s1_1">
-                                    <a href="#Ship">Ship</a> <div id="s1_1_1">▼</div>
-                                    <ul class="sous2">
-                                        <li class="s1_1_1"><a href="#DroidShip">DroidShip</a> </li>
-                                        <li class="s1_1_1"><a href="#CommandShip">CommandShip</a> </li>
-                                        <li class="s1_1_1"><a href="#DeathShip">DeathShip</a> </li>
+                                    <a href="#Mine">Mine</a>
+                                    <div id="s1_1_1">▼</div>
+                                    <ul>
+                                        <li class="s1_1_1"><a href="#PhotonMine">PhotonMine</a> </li>
+                                        <li class="s1_1_1"><a href="#VaporMine">VaporMine</a> </li>
                                     </ul>
                                 </li>
                                 <li class="s1_1">
-                                    <a href="#Mine">Mine</a>  <div id="s1_1_2">▼</div>
-                                    <ul class="sous2">
-                                        <li class="s1_1_2"><a href="#VaporMine">VaporMine</a> </li>
-                                        <li class="s1_1_2"><a href="#PhotonMine">PhotonMine</a> </li>
+                                    <a href="#Ship">Ship</a>
+                                    <div id="s1_1_2">▼</div>
+                                    <ul>
+                                        <li class="s1_1_2"><a href="#DroidShip">DroidShip</a> </li>
+                                        <li class="s1_1_2"><a href="#CommandShip">CommandShip</a> </li>
+                                        <li class="s1_1_2"><a href="#DeathShip">DeathShip</a> </li>
                                     </ul>
                                 </li>
+
                             </ul>
                         </li>
                         <li class="s1"><a href="#Text">Text</a></li>
@@ -52,8 +57,9 @@
                 <li><a href="#ForceField">ForceField</a></li>
                 <li><a href="#Panel">Panel</a></li>
                 <li>
-                    <a href="#Screen">Screen</a>   <div id="s2">▼</div>
-                    <ul class="sous1">
+                    <a href="#Screen">Screen</a>
+                    <div id="s2">▼</div>
+                    <ul>
                         <li class="s2"><a href="#Welcome">Welcome</a></li>
                         <li class="s2"><a href="#Home">Home</a></li>
                         <li class="s2"><a href="#Scores">Scores</a></li>
@@ -73,7 +79,7 @@
             <dl>
                 <dt id="Vector">Vector</dt>
                 <dd>
-                    <em>math</em>
+                    <em class="bibliotheque">math</em>
                 </dd>
                 <dd>
                     Cette classe permet de créer des vecteurs. Elle est très
@@ -97,7 +103,7 @@
                 </dd>
                 <dt id="Config">Config</dt>
                 <dd>
-                    <em>pygame</em>
+                    <em class="bibliotheque">pygame</em>
                 </dd>
                 <dd>
                     Cette classe permet de créer, gérer et enregistrer la configuration
@@ -110,7 +116,7 @@
                 </dd>
                 <dt id="Data">Data</dt>
                 <dd>
-                    <em>os certifi time threading dotenv
+                    <em class="bibliotheque">os certifi time threading dotenv
                         pymongo</em>
                 </dd>
                 <dd>
@@ -129,7 +135,7 @@
                 </dd>
                 <dt id="Mixer">Mixer</dt>
                 <dd>
-                    <em>pygame</em>
+                    <em class="bibliotheque">pygame</em>
                 </dd>
                 <dd>
                     Cette classe permet de gérer le son du jeu.
@@ -141,7 +147,7 @@
                 </dd>
                 <dt id="Object">Object</dt>
                 <dd>
-                    <em>pygame</em>
+                    <em class="bibliotheque">pygame</em>
                 </dd>
                 <dd>
                     C'est la classe de base pour tous les objets qui seront affichés.
@@ -154,7 +160,8 @@
                 </dd>
                 <dt id="Entity">Entity</dt>
                 <dd>
-                    <em>pygame math</em>
+                    <em class="bibliotheque">pygame math</em> <br>
+                    <em class="classe">Vector</em>
                 </dd>
                 <dd>
                     Cette classe permet de définir les objets qui meurent et/ou se déplacent.
@@ -171,7 +178,7 @@
                 </dd>
                 <dt id="Laser">Laser</dt>
                 <dd>
-                    <em>pygame</em>
+                    <em class="bibliotheque">pygame</em>
                 </dd>
                 <dd>
                     Cette classe permet de créer un laser qui peut être tiré par
@@ -179,7 +186,8 @@
                 </dd>
                 <dt id="Player">Player</dt>
                 <dd>
-                    <em>pygame time</em>
+                    <em class="bibliotheque">pygame time</em> <br>
+                    <em class="classe">Vector</em>
                 </dd>
                 <dd>
                     Cette classe permet de créer le joueur. Il peut se déplacer et tirer.
@@ -193,9 +201,28 @@
                         <li>update</li>
                     </ul>
                 </dd>
+                <dt id="Mine">Mine</dt>
+                <dd>
+                    <em class="classe">Vector</em>
+                </dd>
+                <dd>
+                    Cette classe permet de créer une mine.
+                </dd>
+
+                <dt id="PhotonMine">PhotonMine</dt>
+                <dd>
+                    Cette classe permet de créer une PhotonMine.
+                    Ces mines sont les plus petites.
+                </dd>
+                <dt id="VaporMine">VaporMine</dt>
+                <dd>
+                    Cette classe permet de créer une VaporMine.
+                    Ces mines sont les plus grandes.
+                </dd>
                 <dt id="Ship">Ship</dt>
                 <dd>
-                    <em>pygame math</em>
+                    <em class="bibliotheque">pygame math</em> <br>
+                    <em class="classe">Vector</em>
                 </dd>
                 <dd>
                     Cette classe permet de créer un vaisseau ennemi.
@@ -208,6 +235,9 @@
                 </dd>
                 <dt id="DroidShip">DroidShip</dt>
                 <dd>
+                    <em>Vector</em>
+                </dd>
+                <dd>
                     Cette classe créer un DroidShip. Ces vaisseaux sont les plus lents
                     mais ils suivent le joueur.
                     <ul>
@@ -216,7 +246,8 @@
                 </dd>
                 <dt id="CommandShip">CommandShip</dt>
                 <dd>
-                    <em>random time</em>
+                    <em class="bibliotheque">random time</em> <br>
+                    <em class="classe">Vector PhotonMine</em>
                 </dd>
                 <dd>
                     Cette classe créer un CommandShip. Ces vaisseaux peuvent
@@ -231,7 +262,8 @@
                 </dd>
                 <dt id="DeathShip">DeathShip</dt>
                 <dd>
-                    <em>random time</em>
+                    <em class="bibliotheque">random time</em> <br>
+                    <em class="classe">Vector PhotonMine VaporMine</em>
                 </dd>
                 <dd>
                     Cette classe permet de créer un DeathShip. Ces vaisseaux peuvent
@@ -243,23 +275,10 @@
                         <li>update</li>
                     </ul>
                 </dd>
-                <dt id="Mine">Mine</dt>
-                <dd>
-                    Cette classe permet de créer une mine.
-                </dd>
-                <dt id="PhotonMine">PhotonMine</dt>
-                <dd>
-                    Cette classe permet de créer une PhotonMine.
-                    Ces mines sont les plus petites.
-                </dd>
-                <dt id="VaporMine">VaporMine</dt>
-                <dd>
-                    Cette classe permet de créer une VaporMine.
-                    Ces mines sont les plus grandes.
-                </dd>
+
                 <dt id="Text">Text</dt>
                 <dd>
-                    <em>pygame</em>
+                    <em class="bibliotheque">pygame</em>
                 </dd>
                 <dd>
                     Cette classe permet de créer un texte qui sera affiché dans
@@ -270,7 +289,7 @@
                 </dd>
                 <dt id="Explosion">Explosion</dt>
                 <dd>
-                    <em>time</em>
+                    <em class="bibliotheque">time</em>
                 </dd>
                 <dd>
                     Cette classe permet de créer une explosion. Elle est
@@ -283,7 +302,8 @@
                 </dd>
                 <dt id="Border">Border</dt>
                 <dd>
-                    <em>threading</em>
+                    <em class="bibliotheque">threading</em> <br>
+                    <em class="classe">Entity Laser Player</em>
                 </dd>
                 <dd>
                     Cette classe permet de créer un bord, il fait rebondir les ennemis et arrête les missiles.
@@ -297,7 +317,7 @@
                 </dd>
                 <dt id="Background">Background</dt>
                 <dd>
-                    <em>pygame</em>
+                    <em class="bibliotheque">pygame random</em>
                 </dd>
                 <dd>
                     Cette classe permet de faire le fond du jeu.
@@ -307,6 +327,9 @@
                     </ul>
                 </dd>
                 <dt id="Panel">Panel</dt>
+                <dd>
+                    <em class="classe">Text PLayer</em>
+                </dd>
                 <dd>
                     Cette classe permet de créer le contenu du rectangle au milieu de
                     l'écran durant le jeu. C'est à dire le score du joueur, le meilleur
@@ -318,6 +341,9 @@
                 </dd>
                 <dt id="ForceField">ForceField</dt>
                 <dd>
+                    <em class="classe">Vector Entity</em>
+                </dd>
+                <dd>
                     Cette classe permet d'afficher l'ensemble des bords/champs de force.
                     Ceux-ci s'allument lorsque le joueur ou un ennemi rentre dedans.
                     <ul>
@@ -328,7 +354,8 @@
                 </dd>
                 <dt id="Screen">Sreen</dt>
                 <dd>
-                    <em>pygame time</em>
+                    <em class="bibliotheque">pygame time</em> <br>
+                    <em class="classe">Config Mixer Text</em>
                 </dd>
                 <dd>
                     Cette classe permet de créer un écran du jeu. Elle sera ensuite
@@ -347,6 +374,10 @@
                 </dd>
                 <dt id="Welcome">Welcome</dt>
                 <dd>
+                    <em class="bibliotheque"></em> <br>
+                    <em class="classe">Text</em>
+                </dd>
+                <dd>
                     Cette classe permet de créer le premier écran visible lors de
                     l'ouverture du jeu. On peut y rentrer son prénom.
                     <ul>
@@ -357,6 +388,10 @@
                 </dd>
                 <dt id="Home">Home</dt>
                 <dd>
+                    <em class="bibliotheque">pygame</em> <br>
+                    <em class="classe">Text</em>
+                </dd>
+                <dd>
                     Cette classe permet de créer l'écran d'accueil. On peut y sélectionner
                     ce que l'on souhaite faire (jouer, regarder les scores, paramétrer, partir).
                     <ul>
@@ -365,12 +400,20 @@
                 </dd>
                 <dt id="Scores">Scores</dt>
                 <dd>
+                    <em class="classe">Data Text</em>
+                </dd>
+                <dd>
                     Cette classe permet d'afficher l'écran des scores.
                     <ul>
                         <li>update</li>
                     </ul>
                 </dd>
                 <dt id="Settings">Settings</dt>
+                <dd>
+                    <em class="bibliotheque">pygame time</em> <br>
+                    <em class="classe">Text</em>
+
+                </dd>
                 <dd>
                     Cette classe permet d'afficher la page des paramètres et à les modifier
                     dans la configuration.
@@ -384,6 +427,10 @@
                 </dd>
                 <dt id="Pause">Pause</dt>
                 <dd>
+                    <em class="bibliotheque">pygame time</em> <br>
+                    <em class="classe">Text Border</em>
+                </dd>
+                <dd>
                     Cette classe permet d'afficher l'écran de pause où on peut choisir
                     soit de reprendre le jeu soit de retourner a l'accueil.
                     <ul>
@@ -392,6 +439,10 @@
                     </ul>
                 </dd>
                 <dt id="GameOver">GameOver</dt>
+                <dd>
+                    <em class="bibliotheque">pygame time</em> <br>
+                    <em class="classe">Text Border</em>
+                </dd>
                 <dd>
                     Cette classe permet d'afficher l'écran après avoir perdu.
                     Cette page nous montre notre score, le meilleur score, notre niveau
@@ -404,7 +455,9 @@
                 </dd>
                 <dt id="Engine">Engine</dt>
                 <dd>
-                    <em>pygame time random threading</em>
+                    <em class="bibliotheque">pygame time random threading</em> <br>
+                    <em class="classe">Vector Mixer Explosion Player Mine Ship
+                        ForceField</em>
                 </dd>
                 <dd>
                     Cette classe permet d'afficher le jeu et d'y jouer.
@@ -430,7 +483,9 @@
                 </dd>
                 <dt id="Game">Game</dt>
                 <dd>
-                    <em>os pygame</em>
+                    <em class="bibliotheque">os pygame</em><br>
+                    <em class="classe">Config Mixer Data Background Panel 
+                        Screen </em>
                 </dd>
                 <dd>
                     Cette classe gère le jeu ainsi que les entrées et affichages.
@@ -448,6 +503,7 @@
     </div>
     <a href="../index.html" class="home">Accueil</a>
     <script src="../scripts/background.js" defer></script>
+    <script src="../scripts/deroulant.js" defer></script>
 </body>
-<script src="../scripts/deroulant.js" defer></script>
+
 </html>
