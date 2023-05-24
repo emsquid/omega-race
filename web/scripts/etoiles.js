@@ -1,17 +1,12 @@
+const canvas = document.getElementById("fond")
+const ctx = canvas.getContext("2d")
+
 const random = (min, max) => {
     return Math.random() * (max - min) + min
 }
 
 const createStar = (x, y, speed) => {
-    const star = document.createElement("div")
-    document.body.appendChild(star)
-    star.classList.add("star")
-    star.style.zIndex = -1
-    star.style.width = "1px"
-    star.style.height = "1px"
-    star.style.position = "fixed"
-    star.style.backgroundColor = "white"
-    return { div: star, x: x, y: y, speed: speed }
+    return { x: x, y: y, speed: speed }
 }
 
 const updateStar = (star) => {
@@ -19,10 +14,12 @@ const updateStar = (star) => {
     if (star.y < 0) {
         star.x = random(0, 100)
         star.y = 100
-        star.speed = random(0, 0.05)
     }
-    star.div.style.left = `${star.x}%`
-    star.div.style.top = `${star.y}%`
+}
+
+const drawStar = (star) => {
+    ctx.fillStyle = "white"
+    ctx.fillRect(star.x * canvas.clientWidth / 100, star.y * canvas.clientHeight / 100, 1, 1)
 }
 
 const storeStars = (stars) => {
@@ -43,17 +40,19 @@ if (stored === undefined) {
 } else {
     stored = JSON.parse(stored)
     for (let i = 0; i < 128; i++) {
-        const x = stored[i].x
-        const y = stored[i].y
-        const speed = stored[i].speed
-        stars.push(createStar(x, y, speed))
+        stars.push(stored[i])
     }
 }
+
 
 window.onbeforeunload = () => { storeStars(stars) }
 
 setInterval(() => {
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (let i = 0; i < 128; i++) {
+        drawStar(stars[i])
         updateStar(stars[i])
     }
 }, 10)
