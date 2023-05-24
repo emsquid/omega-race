@@ -69,10 +69,11 @@ dd ul{
     font-size: 40px;
 }
 
-.old_enemy {
-    height: 35px;
+.old_enemy, .new_enemy {
+    height: 30px;
     position: relative;
     top: 7px;
+    image-rendering:pixelated;
 }
 
 .ecran {
