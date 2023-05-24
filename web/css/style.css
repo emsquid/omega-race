@@ -4,8 +4,8 @@
 }
 
 @font-face {
-    font-family: "test";
-    src: url("../../assets/fonts/test.otf");
+    font-family: "secondary";
+    src: url("../../assets/fonts/secondary.otf");
 }
 
 body {
@@ -24,78 +24,84 @@ h2 {
     margin: 35px;
     margin-bottom: 15px;
 }
- 
-.bibliotheque{
-    color: lightgreen;
-}
-.classe{
-    color: cyan;
-}
- 
-a{
+
+a {
     color: white;
     text-decoration-line: none;
 }
 
+a.page {
+    display: block;
+    width: fit-content;
+    margin: 50px auto;
+    font-size: 60px;
+}
+
 a:hover {
     color: red;
-} 
+}
 
-dt,
-p,
-ul, 
-li a{
-    font-family: "test";
+p, ul, dt, li a{
+    font-family: "secondary";
     font-size: 30px;
 }
 
-dd,
-dd ul{
-    font-family: "test";
+dd, dd ul{
+    font-family: "secondary";
     font-size: 25px;
 }
 
+div > ul {
+    margin-top: -25px;
+}
+
 .para {
-    margin: auto;
     width: 90%;
-    margin-top: 10px;
     padding: 30px;
+    margin: auto;
+    margin-top: 10px;
     border: solid 3px white;
-}
-
-.home{
-    float: right;
-    margin: 30px;
-    font-size: 40px;
-}
-
-.old_enemy, .new_enemy {
-    height: 30px;
-    position: relative;
-    top: 7px;
-    image-rendering:pixelated;
 }
 
 .ecran {
     display: block;
-    margin: 30px auto 20px auto;
     width: 550px;
+    margin: 30px auto 20px auto;
     border: solid 3px white;
 }
 
 .portrait{
     float: left;
     display: inline;
+    width: 130px;
     margin: 35px 35px 10px 5px;
-    margin-bottom: 10px;
     border: solid 3px white;
-    width:130px;
     image-rendering:pixelated;
 }
 
-.classes li{
-    width: fit-content;
+.home {
+    float: right;
+    margin: 30px;
+    font-size: 40px;
+}
 
+.bibliotheque {
+    color: lightgreen;
+}
+
+.classe{
+    color: cyan;
+}
+
+.classes li {
+    width: fit-content;
+}
+
+.old_enemy, .new_enemy {
+    top: 7px;
+    height: 30px;
+    position: relative;
+    image-rendering: pixelated;
 }
 
 #s1,
@@ -122,6 +128,4 @@ dd ul{
 .s1_1_2,
 .s2{
     display: none;
-}  
-
-
+}
