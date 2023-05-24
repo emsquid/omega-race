@@ -66,6 +66,10 @@ div > ul {
     z-index: -1;
 }
 
+.menu {
+    margin-top: 100px;
+}
+
 .para {
     width: 90%;
     padding: 30px;
