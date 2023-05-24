@@ -43,7 +43,8 @@ a:hover {
 
 dt,
 p,
-ul, li a{
+ul, 
+li a{
     font-family: "test";
     font-size: 30px;
 }
@@ -54,13 +55,9 @@ dd ul{
     font-size: 25px;
 }
 
-
 .para {
     margin: auto;
     width: 90%;
-}
-
-.para {
     margin-top: 10px;
     padding: 30px;
     border: solid 3px white;
