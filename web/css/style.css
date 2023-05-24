@@ -41,12 +41,16 @@ a:hover {
     color: red;
 }
 
-p, ul, dt, li a{
+p,
+ul,
+dt,
+li a {
     font-family: "secondary";
     font-size: 30px;
 }
 
-dd, dd ul{
+dd,
+dd ul {
     font-family: "secondary";
     font-size: 25px;
 }
@@ -77,13 +81,13 @@ div > ul {
     border: solid 3px white;
 }
 
-.portrait{
+.portrait {
     float: left;
     display: inline;
     width: 130px;
     margin: 35px 35px 10px 5px;
     border: solid 3px white;
-    image-rendering:pixelated;
+    image-rendering: pixelated;
 }
 
 .home {
@@ -96,7 +100,7 @@ div > ul {
     color: lightgreen;
 }
 
-.classe{
+.classe {
     color: cyan;
 }
 
@@ -104,7 +108,8 @@ div > ul {
     width: fit-content;
 }
 
-.old_enemy, .new_enemy {
+.old_enemy,
+.new_enemy {
     top: 7px;
     height: 30px;
     position: relative;
@@ -115,24 +120,24 @@ div > ul {
 #s1_1,
 #s1_1_1,
 #s1_1_2,
-#s2{
-    display:inline-block;
+#s2 {
+    display: inline-block;
     font-size: 20px;
     user-select: none;
-}                    
- 
+}
+
 #s1:hover,
 #s1_1:hover,
 #s1_1_1:hover,
 #s1_1_2:hover,
-#s2:hover{
-     color: red;
-}                    
- 
+#s2:hover {
+    color: red;
+}
+
 .s1,
 .s1_1,
 .s1_1_1,
 .s1_1_2,
-.s2{
+.s2 {
     display: none;
 }
