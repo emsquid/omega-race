@@ -49,6 +49,10 @@ li a {
     font-size: 30px;
 }
 
+li a {
+    color: blue;
+}
+
 dd,
 dd ul {
     font-family: "secondary";

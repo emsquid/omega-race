@@ -50,7 +50,7 @@ class Background:
         # self.image.blit(alpha, (0, 0))
         self.image.fill(BLACK)
         for star in self.stars:
-            pygame.draw.line(self.image, WHITE, (star[0], star[1]), (star[0], star[1]))
+            pygame.draw.rect(self.image, WHITE, (star[0], star[1], 1, 1))
             star[1] -= star[2] * dt
             if star[1] < 0:
                 star[0] = randrange(WIN_WIDTH)
