@@ -37,6 +37,10 @@ a.page {
     font-size: 60px;
 }
 
+a.lien {
+    text-decoration-line: underline;
+}
+
 a:hover {
     color: red;
 }
