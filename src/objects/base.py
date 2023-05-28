@@ -15,7 +15,7 @@ class Object:
     :param image: str | pygame.Surface, The image of the object
     """
 
-    def __init__(self, x: int, y: int, image: str | pygame.Surface):
+    def __init__(self, x: int, y: int, image):
         self.set_position(x, y)
         self.set_image(image)
 
@@ -29,7 +29,7 @@ class Object:
         self.x = x
         self.y = y
 
-    def set_image(self, image: str | pygame.Surface):
+    def set_image(self, image):
         """
         Set the image of the object,
 
@@ -81,7 +81,7 @@ class Entity(Object):
         self,
         x: int,
         y: int,
-        image: str | pygame.Surface,
+        image,
         direction: Vector,
         rotation: Vector,
         speed: float,
@@ -92,7 +92,7 @@ class Entity(Object):
         self.set_speed(speed)
         self.alive = True
 
-    def set_image(self, image: str | pygame.Surface):
+    def set_image(self, image):
         """
         Set the image of the entity,
 

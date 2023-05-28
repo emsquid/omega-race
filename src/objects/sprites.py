@@ -114,7 +114,7 @@ class Mine(Entity):
     :param points: int, The points the mine is worth
     """
 
-    def __init__(self, x: int, y: int, image: str | pygame.Surface, points: int):
+    def __init__(self, x: int, y: int, image, points: int):
         super().__init__(x, y, image, Vector(0, 0), Vector(0, -1), 0)
         self.points = points
 
@@ -160,7 +160,7 @@ class Ship(Entity):
         self,
         x: int,
         y: int,
-        image: str | pygame.Surface,
+        image,
         direction: Vector,
         speed: float,
         points: int,
