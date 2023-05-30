@@ -98,6 +98,7 @@ div > ul {
     margin: 35px 35px 10px 5px;
     border: solid 3px white;
     image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
 }
 
 .home {
@@ -124,6 +125,7 @@ div > ul {
     height: 30px;
     position: relative;
     image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
 }
 
 #s1,
