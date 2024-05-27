@@ -1,4 +1,4 @@
-import os
+import sys
 import pygame
 import asyncio
 from src.objects.graphics import Background, Panel
@@ -131,4 +131,4 @@ class Game:
         """
         self.config.save()
         pygame.quit()
-        os._exit(0)
+        sys.exit(0)
