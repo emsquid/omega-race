@@ -1,5 +1,6 @@
 import os
 import pygame
+import asyncio
 from src.objects.graphics import Background, Panel
 from src.screens import Welcome, Home, Scores, Settings, Pause, GameOver
 from src.engine import Engine
@@ -32,9 +33,7 @@ class Game:
         pygame.display.set_icon(pygame.image.load("assets/images/Icon.png"))
         pygame.display.set_caption("Omega Race")
 
-        self.display = pygame.display.set_mode(
-            (WIN_WIDTH, WIN_HEIGHT), pygame.RESIZABLE
-        )
+        self.display = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT), pygame.RESIZABLE)
         self.clock = pygame.time.Clock()
 
         self.config = Config()
@@ -72,13 +71,13 @@ class Game:
         choice = self.screens[self.current].choice
         if choice is not None:
             if choice == PLAY:
-                self.mixer.music("Battle.wav", 0.3)
+                self.mixer.music("Battle.ogg", 0.3)
                 if self.current != PAUSE:
                     self.screens[PLAY].start()
                 else:
                     self.screens[PLAY].unpause()
             if self.current == PLAY:
-                self.mixer.music("Menu.wav", 1)
+                self.mixer.music("Menu.ogg", 1)
             if choice == GAMEOVER:
                 score, level = self.screens[PLAY].score, self.screens[PLAY].level
                 self.data.add_score(self.config.name, score, level)
@@ -113,17 +112,18 @@ class Game:
         size = self.display.get_size()
         pygame.transform.smoothscale(self.background.image, size, self.display)
 
-    def run(self):
+    async def run(self):
         """
         Run the game instance
         """
         self.current = WELCOME
-        self.mixer.music("Menu.wav", 1)
+        self.mixer.music("Menu.ogg", 1)
         while True:
             self.handle_inputs()
             self.update()
             self.draw()
             pygame.display.update()
+            await asyncio.sleep(0)
 
     def exit(self):
         """

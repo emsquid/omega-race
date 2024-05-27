@@ -178,9 +178,7 @@ class Ship(Entity):
         """
 
         panel_x, panel_y = CEN_X - PAN_WIDTH / 2, CEN_Y - PAN_HEIGHT / 2
-        panel_rect = pygame.Rect(
-            panel_x - 10, panel_y - 10, PAN_WIDTH + 20, PAN_HEIGHT + 20
-        )
+        panel_rect = pygame.Rect(panel_x - 10, panel_y - 10, PAN_WIDTH + 20, PAN_HEIGHT + 20)
         intersections = panel_rect.clipline(self.x, self.y, entity.x, entity.y)
         return self.alive and len(intersections) == 0
 
@@ -190,39 +188,23 @@ class Ship(Entity):
         """
         # TODO: Look for improvements here
         # top left
-        if (
-            self.x + self.distance < CEN_X - PAN_WIDTH / 2
-            and self.y < CEN_Y - PAN_HEIGHT / 2
-        ) or (
-            self.x < CEN_X - PAN_WIDTH / 2
-            and CEN_Y - PAN_HEIGHT / 2 < self.y < CEN_Y + PAN_HEIGHT / 2 + self.distance
+        if (self.x + self.distance < CEN_X - PAN_WIDTH / 2 and self.y < CEN_Y - PAN_HEIGHT / 2) or (
+            self.x < CEN_X - PAN_WIDTH / 2 and CEN_Y - PAN_HEIGHT / 2 < self.y < CEN_Y + PAN_HEIGHT / 2 + self.distance
         ):
             self.set_direction(Vector(0, 1))
         # top right
-        if (
-            self.x > CEN_X + PAN_WIDTH / 2
-            and self.y + self.distance < CEN_Y - PAN_HEIGHT / 2
-        ) or (
-            CEN_X - PAN_WIDTH / 2 - self.distance < self.x < CEN_X + PAN_WIDTH / 2
-            and self.y < CEN_Y - PAN_HEIGHT / 2
+        if (self.x > CEN_X + PAN_WIDTH / 2 and self.y + self.distance < CEN_Y - PAN_HEIGHT / 2) or (
+            CEN_X - PAN_WIDTH / 2 - self.distance < self.x < CEN_X + PAN_WIDTH / 2 and self.y < CEN_Y - PAN_HEIGHT / 2
         ):
             self.set_direction(Vector(-1, 0))
         # bottom right
-        if (
-            self.x - self.distance > CEN_X + PAN_WIDTH / 2
-            and self.y > CEN_Y + PAN_HEIGHT / 2
-        ) or (
-            self.x > CEN_X + PAN_WIDTH / 2
-            and CEN_Y - PAN_HEIGHT / 2 - self.distance < self.y < CEN_Y + PAN_HEIGHT / 2
+        if (self.x - self.distance > CEN_X + PAN_WIDTH / 2 and self.y > CEN_Y + PAN_HEIGHT / 2) or (
+            self.x > CEN_X + PAN_WIDTH / 2 and CEN_Y - PAN_HEIGHT / 2 - self.distance < self.y < CEN_Y + PAN_HEIGHT / 2
         ):
             self.set_direction(Vector(0, -1))
         # bottom left
-        if (
-            self.x < CEN_X - PAN_WIDTH / 2
-            and self.y - self.distance > CEN_Y + PAN_HEIGHT / 2
-        ) or (
-            CEN_X - PAN_WIDTH / 2 < self.x < CEN_X + PAN_WIDTH / 2 + self.distance
-            and self.y > CEN_Y + PAN_HEIGHT / 2
+        if (self.x < CEN_X - PAN_WIDTH / 2 and self.y - self.distance > CEN_Y + PAN_HEIGHT / 2) or (
+            CEN_X - PAN_WIDTH / 2 < self.x < CEN_X + PAN_WIDTH / 2 + self.distance and self.y > CEN_Y + PAN_HEIGHT / 2
         ):
             self.set_direction(Vector(1, 0))
 

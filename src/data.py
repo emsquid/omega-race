@@ -1,10 +1,7 @@
 import os
-import certifi
+import sys
 from time import time
 from threading import Thread
-from dotenv import load_dotenv
-from pymongo.server_api import ServerApi
-from pymongo.mongo_client import MongoClient
 
 
 class Data:
@@ -13,8 +10,6 @@ class Data:
     """
 
     def __init__(self):
-        load_dotenv()
-
         self.db = None
         self.scores = []
         self.last_fetch = 0
@@ -37,7 +32,7 @@ class Data:
 
         :return: bool, Whether it's been long enough or not
         """
-        return not self.connected and time() - self.last_connection > 5
+        return not self.connected and time() - self.last_connection > 5 and sys.platform != "emscripten"
 
     def can_fetch(self) -> bool:
         """
@@ -53,8 +48,14 @@ class Data:
         """
         if not self.can_connect():
             return
-        self.last_connection = time()
         try:
+            import certifi
+            from dotenv import load_dotenv
+            from pymongo.server_api import ServerApi
+            from pymongo.mongo_client import MongoClient
+
+            load_dotenv()
+
             uri = f"mongodb+srv://omegarace:{os.getenv('TOKEN')}@omegarace.1knm5ap.mongodb.net/?retryWrites=true&w=majority"
             client = MongoClient(
                 uri,

@@ -2,6 +2,7 @@ import pygame
 from time import time
 from random import randrange
 from threading import Timer
+from src.timer import timer
 from src.objects.base import Explosion
 from src.objects.sprites import (
     Player,
@@ -56,7 +57,7 @@ class Engine(Screen):
             [
                 DroidShip(
                     randrange(300, WIN_WIDTH - 300),
-                    randrange(CEN_Y + PAN_HEIGHT / 2 + 50, WIN_HEIGHT - 50),
+                    randrange(CEN_Y + PAN_HEIGHT // 2 + 50, WIN_HEIGHT - 50),
                     self.level,
                 )
                 for i in range(ENEMY_NUMBER["DroidShip"][min(self.level - 1, 4)])
@@ -64,7 +65,7 @@ class Engine(Screen):
             + [
                 CommandShip(
                     randrange(300, WIN_WIDTH - 300),
-                    randrange(CEN_Y + PAN_HEIGHT / 2 + 50, WIN_HEIGHT - 50),
+                    randrange(CEN_Y + PAN_HEIGHT // 2 + 50, WIN_HEIGHT - 50),
                     self.level,
                 )
                 for i in range(ENEMY_NUMBER["CommandShip"][min(self.level - 1, 4)])
@@ -72,7 +73,7 @@ class Engine(Screen):
             + [
                 DeathShip(
                     randrange(300, WIN_WIDTH - 300),
-                    randrange(CEN_Y + PAN_HEIGHT / 2 + 50, WIN_HEIGHT - 50),
+                    randrange(CEN_Y + PAN_HEIGHT // 2 + 50, WIN_HEIGHT - 50),
                     self.level,
                 )
                 for i in range(ENEMY_NUMBER["DeathShip"][min(self.level - 1, 4)])
@@ -120,7 +121,7 @@ class Engine(Screen):
 
         if keys[self.config.keys["SHOOT"]] and self.player.can_shoot():
             self.player.shoot(self.player_lasers)
-            self.mixer.play("Laser.wav", 0.15)
+            self.mixer.play("Laser.ogg", 0.15)
 
     def handle_mouse(self):
         """
@@ -149,7 +150,7 @@ class Engine(Screen):
 
         if buttons[2] and self.player.can_shoot():
             self.player.shoot(self.player_lasers)
-            self.mixer.play("Laser.wav", 0.15)
+            self.mixer.play("Laser.ogg", 0.15)
 
         if not pygame.mouse.get_focused():
             self.pause()
@@ -183,7 +184,7 @@ class Engine(Screen):
         :param y: int, The y coordinate of the explosion
         """
         self.explosions.append(Explosion(x, y))
-        self.mixer.play("Explosion.wav", 1.2)
+        self.mixer.play("Explosion.ogg", 1.2)
 
     def ship_death(self, ship: Ship):
         """
@@ -214,7 +215,8 @@ class Engine(Screen):
         if not self.level_changed and self.player.alive:
             self.lives -= 1
             self.player.die()
-            Timer(1, self.restart).start()
+            # Timer(1, self.restart).start()
+            timer(1, self.restart)
 
     def change_level(self):
         """
@@ -223,7 +225,8 @@ class Engine(Screen):
         if not self.level_changed and self.player.alive:
             self.level += 1
             self.level_changed = True
-            Timer(1, self.restart).start()
+            # Timer(1, self.restart).start()
+            timer(1, self.restart)
 
     def update_enemies(self, dt: int):
         """
@@ -242,7 +245,7 @@ class Engine(Screen):
                 enemy.follow(self.player)
             if isinstance(enemy, CommandShip) and enemy.can_shoot():
                 enemy.shoot(self.player, self.enemies_lasers)
-                self.mixer.play("Laser.wav", 0.15)
+                self.mixer.play("Laser.ogg", 0.15)
             if isinstance(enemy, (CommandShip, DeathShip)) and enemy.can_drop():
                 enemy.drop_mine(self.mines)
 

@@ -64,11 +64,7 @@ class Screen:
 
         :return: int, The id of the selectionned choice
         """
-        return (
-            self.choices[self.selection][1]
-            if 0 <= self.selection < len(self.choices)
-            else None
-        )
+        return self.choices[self.selection][1] if 0 <= self.selection < len(self.choices) else None
 
     def handle_event(self, event: pygame.event.Event):
         """

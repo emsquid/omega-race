@@ -2,6 +2,7 @@ import pygame
 from time import time
 from threading import Timer
 from random import randrange, random
+from src.timer import timer
 from src.objects.base import Object, Entity, Text
 from src.objects.sprites import Player, Laser
 from src.vector import Vector
@@ -120,9 +121,7 @@ class Border(Object):
     :param visible: bool, Whether the border is usually visible or not
     """
 
-    def __init__(
-        self, x: int, y: int, width: int, height: int, normal: Vector, visible: bool
-    ):
+    def __init__(self, x: int, y: int, width: int, height: int, normal: Vector, visible: bool):
         super().__init__(x, y, pygame.Surface((width, height)))
         self.normal = normal
         self.visible = visible
@@ -150,7 +149,8 @@ class Border(Object):
         if self.visible:
             return
         self.show()
-        Timer(0.15, self.hide).start()
+        # Timer(0.15, self.hide).start()
+        timer(0.15, self.hide)
 
     def update(self):
         """
