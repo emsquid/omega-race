@@ -82,7 +82,7 @@ class Data:
         except Exception:
             self.connected = False
 
-    def insert(self, doc: dict):
+    async def insert(self, doc: dict):
         """
         Try to insert a document in the remote database
 
