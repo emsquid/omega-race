@@ -1,8 +1,7 @@
 import pygame
 from time import time
 from random import randrange
-from threading import Timer
-from src.timer import timer
+from src.thread import Timer
 from src.objects.base import Explosion
 from src.objects.sprites import (
     Player,
@@ -121,7 +120,7 @@ class Engine(Screen):
 
         if keys[self.config.keys["SHOOT"]] and self.player.can_shoot():
             self.player.shoot(self.player_lasers)
-            self.mixer.play("Laser.ogg", 0.15)
+            self.mixer.play("Laser", 0.1)
 
     def handle_mouse(self):
         """
@@ -150,7 +149,7 @@ class Engine(Screen):
 
         if buttons[2] and self.player.can_shoot():
             self.player.shoot(self.player_lasers)
-            self.mixer.play("Laser.ogg", 0.15)
+            self.mixer.play("Laser", 0.1)
 
         if not pygame.mouse.get_focused():
             self.pause()
@@ -184,7 +183,7 @@ class Engine(Screen):
         :param y: int, The y coordinate of the explosion
         """
         self.explosions.append(Explosion(x, y))
-        self.mixer.play("Explosion.ogg", 1.2)
+        self.mixer.play("Explosion", 0.5)
 
     def ship_death(self, ship: Ship):
         """
@@ -215,8 +214,7 @@ class Engine(Screen):
         if not self.level_changed and self.player.alive:
             self.lives -= 1
             self.player.die()
-            # Timer(1, self.restart).start()
-            timer(1, self.restart)
+            Timer(1, self.restart).start()
 
     def change_level(self):
         """
@@ -225,8 +223,7 @@ class Engine(Screen):
         if not self.level_changed and self.player.alive:
             self.level += 1
             self.level_changed = True
-            # Timer(1, self.restart).start()
-            timer(1, self.restart)
+            Timer(1, self.restart).start()
 
     def update_enemies(self, dt: int):
         """
@@ -245,7 +242,7 @@ class Engine(Screen):
                 enemy.follow(self.player)
             if isinstance(enemy, CommandShip) and enemy.can_shoot():
                 enemy.shoot(self.player, self.enemies_lasers)
-                self.mixer.play("Laser.ogg", 0.15)
+                self.mixer.play("Laser", 0.1)
             if isinstance(enemy, (CommandShip, DeathShip)) and enemy.can_drop():
                 enemy.drop_mine(self.mines)
 

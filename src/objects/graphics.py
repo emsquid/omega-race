@@ -1,8 +1,7 @@
 import pygame
 from time import time
-from threading import Timer
 from random import randrange, random
-from src.timer import timer
+from src.thread import Timer
 from src.objects.base import Object, Entity, Text
 from src.objects.sprites import Player, Laser
 from src.vector import Vector
@@ -149,8 +148,7 @@ class Border(Object):
         if self.visible:
             return
         self.show()
-        # Timer(0.15, self.hide).start()
-        timer(0.15, self.hide)
+        Timer(0.15, self.hide).start()
 
     def update(self):
         """

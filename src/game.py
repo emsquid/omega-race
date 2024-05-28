@@ -71,13 +71,13 @@ class Game:
         choice = self.screens[self.current].choice
         if choice is not None:
             if choice == PLAY:
-                self.mixer.music("Battle.ogg", 0.3)
+                self.mixer.music("Battle", 0.1)
                 if self.current != PAUSE:
                     self.screens[PLAY].start()
                 else:
                     self.screens[PLAY].unpause()
             if self.current == PLAY:
-                self.mixer.music("Menu.ogg", 1)
+                self.mixer.music("Menu", 0.3)
             if choice == GAMEOVER:
                 score, level = self.screens[PLAY].score, self.screens[PLAY].level
                 self.data.add_score(self.config.name, score, level)
@@ -117,7 +117,7 @@ class Game:
         Run the game instance
         """
         self.current = WELCOME
-        self.mixer.music("Menu.ogg", 1)
+        self.mixer.music("Menu", 0.3)
         while True:
             self.handle_inputs()
             self.update()

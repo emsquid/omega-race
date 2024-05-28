@@ -27,7 +27,7 @@ class Mixer:
         :param volume: float, The volume to play the music at
         """
         self.music_volume = volume
-        pygame.mixer.music.load(f"assets/sounds/{file}")
+        pygame.mixer.music.load(f"assets/sounds/{file}.ogg")
         pygame.mixer.music.set_volume(self.music_volume * self.config.volume)
         pygame.mixer.music.play(-1)
 
@@ -38,6 +38,6 @@ class Mixer:
         :param file: str, The filename of the sound
         :param volume: float, The volume to play the sound at
         """
-        sound = pygame.mixer.Sound(f"assets/sounds/{file}")
+        sound = pygame.mixer.Sound(f"assets/sounds/{file}.ogg")
         sound.set_volume(volume * self.config.volume)
         sound.play()

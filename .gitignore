@@ -1,4 +1,5 @@
 .env
 .config
+build/*
 src/__pycache__/*
 src/objects/__pycache__/*

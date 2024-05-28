@@ -1,7 +1,7 @@
 import os
 import sys
 from time import time
-from threading import Thread
+from src.thread import Thread
 
 
 class Data:
@@ -15,7 +15,7 @@ class Data:
         self.last_fetch = 0
         self.last_connection = 0
         self.connected = False
-        Thread(target=self.connect).start()
+        Thread(self.connect).start()
 
     @property
     def highscore(self) -> int:
@@ -42,7 +42,7 @@ class Data:
         """
         return self.connected and time() - self.last_fetch > 5
 
-    def connect(self):
+    async def connect(self):
         """
         Try to connect to the remote database
         """
@@ -65,11 +65,11 @@ class Data:
             )
             self.db = client["Scores"]
             self.connected = True
-            self.fetch()
+            await self.fetch()
         except Exception:
             self.connected = False
 
-    def fetch(self):
+    async def fetch(self):
         """
         Try to fetch scores from the remote database
         """
@@ -108,11 +108,11 @@ class Data:
             self.scores.append(doc)
             self.scores.sort(key=lambda doc: doc["score"], reverse=True)
 
-            Thread(target=self.insert, args=[doc]).start()
+            Thread(self.insert, args=[doc]).start()
 
     def update(self):
         """
         Update the database connections
         """
-        Thread(target=self.connect).start()
-        Thread(target=self.fetch).start()
+        Thread(self.connect).start()
+        Thread(self.fetch).start()
